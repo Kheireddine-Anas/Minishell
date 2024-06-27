@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pipex_bonus_utul1.c                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/01 10:55:03 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/03/27 00:59:11 by ahamdi           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "minishell.h"
 
-#include "pipex_bonus.h"
-
-char	*remove_spaces_and_single_quotes(const char *str)
+static char	*remove_spaces_and_single_quotes(const char *str)
 {
 	char	*dst;
 	int		i;
@@ -23,7 +11,8 @@ char	*remove_spaces_and_single_quotes(const char *str)
 		exit(EXIT_FAILURE);
 	while (*str)
 	{
-		if (*str != '\'' && (*(str + 1) != '{' || *(str - 1) != '}'))
+		if (*str != '\'' && 
+			(*(str + 1) != '{' || *(str - 1) != '}'))
 			dst[i++] = *str;
 		str++;
 	}
@@ -31,7 +20,7 @@ char	*remove_spaces_and_single_quotes(const char *str)
 	return (dst);
 }
 
-char	**realloc_cmd(char ***cmd, int *capacity)
+static char	**realloc_cmd(char ***cmd, int *capacity)
 {
 	int		i;
 	char	**new_cmd;
@@ -53,7 +42,7 @@ char	**realloc_cmd(char ***cmd, int *capacity)
 	return (new_cmd);
 }
 
-void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
+static void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
 {
 	char	*arg;
 
@@ -65,7 +54,7 @@ void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
 	}
 }
 
-void	process_char(char ***cmd, int *capacity, 
+static void	process_char(char ***cmd, int *capacity, 
 		char **start_ptr, char **end_ptr)
 {
 	int	in_single_quotes;
@@ -95,13 +84,15 @@ void	process_char(char ***cmd, int *capacity,
 	}
 }
 
-char	**split_command(const char *command)
+char	**split_singl_qot(const char *command)
 {
 	int		capacity;
 	char	*start_ptr;
 	char	*end_ptr;
 	char	**cmd;
 
+	if (!command)
+		return (NULL);
 	capacity = 10;
 	cmd = malloc(capacity * sizeof(char *));
 	if (!cmd)

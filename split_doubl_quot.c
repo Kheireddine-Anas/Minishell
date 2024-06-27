@@ -1,16 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pipex_util2.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/01 10:54:23 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/06/27 10:40:25 by ahamdi           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "pipex.h"
+#include "minishell.h"
 
 char	*remove_spaces_and_single_quotes(const char *str)
 {
@@ -23,7 +11,8 @@ char	*remove_spaces_and_single_quotes(const char *str)
 		exit(EXIT_FAILURE);
 	while (*str)
 	{
-		if (*str != '\'' && (*(str + 1) != '{' || *(str - 1) != '}'))
+		if (*str != '\"' && 
+			(*(str + 1) != '{' || *(str - 1) != '}'))
 			dst[i++] = *str;
 		str++;
 	}
@@ -75,7 +64,7 @@ void	process_char(char ***cmd, int *capacity,
 	in_single_quotes = 0;
 	while (**end_ptr)
 	{
-		if (**end_ptr == '\'')
+		if (**end_ptr == '\"')
 			in_single_quotes++;
 		else if (**end_ptr == ' ' && (in_single_quotes % 2) == 0)
 		{
@@ -95,7 +84,7 @@ void	process_char(char ***cmd, int *capacity,
 	}
 }
 
-char	**split_command(const char *command)
+char	**split_double_qot(const char *command)
 {
 	int		capacity;
 	char	*start_ptr;
@@ -113,13 +102,3 @@ char	**split_command(const char *command)
 	process_char(&cmd, &capacity, &start_ptr, &end_ptr);
 	return (cmd);
 }
-// int main ()
-// {
-// 	char **str ;
-// 	str = split_command("/bin/ls -l");
-// 	while(*str)
-// 	{
-// 		printf("%s\n", *str);
-// 		str++;
-// 	}
-// }
