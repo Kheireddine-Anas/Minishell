@@ -1,6 +1,17 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex_util2.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/01 10:54:23 by ahamdi            #+#    #+#             */
+/*   Updated: 2024/06/27 16:36:17 by ahamdi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static char	*remove_spaces_and_single_quotes(const char *str)
+#include "pipex.h"
+char	*remove_spaces_and_single_quotes(const char *str)
 {
 	char	*dst;
 	int		i;
@@ -11,18 +22,16 @@ static char	*remove_spaces_and_single_quotes(const char *str)
 		exit(EXIT_FAILURE);
 	while (*str)
 	{
-		if (*str != '\'' && 
+		if (*str != '\"' && 
 			(*(str + 1) != '{' || *(str - 1) != '}'))
 			dst[i++] = *str;
-		// if(*str == '\'' && *str++ == ' ')
-		// 	dst[i++] = '';
 		str++;
 	}
 	dst[i] = '\0';
 	return (dst);
 }
 
-static char	**realloc_cmd(char ***cmd, int *capacity)
+char	**realloc_cmd(char ***cmd, int *capacity)
 {
 	int		i;
 	char	**new_cmd;
@@ -44,7 +53,7 @@ static char	**realloc_cmd(char ***cmd, int *capacity)
 	return (new_cmd);
 }
 
-static void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
+void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
 {
 	char	*arg;
 
@@ -56,7 +65,7 @@ static void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
 	}
 }
 
-static void	process_char(char ***cmd, int *capacity, 
+void	process_char(char ***cmd, int *capacity, 
 		char **start_ptr, char **end_ptr)
 {
 	int	in_single_quotes;
@@ -66,7 +75,7 @@ static void	process_char(char ***cmd, int *capacity,
 	in_single_quotes = 0;
 	while (**end_ptr)
 	{
-		if (**end_ptr == '\'')
+		if (**end_ptr == '\"')
 			in_single_quotes++;
 		else if (**end_ptr == ' ' && (in_single_quotes % 2) == 0)
 		{
@@ -86,7 +95,7 @@ static void	process_char(char ***cmd, int *capacity,
 	}
 }
 
-char	**split_singl_qot(const char *command)
+char	**split_command(const char *command)
 {
 	int		capacity;
 	char	*start_ptr;

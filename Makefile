@@ -1,23 +1,23 @@
-src  =   main.c split_sing_quot.c split_doubl_quot.c
+src  =   main.c split_sing_quot.c split_doubl_quot.c get_env.c
 obj = $(src:.c=.o)
 NAME = minishell
-LIBFT = libftt_/libft.a
+LIBFT = libft/libft.a
 
 all:  $(NAME)
 
 $(NAME): $(obj)
-	$(MAKE) -C libftt_
+	$(MAKE) -C libft
 	gcc -Wall -Wextra -Werror  -lreadline -o $(NAME) $(obj) $(LIBFT)
 
 %.o: %.c getNextLine/get_next_line.h  mandatori/pipex.h bonus/pipex_bonus.h
 	gcc -Wall -Wextra -Werror -c $< -o $@
 
 clean:
-	$(MAKE) -C libftt_ clean
+	$(MAKE) -C libft clean
 	rm -rf $(obj) 
 
 fclean : clean
-	$(MAKE) -C libftt_ fclean
+	$(MAKE) -C libft fclean
 	rm -rf $(NAME) 
 
 re : fclean all

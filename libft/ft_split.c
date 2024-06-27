@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:11:30 by ahamdi            #+#    #+#             */
-/*   Updated: 2023/12/25 18:00:06 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/05/16 19:16:26 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	ft_free(char **result, int j)
 	free(result);
 }
 
-static int	ft_count_words(char const *str, char sep)
+static int	ft_count_words(char *str)
 {
 	int	i;
 	int	count;
@@ -31,28 +31,28 @@ static int	ft_count_words(char const *str, char sep)
 	count = 0;
 	while (str[i] != '\0')
 	{
-		while (str[i] == sep)
+		while (is_sep(str[i]))
 			i++;
 		if (str[i] != '\0')
 			count++;
-		while (str[i] && str[i] != sep)
+		while (str[i] && !is_sep(str[i]))
 			i++;
 	}
 	return (count);
 }
 
-static char	**ft_alloc_mem(char const *s, char c, char **result, int start)
+static char	**ft_alloc_mem(char *s, char **result, int start)
 {
 	int	i;
 	int	len;
 
 	i = 0;
-	while (i < ft_count_words(s, c))
+	while (i < ft_count_words(s))
 	{
-		while (s[start] == c)
+		while (is_sep(s[start]))
 			start++;
 		len = 0;
-		while (s[start + len] && s[start + len] != c)
+		while (s[start + len] && !is_sep(s[start + len]))
 			len++;
 		result[i] = (char *)malloc((len + 1) * sizeof(char));
 		if (!result[i])
@@ -68,7 +68,7 @@ static char	**ft_alloc_mem(char const *s, char c, char **result, int start)
 	return (result);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char *s)
 {
 	char	**result;
 	int		start;
@@ -76,9 +76,9 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (NULL);
 	start = 0;
-	result = malloc((ft_count_words(s, c) + 1) * sizeof(char *));
+	result = malloc((ft_count_words(s) + 1) * sizeof(char *));
 	if (result == NULL)
 		return (NULL);
-	result = ft_alloc_mem(s, c, result, start);
+	result = ft_alloc_mem(s, result, start);
 	return (result);
 }
