@@ -6,7 +6,7 @@ static char	*remove_spaces_and_single_quotes(const char *str)
 	int		i;
 
 	i = 0;
-	dst = (char *)malloc(ft_strlen(str) + 1);
+	dst = ft_calloc(ft_strlen(str) + 1,1);
 	if (!dst)
 		exit(EXIT_FAILURE);
 	while (*str)
@@ -14,34 +14,10 @@ static char	*remove_spaces_and_single_quotes(const char *str)
 		if (*str != '\'' && 
 			(*(str + 1) != '{' || *(str - 1) != '}'))
 			dst[i++] = *str;
-		// if(*str == '\'' && *str++ == ' ')
-		// 	dst[i++] = '';
 		str++;
 	}
 	dst[i] = '\0';
 	return (dst);
-}
-
-static char	**realloc_cmd(char ***cmd, int *capacity)
-{
-	int		i;
-	char	**new_cmd;
-
-	*capacity *= 2;
-	new_cmd = malloc(*capacity * sizeof(char *));
-	if (!new_cmd)
-	{
-		free(*cmd);
-		exit(EXIT_FAILURE);
-	}
-	i = 0;
-	while (i < *capacity / 2)
-	{
-		new_cmd[i] = (*cmd)[i];
-		i++;
-	}
-	free(*cmd);
-	return (new_cmd);
 }
 
 static void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
@@ -49,11 +25,8 @@ static void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
 	char	*arg;
 
 	arg = remove_spaces_and_single_quotes(start_ptr);
-	if (ft_strlen(arg) > 0)
-	{
-		cmd[*size] = arg;
-		(*size)++;
-	}
+	cmd[*size] = arg;
+	(*size)++;
 }
 
 static void	process_char(char ***cmd, int *capacity, 
@@ -96,7 +69,7 @@ char	**split_singl_qot(const char *command)
 	if (!command)
 		return (NULL);
 	capacity = 10;
-	cmd = malloc(capacity * sizeof(char *));
+	cmd = ft_calloc(capacity , sizeof(char *));
 	if (!cmd)
 		exit(EXIT_FAILURE);
 	start_ptr = ft_strdup(command);

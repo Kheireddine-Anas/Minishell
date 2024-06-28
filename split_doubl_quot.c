@@ -2,14 +2,17 @@
 
 char *chercher_variable(char *str, char **envp)
 {
-	int i = 0;
+	int i;
 	char *variable;
 
+	i = 0;
 	variable = "\0";
+	if (!str)
+		return (variable);
 	str++;
 	if (*str != '\0')
 	{
-		str = ft_strjoin(str,"=");
+		str = ft_strjoin(str, "=");
 		while (envp[i])
 		{
 			if (ft_strnstr(envp[i], str, ft_strlen(envp[i])) != NULL)
@@ -29,7 +32,7 @@ char	*remove_spaces_and_single_quotes(const char *str)
 	int		i;
 
 	i = 0;
-	dst = (char *)malloc(ft_strlen(str) + 1);
+	dst = ft_calloc(ft_strlen(str) + 1,1);
 	if (!dst)
 		exit(EXIT_FAILURE);
 	while (*str)
@@ -49,7 +52,7 @@ char	**realloc_cmd(char ***cmd, int *capacity)
 	char	**new_cmd;
 
 	*capacity *= 2;
-	new_cmd = malloc(*capacity * sizeof(char *));
+	new_cmd = ft_calloc(*capacity , sizeof(char *));
 	if (!new_cmd)
 	{
 		free(*cmd);
@@ -68,9 +71,22 @@ char	**realloc_cmd(char ***cmd, int *capacity)
 void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
 {
 	char	*arg;
+	char	**str;
+	int i = 0;
 
 	arg = remove_spaces_and_single_quotes(start_ptr);
-	if (ft_strlen(arg) > 0)
+	if (ft_strchr(arg,'$'))
+	{
+		str = splite_variable(arg);
+		while(str[i])
+		{
+			cmd[*size] = str[i];
+			(*size)++;
+			printf("***   %s\n",str[i]);
+			i++;
+		}
+	}
+	else
 	{
 		cmd[*size] = arg;
 		(*size)++;
@@ -89,7 +105,7 @@ void	process_char(char ***cmd, int *capacity,
 	{
 		if (**end_ptr == '\"')
 			in_double_quotes++;
-		else if (**end_ptr == ' ' && (in_double_quotes % 2) == 0)
+		else if (**end_ptr == ' '  && (in_double_quotes % 2) == 0)
 		{
 			**end_ptr = '\0';
 			if (size >= *capacity - 1) 
@@ -114,23 +130,67 @@ char	**split_double_qot(const char *command, char **envp)
 	char	*end_ptr;
 	char	**cmd;
 	int		j = 0;
+	int k = 0;
+	char *tmp;
+	char *variable;
 
 	if (!command)
 		return (NULL);
 	capacity = 10;
-	cmd = malloc(capacity * sizeof(char *));
+	cmd = ft_calloc(capacity , sizeof(char *));
 	if (!cmd)
 		exit(EXIT_FAILURE);
 	start_ptr = ft_strdup(command);
 	end_ptr = start_ptr;
 	process_char(&cmd, &capacity, &start_ptr, &end_ptr);
-	while(cmd[j])
-	{
-		if(ft_strchr(cmd[j],'$'))
-		{
-			cmd[j] = chercher_variable(cmd[j], envp);
-		}
-		j++;
-	}
+	// if (!cmd)
+	// 	return (NULL);
+	// while (cmd[j])
+	// {
+	// 	variable = ft_strchr(cmd[j], '$');
+    // 	if (cmd[j] &&  variable!= NULL)
+    // 	{
+    //     	tmp = cmd[j];
+    //     	cmd[j] = ft_strdup (chercher_variable(variable, envp));
+    //     	if (ft_strlen(cmd[j]) == 0)
+    //         k = 1;
+    //     	free(tmp);
+    // 	}
+    // 	j++;
+	// }
+	// if (k == 1)
+	// {
+	// 	cmd = create_cmd(cmd);
+	// }
 	return (cmd);
+}
+
+char **create_cmd(char **str)
+{
+	int i;
+	int j = 0;
+	char **result;
+
+	i = 0;
+	if(!str || !*str)
+		return (NULL);
+	while(str[i])
+	{
+		i++;
+	}
+	result = ft_calloc(i , sizeof(char *));
+	if (!result)
+		exit(EXIT_FAILURE);
+	i = 0;
+	while (str[i])
+	{
+		if (ft_strlen(str[i]) > 0)
+		{
+			result[j] = str[i];
+			j++;
+		}
+		i++;
+	}
+	result[j] = NULL;
+	return (result);
 }
