@@ -7,7 +7,7 @@ all:  $(NAME)
 
 $(NAME): $(obj)
 	$(MAKE) -C libft
-	gcc -Wall -Wextra -Werror  -lreadline  -fsanitize=address  -o $(NAME) $(obj) $(LIBFT)
+	gcc -Wall -Wextra -Werror  -lreadline  -fsanitize=address  -lncurses -I/Users/ahamdi/.brew/opt/readline/include -L/Users/ahamdi/.brew/opt/readline/lib   -o $(NAME) $(obj) $(LIBFT)
 %.o: %.c getNextLine/get_next_line.h  mandatori/pipex.h bonus/pipex_bonus.h
 	gcc -Wall -Wextra -Werror -c $< -o $@
 

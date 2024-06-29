@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+
 void	wit_process(int argc, pid_t **pids, int *fd,int fd1,int fd0)
 {
 	int	j;

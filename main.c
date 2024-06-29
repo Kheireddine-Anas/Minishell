@@ -1,5 +1,16 @@
 #include "minishell.h"
 
+void handle_sigint(int sig)
+{
+	if (sig == SIGINT)
+	{
+		printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+}
+
 static void	child_process(char **argv, char **envp, int *fd, int i)
 {
 	if (argv[i][0] == '\0')
@@ -90,6 +101,8 @@ int	main(int argc, char *argv[], char **envp)
 	char	**env;
 	int i;
 
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 	if (argc != 1)
 	{
 		ft_putstr_fd("Error\n", 2);
