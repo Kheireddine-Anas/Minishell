@@ -16,7 +16,9 @@ void	*ft_calloc(size_t numel, size_t size_el)
 {
 	size_t	size_totat ;
 	void	*ma;
-
+	
+	if(!size_el || !numel)
+		return (NULL);
 	size_totat = numel * size_el;
 	if (size_el != 0 && numel != size_totat / size_el)
 		return (NULL);

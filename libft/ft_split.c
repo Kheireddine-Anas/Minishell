@@ -22,7 +22,7 @@ static void	ft_free(char **result, int j)
 	free(result);
 }
 
-static int	ft_count_words(char *str)
+static int	ft_count_words(char *str, char c)
 {
 	int	i;
 	int	count;
@@ -31,28 +31,28 @@ static int	ft_count_words(char *str)
 	count = 0;
 	while (str[i] != '\0')
 	{
-		while (is_sep(str[i]))
+		while (str[i] == c)
 			i++;
 		if (str[i] != '\0')
 			count++;
-		while (str[i] && !is_sep(str[i]))
+		while (str[i] && str[i] != c)
 			i++;
 	}
 	return (count);
 }
 
-static char	**ft_alloc_mem(char *s, char **result, int start)
+static char	**ft_alloc_mem(char *s, char **result, int start, char c)
 {
 	int	i;
 	int	len;
 
 	i = 0;
-	while (i < ft_count_words(s))
+	while (i < ft_count_words(s,c))
 	{
-		while (is_sep(s[start]))
+		while (s[start] == c)
 			start++;
 		len = 0;
-		while (s[start + len] && !is_sep(s[start + len]))
+		while (s[start + len] && s[start + len] != c)
 			len++;
 		result[i] = (char *)malloc((len + 1) * sizeof(char));
 		if (!result[i])
@@ -68,7 +68,7 @@ static char	**ft_alloc_mem(char *s, char **result, int start)
 	return (result);
 }
 
-char	**ft_split(char *s)
+char	**ft_split(char *s, char c)
 {
 	char	**result;
 	int		start;
@@ -76,9 +76,9 @@ char	**ft_split(char *s)
 	if (!s)
 		return (NULL);
 	start = 0;
-	result = malloc((ft_count_words(s) + 1) * sizeof(char *));
+	result = malloc((ft_count_words(s,c) + 1) * sizeof(char *));
 	if (result == NULL)
 		return (NULL);
-	result = ft_alloc_mem(s, result, start);
+	result = ft_alloc_mem(s, result, start, c);
 	return (result);
 }

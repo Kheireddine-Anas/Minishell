@@ -1,5 +1,19 @@
 #include "minishell.h"
 
+int chek_string_spece(char *str)
+{
+	int i;
+
+	i = 0;
+	if(!str[i])
+		return (0);
+	while (str[i] && str[i] == ' ')
+		i++;
+	if(ft_strlen(str) == i)
+		return (1);
+	return (0);
+
+}
 char *chercher_variable(char *str, char **envp)
 {
 	int i;
@@ -37,9 +51,10 @@ char	*remove_spaces_and_single_quotes(const char *str)
 		exit(EXIT_FAILURE);
 	while (*str)
 	{
-		if (*str != '\"' && 
-			(*(str + 1) != '{' || *(str - 1) != '}'))
+		if (*str != '\"')
 			dst[i++] = *str;
+		// else if((*str == '\"' && *str++ == '\"' && *str+2 == ' ') || (*str-1 == ' ' && *str++ == '\"' && *str+2 == '\"'))
+		// 	dst[i++] = ' ';
 		str++;
 	}
 	dst[i] = '\0';
@@ -85,11 +100,16 @@ void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
 			i++;
 		}
 	}
-	else
+	else if(ft_strlen(arg) > 0)
 	{
 		cmd[*size] = arg;
 		(*size)++;
 	}
+	// else if(chek_string_spece(arg) == 1)
+	// {
+	// 	cmd[*size] = arg;
+	// 	(*size)++;
+	// }
 }
 
 void	process_char(char ***cmd, int *capacity, 
@@ -147,7 +167,7 @@ char	**split_double_qot(const char *command, char **envp)
 	while (cmd[j])
 	{
 		variable = ft_strchr(cmd[j], '$');
-    	if (cmd[j] &&  variable!= NULL)
+    	if (cmd[j] &&  variable!= NULL && !ft_strchr(cmd[j], '\'') )
     	{
         	tmp = cmd[j];
         	cmd[j] = ft_strdup (chercher_variable(variable, envp));
