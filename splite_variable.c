@@ -41,7 +41,7 @@ static char	**ft_alloc_mem(char *s, char **result, int start)
 		while (is_sep(s[start]))
 			start++;
 		len = 0;
-		while (s[start + len] && (!is_sep(s[start + len]) || s[start + len] == '$'))
+		while (s[start + len] && (!is_sep(s[start + len])))
 			len++;
 		result[i] = (char *)malloc((len + 1) * sizeof(char));
 		if (!result[i])
@@ -50,6 +50,8 @@ static char	**ft_alloc_mem(char *s, char **result, int start)
 			return (NULL);
 		}
 		ft_strlcpy(result[i], &s[start], len + 1);
+		if(s[start - 1] == '$')
+			result[i] = ft_strjoin("$", result[i]);
 		start += len;
 		i++;
 	}
@@ -70,17 +72,4 @@ char	**splite_variable(char *s)
 		return (NULL);
 	result = ft_alloc_mem(s, result, start);
 	return (result);
-}
-
-int main ()
-{
-	char *str = "$World Hello";
-	char **result = splite_variable(str);
-	int i = 0;
-	while (result[i])
-	{
-		printf("result[%d] = %s\n", i, result[i]);
-		i++;
-	}
-	return (0);
 }

@@ -82,7 +82,6 @@ void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
 		{
 			cmd[*size] = str[i];
 			(*size)++;
-			printf("***   %s\n",str[i]);
 			i++;
 		}
 	}
@@ -143,25 +142,25 @@ char	**split_double_qot(const char *command, char **envp)
 	start_ptr = ft_strdup(command);
 	end_ptr = start_ptr;
 	process_char(&cmd, &capacity, &start_ptr, &end_ptr);
-	// if (!cmd)
-	// 	return (NULL);
-	// while (cmd[j])
-	// {
-	// 	variable = ft_strchr(cmd[j], '$');
-    // 	if (cmd[j] &&  variable!= NULL)
-    // 	{
-    //     	tmp = cmd[j];
-    //     	cmd[j] = ft_strdup (chercher_variable(variable, envp));
-    //     	if (ft_strlen(cmd[j]) == 0)
-    //         k = 1;
-    //     	free(tmp);
-    // 	}
-    // 	j++;
-	// }
-	// if (k == 1)
-	// {
-	// 	cmd = create_cmd(cmd);
-	// }
+	if (!cmd)
+		return (NULL);
+	while (cmd[j])
+	{
+		variable = ft_strchr(cmd[j], '$');
+    	if (cmd[j] &&  variable!= NULL)
+    	{
+        	tmp = cmd[j];
+        	cmd[j] = ft_strdup (chercher_variable(variable, envp));
+        	if (ft_strlen(cmd[j]) == 0)
+            k = 1;
+        	free(tmp);
+    	}
+    	j++;
+	}
+	if (k == 1)
+	{
+		cmd = create_cmd(cmd);
+	}
 	return (cmd);
 }
 
