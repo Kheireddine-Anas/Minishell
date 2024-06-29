@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include "mini.h"
 
 void handle_sigint(int sig)
 {
@@ -20,6 +16,7 @@ int main()
 	char	*input;
 
 	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		input = readline("Enter CMD: ");

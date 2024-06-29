@@ -1,20 +1,20 @@
 #ifndef MINI_H
 #define MINI_H
 
-enum e_token
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
+
+typedef struct s_env
 {
-	WORD = -1,
-	WHITE_SPACE = ' ',
-	NEW_LINE = '\n',
-	QOUTE = '\'',
-	DOUBLE_QUOTE = '\"',
-	ESCAPE = '\\',
-	ENV = '$',
-	PIPE_LINE = '|',
-	REDIR_IN = '<',
-	REDIR_OUT = '>',
-	HERE_DOC,
-	DREDIR_OUT,
-};
+	char			*variable;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
+
+void	*ft_calloc(int count, int size);
 
 #endif
