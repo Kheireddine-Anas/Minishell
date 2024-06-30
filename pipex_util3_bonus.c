@@ -13,26 +13,25 @@
 #include "minishell.h"
 
 
-void	wit_process(int argc, pid_t **pids, int *fd,int fd1,int fd0)
+void	wit_process(int argc, pid_t **pids,int fd0, int fd1)
 {
 	int	j;
 
 	j = 0;
-	while (j <= argc)
+	while (j < argc)
 	{
 		waitpid((*pids)[j], NULL, 0);
 		j++;
 	}
 	free(*pids);
-	dup2(STDIN_FILENO, fd0);
-	dup2(STDOUT_FILENO, fd1);
-	close(fd[0]);
-	close(fd[1]);
+	dup2(fd0, STDIN_FILENO);
+	dup2(fd1, STDOUT_FILENO);
 }
 
 void	whilloop(int *fd)
 {
 	dup2(fd[0], STDIN_FILENO);
+	close(fd[1]);
 }
 
 void	erro(void)
@@ -47,18 +46,20 @@ void	errer_cmd(void)
 	exit(127);
 }
 
-// void	filecommade(char **argv, char **envp, int i)
-// {
-// 	if (argv[][0] == '\0')
-// 		errer_cmd();
-// 	if (argv[argc - 2][0] == '/')
-// 	{
-// 		if (access(argv[argc - 2], X_OK) != 0)
-// 			errer_cmd();
-// 	}
-// 	if (argv[argc - 2][0] == '.' && argv[argc - 2][1] == '/')
-// 	{
-// 		if (access(argv[argc - 2], X_OK) != 0)
-// 			errer_cmd();
-// 	}
-// }
+void	filecommade(char **argv,int i)
+{
+	if (!argv)
+		errer_cmd();
+	if (argv[i -1][0] == '\0')
+		errer_cmd();
+	if (argv[i - 1][0] == '/')
+	{
+		if (access(argv[i - 1], X_OK) != 0)
+			errer_cmd();
+	}
+	if (argv[i - 1][0] == '.' && argv[i - 1][1] == '/')
+	{
+		if (access(argv[i - 1], X_OK) != 0)
+			errer_cmd();
+	}
+}

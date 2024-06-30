@@ -43,7 +43,7 @@ static char	**ft_alloc_mem(char *s, char **result, int start)
 		len = 0;
 		while (s[start + len] && s[start + len] != '|')
 			len++;
-		result[i] = (char *)malloc((len + 1) * sizeof(char));
+		result[i] = ft_calloc((len + 1) , sizeof(char));
 		if (!result[i])
 		{
 			ft_free(result, i);
@@ -65,7 +65,7 @@ char	**ft_split_pipe(char *s)
 	if (!s)
 		return (NULL);
 	start = 0;
-	result = malloc((ft_count_words(s) + 1) * sizeof(char *));
+	result = ft_calloc((ft_count_words(s) + 1) , sizeof(char *));
 	if (result == NULL)
 		return (NULL);
 	result = ft_alloc_mem(s, result, start);

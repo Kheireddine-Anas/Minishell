@@ -4,7 +4,11 @@ static env_t *get_env_data(char *envp)
 {
 
 	env_t *noud;
-	noud = malloc (sizeof(env_t));
+
+	noud = NULL;
+	if(!envp)
+		return (NULL);
+	noud = malloc(sizeof(env_t));
 	if (noud == NULL)
 		return (NULL);
 	else
@@ -14,21 +18,23 @@ static env_t *get_env_data(char *envp)
 		noud -> next = NULL;
 	}
 	return (noud);
-	return (noud);
 }
 
 env_t *get_env(char **envp)
 {
-	int		i;
-	env_t	*env;
+    int		i;
+    env_t	*env;
 
-	i = 0;
-	while (envp[i])
-	{
-		add_back(&env, get_env_data(envp[i]));
-		i++;
-	}
-	return (env);
+	env = NULL;
+    i = 0;
+    if(!envp)
+        return (NULL);
+    while (envp[i])
+    {
+        add_back(&env, get_env_data(envp[i]));
+        i++;
+    }
+    return (env);
 }
 
 char **get_erray_env(env_t	*env)
@@ -37,6 +43,8 @@ char **get_erray_env(env_t	*env)
 	char **env_arr;
 	int len;
 
+	if(!env)
+		return (NULL);
 	i = 0;
 	len = lstsize(env);
 	env_arr = malloc(sizeof(char *) * (len + 1));

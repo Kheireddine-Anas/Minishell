@@ -36,7 +36,7 @@ static char	**ft_alloc_mem(char *s, char **result, int start)
 	int	len;
 
 	i = 0;
-	while (i < ft_count_words(s))
+	while (i <= ft_count_words(s))
 	{
 		while (is_sep(s[start]))
 			start++;

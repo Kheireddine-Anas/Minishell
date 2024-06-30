@@ -2,21 +2,24 @@ src  =   main.c split_sing_quot.c split_doubl_quot.c get_env.c libft_fontion.c s
 obj = $(src:.c=.o)
 NAME = minishell
 LIBFT = libft/libft.a
+CFLAG = -Wall -Wextra -Werror    -fsanitize=address   -I/Users/ahamdi/.brew/opt/readline/include  
+LFLAG = -L/Users/ahamdi/.brew/opt/readline/lib   -lreadline -lncurses 
 
 all:  $(NAME)
 
 $(NAME): $(obj)
-	$(MAKE) -C libft
-	gcc -Wall -Wextra -Werror  -lreadline  -fsanitize=address  -lncurses -I/Users/ahamdi/.brew/opt/readline/include -L/Users/ahamdi/.brew/opt/readline/lib   -o $(NAME) $(obj) $(LIBFT)
-%.o: %.c getNextLine/get_next_line.h  mandatori/pipex.h bonus/pipex_bonus.h
-	gcc -Wall -Wextra -Werror -c $< -o $@
+	make -C libft
+	gcc   $(CFLAG) -o $(NAME) $(obj) $(LIBFT) $(LFLAG)
+
+%.o: %.c
+	cc $(CFLAG)  -c $< -o $@
 
 clean:
-	$(MAKE) -C libft clean
+	make -C libft clean
 	rm -rf $(obj) 
 
 fclean : clean
-	$(MAKE) -C libft fclean
+	make -C libft fclean
 	rm -rf $(NAME) 
 
 re : fclean all

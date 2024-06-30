@@ -23,6 +23,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = 0;
 	if (!s1)
 		return (ft_strdup(s2));
+	if (!s2)
+		return (ft_strdup(s1));
 	size_total = ft_strlen(s1) + ft_strlen(s2);
 	res = ft_calloc(size_total + 1,1);
 	if (!res)

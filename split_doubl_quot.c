@@ -2,7 +2,7 @@
 
 int chek_string_spece(char *str)
 {
-	int i;
+	size_t i;
 
 	i = 0;
 	if(!str[i])

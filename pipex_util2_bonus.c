@@ -18,6 +18,8 @@ char	*get_path(char **envp, char *cmd, int i)
 	char	*path;
 	char	**path_split;
 
+	path_new = NULL;
+	path = NULL;
 	while (envp[i++])
 	{
 		if (ft_strnstr(envp[i], "PATH=", ft_strlen(envp[i])) != NULL)
@@ -28,9 +30,13 @@ char	*get_path(char **envp, char *cmd, int i)
 	}
 	i = 0;
 	path_split = ft_split(path, ':');
+	{
+		if (!path_split)
+			exit(1);
+	}
 	while (path_split[i])
 	{
-		path_split[i] = ft_strjoin(ft_strjoin(path_split[i], "/"), cmd);
+		path_split[i] = strjoi(path_split[i], "/", cmd);
 		if (access(path_split[i], X_OK) == 0)
 		{
 			path_new = path_split[i];
@@ -39,25 +45,6 @@ char	*get_path(char **envp, char *cmd, int i)
 		i++;
 	}
 	return (path_new);
-}
-
-static int	ft_count_words(char const *str, char sep)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (str[i] != '\0')
-	{
-		while (str[i] == sep)
-			i++;
-		if (str[i] != '\0')
-			count++;
-		while (str[i] && str[i] != sep)
-			i++;
-	}
-	return (count);
 }
 
 void	commad_path(char *argv, char **envp)
