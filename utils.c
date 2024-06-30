@@ -1,4 +1,4 @@
-#include "mini.h"
+#include "minishell.h"
 
 int	ft_strlen(char *str)
 {
@@ -57,3 +57,20 @@ char	*get_env(t_env *envs, char *srch)
 	return (NULL);
 }
 
+char	*ft_strdup(char *s)
+{
+	char	*dst;
+	int		i;
+
+	i = 0;
+	dst = (char *)malloc(ft_strlen(s) + 1);
+	if (!dst)
+			return (NULL);
+	while (s[i])
+	{
+			dst[i] = s[i];
+			i++;
+	}
+	dst[i] = '\0';
+	return (dst);
+}

@@ -1,4 +1,4 @@
-#include "mini.h"
+#include "minishell.h"
 
 void handle_sigint(int sig)
 {

@@ -1,4 +1,4 @@
-#include "mini.h"
+#include "minishell.h"
 
 char	*set_name(char *str)
 {
@@ -8,7 +8,7 @@ char	*set_name(char *str)
 	i = 0;
 	while (str[i] && str[i] != '=')
 		i++;
-	name = ft_calloc(i + 1, 1);
+	name = ft_calloc(i + 1, sizeof(char));
 	i = -1;
 	while (str[++i] && str[i] != '=')
 		name[i] = str[i];
@@ -27,8 +27,8 @@ char	*set_value(char *str)
 	while (str[i] && str[i] != '=')
 		i++;
 	if (!str[i])
-		return (NULL);
-	value = ft_calloc((ft_strlen(str) - i) , 1);
+		return (ft_strdup(""));
+	value = ft_calloc((ft_strlen(str) - i) , sizeof(char));
 	i++;
 	while (str[i])
 		value[j++] = str[i++];
@@ -47,6 +47,21 @@ t_env	*set_env(char *str)
 	return (head);
 }
 
+int	check_path(char *cmd)
+{
+	char	**path;
+	int		i;
+
+	i = 0;
+	path = ft_split(getenv("PATH"), ':');
+	while (path[i])
+	{
+		/* code */
+	}
+	
+	printf("%s<<\n", path);
+}
+
 int main(int ac, char **av, char **envs)
 {
 	t_env	*env;
@@ -62,7 +77,9 @@ int main(int ac, char **av, char **envs)
 		tmp = tmp->next;
 		i++;
 	}
-	cmd_cd((av + 1), env);
+	
+	// cmd_export(env, av[1]);
+	// cmd_cd((av + 1), env);
 	// while (env)
 	// {
 	// 	printf("%s=%s\n", env->variable, env->value);

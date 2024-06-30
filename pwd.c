@@ -1,4 +1,4 @@
-#include "mini.h"
+#include "minishell.h"
 
 void	cmd_pwd()
 {

@@ -1,4 +1,4 @@
-#include "mini.h"
+#include "minishell.h"
 
 void	cmd_cd(char **path, t_env *env)
 {
