@@ -1,27 +1,19 @@
-src  =   main.c split_sing_quot.c split_doubl_quot.c get_env.c libft_fontion.c splite_variable.c
-obj = $(src:.c=.o)
+SRC  =   min.c
 NAME = minishell
-LIBFT = libft/libft.a
+CFLAGS = -Wall -Wextra -Werror -I/Users/akheired/.brew/opt/readline/include -L/Users/akheired/.brew/opt/readline/lib -lreadline -lncurses
 
 all:  $(NAME)
 
 $(NAME): $(obj)
-	$(MAKE) -C libft
-	gcc -Wall -Wextra -Werror  -lreadline -fsanitize=address  -o $(NAME) $(obj) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(NAME) $(SRC) 
 
-%.o: %.c getNextLine/get_next_line.h  mandatori/pipex.h bonus/pipex_bonus.h
-	gcc -Wall -Wextra -Werror -c $< -o $@
+%.o: %.c 
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(MAKE) -C libft clean
-	rm -rf $(obj) 
+	rm -rf $(NAME)
 
 fclean : clean
-	$(MAKE) -C libft fclean
 	rm -rf $(NAME) 
 
 re : fclean all
-
-bonus_re : fclean bonus
-
-.PHONY : all clean

@@ -1,0 +1,2 @@
+Hello from fd
+Hello from fd_dup
