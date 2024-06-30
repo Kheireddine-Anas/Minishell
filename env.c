@@ -1,19 +1,4 @@
 #include "mini.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
 
 char	*set_name(char *str)
 {
@@ -44,6 +29,7 @@ char	*set_value(char *str)
 	if (!str[i])
 		return (NULL);
 	value = ft_calloc((ft_strlen(str) - i) , 1);
+	i++;
 	while (str[i])
 		value[j++] = str[i++];
 	value[j] = '\0';
@@ -63,24 +49,24 @@ t_env	*set_env(char *str)
 
 int main(int ac, char **av, char **envs)
 {
-	t_env	*head;
+	t_env	*env;
 	t_env	*tmp;
 	int		i;
 
 	i = 0;
-	head = set_env(envs[i++]);
-	printf("%s\n", envs[0]);
-	tmp = head;
+	env = set_env(envs[i++]);
+	tmp = env;
 	while (envs[i])
 	{
 		tmp->next = set_env(envs[i]);
 		tmp = tmp->next;
 		i++;
 	}
-	while (head)
-	{
-		printf("%s%s\n", head->variable, head->value);
-		head = head->next;
-	}
+	cmd_cd((av + 1), env);
+	// while (env)
+	// {
+	// 	printf("%s=%s\n", env->variable, env->value);
+	// 	env = env->next;
+	// }
 	return 0;
 }

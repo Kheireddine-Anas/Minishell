@@ -1,5 +1,15 @@
 #include "mini.h"
 
+int	ft_strlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
 void	*ft_calloc(int count, int size)
 {
 	char	*hld;
@@ -16,3 +26,34 @@ void	*ft_calloc(int count, int size)
 	}
 	return (hld);
 }
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if ((s1[i] != s2[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*get_env(t_env *envs, char *srch)
+{
+	t_env	*tmp;
+
+	tmp = envs;
+	while (tmp)
+	{
+		if (!(ft_strcmp(tmp->variable, srch)))
+		{
+			return (tmp->value);
+		}
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
