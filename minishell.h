@@ -19,6 +19,7 @@ typedef struct s_env
 
 void	*ft_calloc(int count, int size);
 char	*ft_strdup(char *s);
+char	*ft_strjoin(char *s1, char *s2, int val);
 int		ft_strlen(char *str);
 int		ft_strcmp(char *s1, char *s2);
 char	*get_env(t_env *envs, char *srch);

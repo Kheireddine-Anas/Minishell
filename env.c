@@ -47,25 +47,61 @@ t_env	*set_env(char *str)
 	return (head);
 }
 
-int	check_path(char *cmd)
+int	check_cmd(char *cmd)
 {
-	char	**path;
+	char	**paths;
+	char	*check;
 	int		i;
 
 	i = 0;
-	path = ft_split(getenv("PATH"), ':');
-	while (path[i])
+	paths = ft_split(getenv("PATH"), ':');
+	while (paths[i])
 	{
-		/* code */
+		check = ft_strjoin(paths[i], cmd, 0);
+		if (!access(check, F_OK))
+		{
+			if (!access(check, X_OK))
+				return (0);
+			printf("Permission Denied: %s>>\n", cmd);
+			return (1);
+		}
+		i++;
 	}
-	
-	printf("%s<<\n", path);
+	printf("CMD not found: %s<<\n", paths[1]);
+	return (1);
+}
+
+char	**env_set(t_env *env)
+{
+	char	**envirs;
+	t_env	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = env;
+	while (tmp)
+	{
+		if (tmp->value && tmp->variable)
+			i++;
+		tmp = tmp->next;
+	}
+	envirs = ft_calloc((i + 1), sizeof(char *));
+	i = 0;
+	tmp = env;
+	while (tmp)
+	{
+		envirs[i++] = ft_strjoin(tmp->variable, tmp->value, 1);
+		tmp = tmp->next;
+	}
+	printf("%s\n", envirs[33]);
+	return (envirs);
 }
 
 int main(int ac, char **av, char **envs)
 {
-	t_env	*env;
+	t_env	*env; //ENV struct
 	t_env	*tmp;
+	char	**envirs;
 	int		i;
 
 	i = 0;
@@ -77,7 +113,8 @@ int main(int ac, char **av, char **envs)
 		tmp = tmp->next;
 		i++;
 	}
-	
+	// envirs = env_set(env); //ENV as char **
+	check_cmd(av[1]);
 	// cmd_export(env, av[1]);
 	// cmd_cd((av + 1), env);
 	// while (env)
