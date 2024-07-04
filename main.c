@@ -1,5 +1,9 @@
 #include "minishell.h"
-
+void	erro(void)
+{
+	perror("Error in pipe or process");
+	exit(3);
+}
 void handle_sigint(int sig)
 {
 	if (sig == SIGINT)
@@ -10,98 +14,177 @@ void handle_sigint(int sig)
 		rl_redisplay();
 	}
 }
-
-static void	child_process(char **argv, char **envp, int *fd, int i)
+void	whilloop(int *fd, t_cmd *cmd)
 {
-	if (argv[i][0] == '\0')
+	int fd0 = 0;
+
+	if(cmd != NULL && cmd->in != NULL)
+	{
+		if(ft_strncmp("<",cmd->in,ft_strlen(cmd->in)) == 0)
+		{
+			fd0 = open(*(cmd->extra_arg), O_RDONLY);
+			if (fd0 == -1)
+				erro();
+			dup2(fd0, STDIN_FILENO);
+		}
+	}
+	else
+	{
+		dup2(fd[0], STDIN_FILENO);
+		close(fd[1]);
+	}
+}
+void	wit_process(int argc, pid_t **pids,int fd0, int fd1)
+{
+	int	j;
+
+	j = 0;
+	while (j < argc)
+	{
+		waitpid((*pids)[j], NULL, 0);
+		j++;
+	}
+	free(*pids);
+	dup2(fd0, STDIN_FILENO);
+	dup2(fd1, STDOUT_FILENO);
+}
+static void	child_process(t_cmd *cmd, char **envp, int *fd)
+{
+	int fd1 = 0;
+	int fd0;
+
+	if (!cmd->cmd)
 	{
 		perror("invalide command");
 		exit(0);
 	}
-	dup2(fd[1], STDOUT_FILENO);
+	if(cmd->index == 0 && ft_strncmp("<",cmd->in,ft_strlen(cmd->in)) == 0)
+	{
+		fd0 = open(*(cmd->extra_arg), O_RDONLY);
+		if (fd0 == -1)
+			erro();
+		dup2(fd0, STDIN_FILENO);
+	}
+	if(ft_strncmp(">",cmd->out,ft_strlen(cmd->out)) == 0)
+	{
+		fd1 = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd1 == -1)
+			erro();
+			cmd->extra_arg++;
+		dup2(fd1, STDOUT_FILENO);
+	}
+	else if(ft_strncmp(">>",cmd->out,ft_strlen(cmd->out)) == 0)
+	{
+		fd1 = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd1 == -1)
+			erro();
+		cmd->extra_arg++;
+		dup2(fd1, STDOUT_FILENO);
+	}
+	else
+		dup2(fd[1], STDOUT_FILENO);
 	close(fd[0]);
-	if (argv[i][0] == '/')
-		commad_path(argv[i], envp);
-	else if (argv[i][0] == '.' && (argv[i][1] == '/'))
-		run_script(argv[i], envp);
+	if (cmd->cmd[0] == '/')
+		commad_path(cmd, envp);
+	else if (cmd->cmd[0] == '.' && (cmd->cmd[1] == '/'))
+		run_script(cmd, envp);
 	else
-		execute(argv[i], envp);
+		execute(cmd, envp);
+	if (fd1 != 0)
+		close(fd1);	
+	// close(fd0);
+	// close(fd1);
 }
+static void	fin_commande(t_cmd *cmd, char **envp)
+{
+	int fd;
+	int fd0;
 
-// static void	bad_argument(void)
-// {
-// 	int		i;
-// 	char	*str;
-// 	char	*s;
-
-// 	i = 0;
-// 	str = "\tError: Bad argument\n";
-// 	while (str[i] != '\0')
-// 	{
-// 		write(2, &str[i], 1);
-// 		i++;
-// 	}
-// 	i = 0;
-// 	s = "\tEx: ./pipex <file1> <cmd1> <cmd2>...<file2>\n";
-// 	while (s[i] != '\0') 
-// 	{
-// 		write(1, &s[i], 1);
-// 		i++;
-// 	}
-// }
-
-static void	fin_commande(char argc, char **argv, char **envp)
-{	
-	if (argv[argc -1][0] == '/')
-		commad_path(argv[argc - 1], envp);
-	else if (argv[argc - 1][0] == '.' && argv[argc - 2][1] == '/')
-		run_script(argv[argc - 1], envp);
+	if(cmd->index == 0 && ft_strncmp("<",cmd->in,ft_strlen(cmd->in)) == 0)
+	{
+		fd0 = open(*(cmd->extra_arg), O_RDONLY);
+		if (fd0 == -1)
+			erro();
+		dup2(fd0, STDIN_FILENO);
+	}
+	if(ft_strncmp(">",cmd->out,ft_strlen(cmd->out)) == 0)
+	{
+		fd = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd == -1)
+			erro();
+			cmd->extra_arg++;
+		dup2(fd, STDOUT_FILENO);
+	}
+	else if(ft_strncmp(">>",cmd->out,ft_strlen(cmd->out)) == 0)
+	{
+		fd = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd == -1)
+			erro();
+		dup2(fd, STDOUT_FILENO);
+		cmd->extra_arg++;
+	}
+	if (cmd->cmd[0] == '/')
+	{
+		printf("***\n");
+		commad_path(cmd, envp);
+	}
+	else if (cmd->cmd[0] == '.' && cmd->cmd[1] == '/')
+		run_script(cmd, envp);
 	else
-		execute(argv[argc - 1], envp);
+		execute(cmd, envp);
 }
-
-static void	lop(char **argv, char **envp)
+static void	lop(t_cmd	*lst_cmd, char **envp)
 {
 	int		i;
 	int		fd[2];
 	pid_t	*pids;
-	int len;
+	t_cmd	 *last;
+	t_cmd	 *tmp;
 	int fd0;
 	int fd1;
 
 	fd0 = dup(STDIN_FILENO);
 	fd1 = dup(STDOUT_FILENO);
-	if(!argv || !envp)
+	if(!lst_cmd || !envp)
 		return ;
-	len = ft_strlen_2_erra(argv);
-	pids = ft_calloc(len, sizeof(pid_t));
+	last = lstlast(lst_cmd);
+	pids = ft_calloc(lstsize(lst_cmd), sizeof(pid_t));
 	i = 0;
-	filecommade(argv, len);
-	while (argv[i])
+	tmp = lst_cmd;
+	while (lst_cmd)
 	{
+		// filecommade(last);
 		if (pipe(fd) == -1)
-			erro();
+		{
+			printf("error\n");
+			exit(1);
+		}
 		pids[i] = fork();
-		if (pids[i] == 0 && i != len - 1)
-			child_process(argv, envp, fd, i);
-		else if (pids[i] == 0 && i == len - 1)
-			fin_commande(len, argv, envp);
-		whilloop(fd);
-		i++;
+		if (pids[i] == 0 && lst_cmd != last)
+			child_process(lst_cmd, envp, fd);
+		else if (pids[i] == 0 && lst_cmd == last)
+			fin_commande(lst_cmd, envp);
+		lst_cmd = lst_cmd->next;
+		whilloop(fd,lst_cmd);
 	}
-	wit_process(len, &pids,fd0,fd1);
+	wit_process(lstsize(tmp), &pids,fd0,fd1);
 	close(fd[0]);
 	close(fd[1]);
 }
-
-int	main(int argc, char *argv[], char **envp)
+int main (int argc, char *argv[], char **envp)
 {
-	char	*cmd_line;
-	char	**cmd;
-	char	**env;
-	int i = 0;
+	char *line;
+	char **split_pip;
+	t_cmd	*lst_cmd;
+	// char	**env;
 
 	(void)argv;
+	if (argc != 1)
+	{
+		ft_putstr_fd("Error\n", 2);
+		exit(EXIT_FAILURE);
+	}
+	// env = get_erray_env(get_env(envp));
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 	if (argc != 1)
@@ -109,23 +192,17 @@ int	main(int argc, char *argv[], char **envp)
 		ft_putstr_fd("Error\n", 2);
 		exit(EXIT_FAILURE);
 	}
-	env = get_erray_env(get_env(envp));
-	while (1)
+	while(1)
 	{
-		cmd_line = readline("minishell-$");
-		if(cmd_line == NULL)
+		line = readline("minishell-$ ");
+		if(line == NULL)
 			break;
-		add_history(cmd_line);
-		cmd = ft_split_pipe(cmd_line);
-		lop (cmd, env);
-		free(cmd_line);
-		cmd_line = NULL;
+		add_history(line);
+		split_pip = ft_split_pipe(line);
+		creat_cmd(&lst_cmd, split_pip, envp);
+		lop(lst_cmd,envp);
+		free(line);
+		line = NULL;
+		lstclear(&lst_cmd);
 	}
-	i = 0;
-	while(env[i])
-	{
-		free(env[i]);
-		i++;
-	}
-	free(env);
 }

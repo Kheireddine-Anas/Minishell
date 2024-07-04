@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 
 static void	ft_free(char **result, int j)
@@ -20,11 +19,11 @@ static int	ft_count_words(char *str)
 	count = 0;
 	while (str[i] != '\0')
 	{
-		while (str[i] == '|')
+		while (is_sep(str[i]))
 			i++;
 		if (str[i] != '\0')
 			count++;
-		while (str[i] && str[i] != '|')
+		while (str[i] && !is_sep(str[i]))
 			i++;
 	}
 	return (count);
@@ -38,10 +37,10 @@ static char	**ft_alloc_mem(char *s, char **result, int start)
 	i = 0;
 	while (i < ft_count_words(s))
 	{
-		while (s[start] == '|')
+		while (is_sep(s[start]))
 			start++;
 		len = 0;
-		while (s[start + len] && s[start + len] != '|')
+		while (s[start + len] && (!is_sep(s[start + len])))
 			len++;
 		result[i] = ft_calloc((len + 1) , sizeof(char));
 		if (!result[i])
@@ -50,6 +49,8 @@ static char	**ft_alloc_mem(char *s, char **result, int start)
 			return (NULL);
 		}
 		ft_strlcpy(result[i], &s[start], len + 1);
+		if(s[start - 1] == '$')
+			result[i] = ft_strjoin("$", result[i]);
 		start += len;
 		i++;
 	}
@@ -57,7 +58,7 @@ static char	**ft_alloc_mem(char *s, char **result, int start)
 	return (result);
 }
 
-char	**ft_split_pipe(char *s)
+char	**splite_variable(char *s)
 {
 	char	**result;
 	int		start;

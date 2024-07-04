@@ -2,22 +2,21 @@
 
 static char	*remove_spaces_and_single_quotes(const char *str)
 {
-	char	*dst;
-	int		i;
+    char	*dst;
+    int		i;
 
-	i = 0;
-	dst = ft_calloc(ft_strlen(str) + 1,1);
-	if (!dst)
-		exit(EXIT_FAILURE);
-	while (*str)
-	{
-		if (*str != '\'' && 
-			(*(str + 1) != '{' || *(str - 1) != '}'))
-			dst[i++] = *str;
-		str++;
-	}
-	dst[i] = '\0';
-	return (dst);
+    i = 0;
+    dst = ft_calloc(ft_strlen(str) + 1,1);
+    if (!dst)
+        exit(EXIT_FAILURE);
+    while (*str)
+    {
+        if(*str != '\"' && *str != '\'')
+            dst[i++] = *str;
+        str++;
+    }
+    dst[i] = '\0';
+    return (dst);
 }
 
 static void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
@@ -33,15 +32,27 @@ static void	process_char(char ***cmd, int *capacity,
 		char **start_ptr, char **end_ptr)
 {
 	int	in_single_quotes;
+	int in_double_quotes;
 	int	size ;
 
 	size = 0;
 	in_single_quotes = 0;
+	in_double_quotes = 0;
 	while (**end_ptr)
 	{
-		if (**end_ptr == '\'')
+		if (**end_ptr == '\'' && (in_double_quotes % 2) == 0)
 			in_single_quotes++;
-		else if (**end_ptr == ' ' && (in_single_quotes % 2) == 0)
+		else if (**end_ptr == '\"' && (in_single_quotes % 2) == 0)
+			in_double_quotes++;
+		else if (**end_ptr == ' ' && (in_single_quotes % 2) == 0  && (in_double_quotes % 2) != 0)
+		{
+			**end_ptr = '\0';
+			if (size >= *capacity - 1) 
+				*cmd = realloc_cmd(cmd, capacity);
+			add_arg_to_cmd(*cmd, &size, *start_ptr);
+			*start_ptr = *end_ptr + 1;
+		}
+		else if( **end_ptr == ' ' && (in_double_quotes % 2) == 0 &&  (in_single_quotes % 2) != 0 )
 		{
 			**end_ptr = '\0';
 			if (size >= *capacity - 1) 
@@ -77,3 +88,17 @@ char	**split_singl_qot(const char *command)
 	process_char(&cmd, &capacity, &start_ptr, &end_ptr);
 	return (cmd);
 }
+// int main ()
+// {
+// 	char **cmd;
+// 	char *str = "echo 'hello' \"";
+// 	int i = 0;
+
+// 	cmd = split_singl_qot(str);
+// 	while (cmd[i])
+// 	{
+// 		printf("%s\n", cmd[i]);
+// 		i++;
+// 	}
+// 	return (0);
+// }

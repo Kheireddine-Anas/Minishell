@@ -1,8 +1,9 @@
-src  =   main.c split_sing_quot.c split_doubl_quot.c get_env.c libft_fontion.c splite_variable.c pipex_util1_bonus.c  pipex_util2_bonus.c pipex_util3_bonus.c  spli_pip.c
+src  =   parssing.c split_pip.c main.c rediraction.c splite_qot.c split_variable.c sing_qot.c splite_bay_symbole.c run_cmd.c
 obj = $(src:.c=.o)
 NAME = minishell
 LIBFT = libft/libft.a
-CFLAG = -Wall -Wextra -Werror    -fsanitize=address   -I/Users/ahamdi/.brew/opt/readline/include  
+CFLAG = -Wall -Wextra -Werror      -I/Users/ahamdi/.brew/opt/readline/include 
+# -fsanitize=address 
 LFLAG = -L/Users/ahamdi/.brew/opt/readline/lib   -lreadline -lncurses 
 
 all:  $(NAME)
