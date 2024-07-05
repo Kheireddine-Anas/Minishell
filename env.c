@@ -93,7 +93,7 @@ char	**env_set(t_env *env)
 		envirs[i++] = ft_strjoin(tmp->variable, tmp->value, 1);
 		tmp = tmp->next;
 	}
-	printf("%s\n", envirs[33]);
+	// printf("%s\n", envirs[33]);
 	return (envirs);
 }
 
@@ -101,6 +101,7 @@ int main(int ac, char **av, char **envs)
 {
 	t_env	*env; //ENV struct
 	t_env	*tmp;
+	char	*input ;
 	char	**envirs;
 	int		i;
 
@@ -113,9 +114,21 @@ int main(int ac, char **av, char **envs)
 		tmp = tmp->next;
 		i++;
 	}
-	// envirs = env_set(env); //ENV as char **
-	check_cmd(av[1]);
-	// cmd_export(env, av[1]);
+	while (1)
+	{
+		input = readline("Enter CMD: ");
+		if (!input)
+		{
+			printf("\nCtrl+D pressed. Exiting...\n");
+			break;
+		}
+		cmd_export(env, av + 1);
+		add_history(input);
+		printf("CMD: %s\n", input);
+		free(input);
+	}
+	envirs = env_set(env); //ENV as char **
+	// check_cmd(av);
 	// cmd_cd((av + 1), env);
 	// while (env)
 	// {
