@@ -17,6 +17,12 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_data
+{
+	char	**cmnd;
+
+}	t_data;
+
 void	*ft_calloc(int count, int size);
 char	*ft_strdup(char *s);
 char	*ft_strjoin(char *s1, char *s2, int val);
@@ -25,6 +31,7 @@ int		ft_strcmp(char *s1, char *s2);
 char	*get_env(t_env *envs, char *srch);
 void	cmd_cd(char **path, t_env *env);
 char	*set_name(char *str);
+char	*set_value(char *str);
 void	cmd_pwd();
 t_env	*set_env(char *str);
 void	cmd_export(t_env *env, char **add);
