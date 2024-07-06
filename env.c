@@ -133,7 +133,7 @@ int main(int ac, char **av, char **envs)
 			printf("\nCtrl+D pressed. Exiting...\n");
 			break;
 		}
-		cmd_unset(&env, "abcq");
+		// cmd_unset(&env, "abcq");
 		add_history(input);
 		printf("CMD: %s\n", input);
 		free(input);
