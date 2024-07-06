@@ -103,6 +103,7 @@ int main(int ac, char **av, char **envs)
 {
 	t_env	*env; //ENV struct
 	t_env	*tmp;
+	t_env	*tmp1;
 	char	*input ;
 	char	**envirs;
 	int		i;
@@ -110,11 +111,19 @@ int main(int ac, char **av, char **envs)
 	i = 0;
 	env = set_env(envs[i++]);
 	tmp = env;
+	tmp1 = env;
+	
 	while (envs[i])
 	{
 		tmp->next = set_env(envs[i]);
 		tmp = tmp->next;
 		i++;
+	}
+		cmd_export(env, av + 1); // HERE We export av[1] to env struct
+	while (tmp1) //Uncomment this loop to see ENV struct
+	{
+		printf("%s*****%s\n", tmp1->variable, tmp1->value);
+		tmp1 = tmp1->next;
 	}
 	while (1)
 	{
@@ -124,7 +133,7 @@ int main(int ac, char **av, char **envs)
 			printf("\nCtrl+D pressed. Exiting...\n");
 			break;
 		}
-		cmd_export(env, av + 1);
+		cmd_unset(&env, "abcq");
 		add_history(input);
 		printf("CMD: %s\n", input);
 		free(input);
@@ -132,10 +141,10 @@ int main(int ac, char **av, char **envs)
 	envirs = env_set(env); //ENV as char **
 	// check_cmd(av);
 	// cmd_cd((av + 1), env);
-	// while (env) //Uncomment this loop to see ENV struct
-	// {
-	// 	printf("%s=%s\n", env->variable, env->value);
-	// 	env = env->next;
-	// }
+	while (env) //Uncomment this loop to see ENV struct
+	{
+		printf("%s=%s\n", env->variable, env->value);
+		env = env->next;
+	}
 	return 0;
 }

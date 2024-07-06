@@ -35,6 +35,7 @@ char	*set_value(char *str);
 void	cmd_pwd();
 t_env	*set_env(char *str);
 void	cmd_export(t_env *env, char **add);
+void	cmd_unset(t_env **env, char *var);
 char	**ft_split(char const *str, char c);
 
 #endif
