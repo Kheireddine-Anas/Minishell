@@ -24,8 +24,10 @@ static char	*remove_spaces_and_single_quotes(char *str)
 			}
 	    }
     }
-    else
+    else if(str[0] == '\'')
     {
+		ft_putstr_fd("error in qoute\n",2);
+		exit(1);
         while (*str)
         {
             dst[i++] = *str;
@@ -43,16 +45,16 @@ static void	add_arg_to_cmd(char **cmd, int *size, char *start_ptr)
     int i = 0;
     
 	arg = remove_spaces_and_single_quotes(start_ptr);
-    // if (ft_strchr(arg,'$') )
-	// {
-	// 	str = splite_variable(arg);
-	// 	while(str[i])
-	// 	{
-	// 		cmd[*size] = str[i];
-	// 		(*size)++;
-	// 		i++;
-	// 	}
-	// }
+    if (ft_strchr(arg,'$') )
+	{
+		str = splite_variable(arg);
+		while(str[i])
+		{
+			cmd[*size] = str[i];
+			(*size)++;
+			i++;
+		}
+	}
 	if(ft_strlen(arg) > 0)
 	{
 		cmd[*size] = arg;
@@ -142,7 +144,7 @@ int main (int argc,char **argv, char **envp)
 	int i = 0;
 	(void)argc;
 	(void)argv;
-	str = split_qot("echo 'hello $USER $PATH''", envp);
+	str = split_qot("echo 'hello $USER $PATH'csdcdscds'", envp);
 	while(str[i])
 	{
 		printf("%s\n",str[i]);

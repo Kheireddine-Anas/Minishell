@@ -51,14 +51,18 @@ typedef enum
 	IN,
 	OUT,
 	APPEND,
-	HER_DOC
+	HER_DOC,
+	FILE_NAME
 } TokenType;
+
 typedef struct
 {
     TokenType type;
     char *value;
 } Token;
-int 	chek_tow_qoute(char *str, char c);
+char	*add_valu_variable(char *str, char **envp);
+char	*remove_single_qoute(char *str);
+char	*remove_doubl_qoute(char *str);
 char 	**create_cmmmand(char **str);
 char 	*chercher_variable(char *str, char **envp);
 int 	chek_oune_qoute(char **str);
@@ -83,5 +87,5 @@ int 	chek_herdoc(char *str);
 char	*get_path(char **envp, char *cmd, int i);
 void 	creat_cmd(t_cmd	**lst, char **command, char **env);
 char	*strjoi(char *s1, char *s2, char *s3);
-char	**splite_variable(char *s);
+char **split_variable(const char *str);
 #endif

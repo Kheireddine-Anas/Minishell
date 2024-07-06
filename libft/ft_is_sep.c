@@ -14,7 +14,7 @@
 
 int	is_sep(char c)
 {
-	if (c == '\t' || c == ' ' || c == '\n' || c == '$')
+	if (c == '\t' || c == ' ' || c == '\n' || c == '$' || c == '\'')
 		return (1);
 	return (0);
 }

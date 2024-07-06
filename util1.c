@@ -1,6 +1,75 @@
 #include "minishell.h"
 
+char *remove_single_qoute(char *str)
+{
+	char *dst;
+	int i;
+	int j;
+	int len;
 
+	i = 0;
+	j = 0;
+	len = strlen(str);
+	dst = (char *)malloc(len + 1);
+	if (!dst)
+	{
+		perror("Allocation error");
+		exit(EXIT_FAILURE);
+	}
+	if(str[0]== '\'' && str[len - 1]== '\'' && len != 1)
+	{
+		while (str[i++])
+		{
+			if (str[i] != '\'' && (str[i +1 ] != '{' || str[i -1 ] != '}'))
+				dst[j++] = str[i];
+		}
+	}
+	else
+	{
+		while (str[i])
+		{
+			dst[j++] = str[i];
+			i++;
+		}	
+	}
+	dst[j] = '\0';
+	return (dst);
+}
+char *remove_doubl_qoute(char *str)
+{
+	char *dst;
+	int i;
+	int j;
+	int len;
+
+	i = 0;
+	j = 0;
+	len = strlen(str);
+	dst = (char *)malloc(len + 1);
+	if (!dst)
+	{
+		perror("Allocation error");
+		exit(EXIT_FAILURE);
+	}
+	if(str[0]== '"' && str[len - 1]== '"' && len != 1)
+	{
+		while (str[i++])
+		{
+			if (str[i] != '"' && (str[i +1 ] != '{' || str[i -1 ] != '}'))
+				dst[j++] = str[i];
+		}
+	}
+	else
+	{
+		while (str[i])
+		{
+			dst[j++] = str[i];
+			i++;
+		}	
+	}
+	dst[j] = '\0';
+	return (dst);
+}
 
 char *chercher_variable(char *str, char **envp)
 {
@@ -82,18 +151,89 @@ char **create_cmmmand(char **str)
 	return (result);
 }
 
-int chek_tow_qoute(char *str, char c)
+char *add_valu_variable(char *str, char **envp)
 {
-	int i;
+    if (!str)
+        return NULL;
 
-	i = 0;
-    if(str[0] == c && str[ft_strlen(str) - 1] == c)
-        return (1);
-	while(str[i])
+    char **str1 = NULL;
+    int k = 0;
+    int i = 0;
+    int j = 0;
+    char *variable;
+    char *tmp;
+
+    if (ft_strchr(str, '$'))
+        str1 = split_variable(str);
+
+    if (!str1)
+        return NULL;
+
+    while (str1[j])
+    {
+        variable = ft_strchr(str1[j], '$');
+        if (str1[j] && variable != NULL && !ft_strchr(str1[j], '\''))
+        {
+            tmp = str1[j];
+            str1[j] = ft_strdup(chercher_variable(variable, envp));
+            if (!str1[j] || ft_strlen(str1[j]) == 0)
+                k = 1;
+            free(tmp);
+        }
+        j++;
+    }
+
+    if (k == 1)
+        str1 = create_cmmmand(str1);
+
+    str = NULL;
+    while (str1 && str1[i])
+    {
+        if (str == NULL)
+            str = ft_strdup(str1[i]);
+        else
+        {
+            tmp = str;
+            str = ft_strjoin(str, str1[i]);
+            free(tmp);
+        }
+        i++;
+    }
+
+    return str;
+}
+char	*strjoi(char *s1, char *s2, char *s3)
+{
+    int		size_total;
+    char	*res;
+    int		i;
+    int		j;
+
+    j = 0;
+    i = 0;
+    if (!s1 || !s2 || !s3)
 	{
-		if(str[i] == c && str[i + 1] == c)
-			return (1);
-		i++;
+		if(!s1)
+			return (ft_strjoin(s2, s3));
+		if(!s2)
+			return (ft_strjoin(s1, s3));
+		if(!s3)
+			return (ft_strjoin(s1, s2));
 	}
-    return (0);
+    size_total = ft_strlen(s1) + ft_strlen(s2) + ft_strlen(s3) + 1;
+    res = ft_calloc(size_total, 1);
+    if (!res)
+        return (NULL);
+    while (s1[i] != '\0')
+    {
+        res[i] = s1[i];
+        i++;
+    }
+    while (s2[j] != '\0')
+        res[i++] = s2[j++];
+    j = 0;
+    while (s3[j] != '\0')
+        res[i++] = s3[j++];
+    res[i] = '\0';
+    return (res);
 }
