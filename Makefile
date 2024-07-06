@@ -1,5 +1,5 @@
-src  =   parssing.c split_pip.c main.c rediraction.c splite_qot.c split_variable.c sing_qot.c splite_bay_symbole.c run_cmd.c
-obj = $(src:.c=.o)
+src  =   parssing.c split_pip.c main.c rediraction.c util1.c split_variable.c spli_qot.c splite_bay_symbole.c run_cmd.c her_doc.c getNextLine/get_next_line_utils_bonus.c  getNextLine/get_next_line_bonus.c
+obj = $(src:.c=.o) 
 NAME = minishell
 LIBFT = libft/libft.a
 CFLAG = -Wall -Wextra -Werror      -I/Users/ahamdi/.brew/opt/readline/include 

@@ -1,26 +1,12 @@
 #include "minishell.h"
-void	erro(void)
-{
-	perror("Error in pipe or process");
-	exit(3);
-}
-void handle_sigint(int sig)
-{
-	if (sig == SIGINT)
-	{
-		printf("\n");
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
-}
+
 void	whilloop(int *fd, t_cmd *cmd)
 {
 	int fd0 = 0;
 
 	if(cmd != NULL && cmd->in != NULL)
 	{
-		if(ft_strncmp("<",cmd->in,ft_strlen(cmd->in)) == 0)
+		if(cmd->index != 0 &&ft_strncmp("<", cmd->in, ft_strlen(cmd->in)) == 0)
 		{
 			fd0 = open(*(cmd->extra_arg), O_RDONLY);
 			if (fd0 == -1)
@@ -28,7 +14,7 @@ void	whilloop(int *fd, t_cmd *cmd)
 			dup2(fd0, STDIN_FILENO);
 		}
 	}
-	else
+	else 
 	{
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[1]);
@@ -48,91 +34,7 @@ void	wit_process(int argc, pid_t **pids,int fd0, int fd1)
 	dup2(fd0, STDIN_FILENO);
 	dup2(fd1, STDOUT_FILENO);
 }
-static void	child_process(t_cmd *cmd, char **envp, int *fd)
-{
-	int fd1 = 0;
-	int fd0;
 
-	if (!cmd->cmd)
-	{
-		perror("invalide command");
-		exit(0);
-	}
-	if(cmd->index == 0 && ft_strncmp("<",cmd->in,ft_strlen(cmd->in)) == 0)
-	{
-		fd0 = open(*(cmd->extra_arg), O_RDONLY);
-		if (fd0 == -1)
-			erro();
-		dup2(fd0, STDIN_FILENO);
-	}
-	if(ft_strncmp(">",cmd->out,ft_strlen(cmd->out)) == 0)
-	{
-		fd1 = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd1 == -1)
-			erro();
-			cmd->extra_arg++;
-		dup2(fd1, STDOUT_FILENO);
-	}
-	else if(ft_strncmp(">>",cmd->out,ft_strlen(cmd->out)) == 0)
-	{
-		fd1 = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd1 == -1)
-			erro();
-		cmd->extra_arg++;
-		dup2(fd1, STDOUT_FILENO);
-	}
-	else
-		dup2(fd[1], STDOUT_FILENO);
-	close(fd[0]);
-	if (cmd->cmd[0] == '/')
-		commad_path(cmd, envp);
-	else if (cmd->cmd[0] == '.' && (cmd->cmd[1] == '/'))
-		run_script(cmd, envp);
-	else
-		execute(cmd, envp);
-	if (fd1 != 0)
-		close(fd1);	
-	// close(fd0);
-	// close(fd1);
-}
-static void	fin_commande(t_cmd *cmd, char **envp)
-{
-	int fd;
-	int fd0;
-
-	if(cmd->index == 0 && ft_strncmp("<",cmd->in,ft_strlen(cmd->in)) == 0)
-	{
-		fd0 = open(*(cmd->extra_arg), O_RDONLY);
-		if (fd0 == -1)
-			erro();
-		dup2(fd0, STDIN_FILENO);
-	}
-	if(ft_strncmp(">",cmd->out,ft_strlen(cmd->out)) == 0)
-	{
-		fd = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd == -1)
-			erro();
-			cmd->extra_arg++;
-		dup2(fd, STDOUT_FILENO);
-	}
-	else if(ft_strncmp(">>",cmd->out,ft_strlen(cmd->out)) == 0)
-	{
-		fd = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd == -1)
-			erro();
-		dup2(fd, STDOUT_FILENO);
-		cmd->extra_arg++;
-	}
-	if (cmd->cmd[0] == '/')
-	{
-		printf("***\n");
-		commad_path(cmd, envp);
-	}
-	else if (cmd->cmd[0] == '.' && cmd->cmd[1] == '/')
-		run_script(cmd, envp);
-	else
-		execute(cmd, envp);
-}
 static void	lop(t_cmd	*lst_cmd, char **envp)
 {
 	int		i;
@@ -142,6 +44,8 @@ static void	lop(t_cmd	*lst_cmd, char **envp)
 	t_cmd	 *tmp;
 	int fd0;
 	int fd1;
+	t_fd_ch *fd_in_out;
+	t_fd_last *fd_last;
 
 	fd0 = dup(STDIN_FILENO);
 	fd1 = dup(STDOUT_FILENO);
@@ -161,15 +65,25 @@ static void	lop(t_cmd	*lst_cmd, char **envp)
 		}
 		pids[i] = fork();
 		if (pids[i] == 0 && lst_cmd != last)
-			child_process(lst_cmd, envp, fd);
+			child_process(lst_cmd, envp, fd, &fd_in_out);
 		else if (pids[i] == 0 && lst_cmd == last)
-			fin_commande(lst_cmd, envp);
+			fin_commande(lst_cmd, envp, &fd_last, fd, fd0, fd1);
 		lst_cmd = lst_cmd->next;
+		close( fd_in_out->fd0);
+		close( fd_in_out->fd1);
 		whilloop(fd,lst_cmd);
 	}
 	wit_process(lstsize(tmp), &pids,fd0,fd1);
+	close_file(fd0, fd1, fd, fd_last);
+}
+void close_file(int fd0,int fd1, int *fd, t_fd_last *fd_last)
+{
 	close(fd[0]);
 	close(fd[1]);
+	close(fd1);
+	close(fd0);
+	close(fd_last->fd0);
+	close(fd_last->fd1);
 }
 int main (int argc, char *argv[], char **envp)
 {

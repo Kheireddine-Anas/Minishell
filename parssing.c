@@ -79,7 +79,8 @@ static t_cmd	*lstnew(char *command, char **env)
 	new->in = NULL;
 	new->out = NULL;
 	// if(!ft_strchr(command,'\"'))
-		command_split = split_and_include_symbols(command);
+		// command_split = split_and_include_symbols(command);
+		command_split = split_qot(command, env);
 		// while(command_split)
 		// {
 		// 	printf("command_split[%d] = %s\n",i,command_split[i]);
