@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 static int strlen_2darray(char **str)
 {
 	int i;

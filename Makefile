@@ -1,4 +1,4 @@
-src  =   parssing.c split_pip.c main.c rediraction.c util1.c split_variable.c spli_qot.c splite_bay_symbole.c run_cmd.c her_doc.c getNextLine/get_next_line_utils_bonus.c  getNextLine/get_next_line_bonus.c
+src  =  parsing/parssing.c  parsing/split_pip.c main.c execution/rediraction.c parsing/util1_parsing.c parsing/split_variable.c parsing/spli_qot.c execution/run_cmd.c execution/her_doc.c getNextLine/get_next_line_utils_bonus.c  getNextLine/get_next_line_bonus.c parsing/util2_parsing.c
 obj = $(src:.c=.o) 
 NAME = minishell
 LIBFT = libft/libft.a

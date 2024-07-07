@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int chek_oune_qoute(char **str)
 {

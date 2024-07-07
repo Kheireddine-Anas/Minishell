@@ -60,6 +60,8 @@ typedef struct
     TokenType type;
     char *value;
 } Token;
+int		is_space(char c);
+void	error_alocation(void);
 char	*add_valu_variable(char *str, char **envp);
 char	*remove_single_qoute(char *str);
 char	*remove_doubl_qoute(char *str);

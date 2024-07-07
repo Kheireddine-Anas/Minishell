@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 void	while_loop(t_cmd *cmd, int *fd)
 {
 	char	*str;

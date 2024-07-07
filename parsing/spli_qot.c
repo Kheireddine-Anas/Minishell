@@ -1,31 +1,83 @@
-#include "minishell.h"
+#include "../minishell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-
-int is_space(char c)
+void out(char **p, Token **tokens, int *num_tokens)
 {
-    return (c == ' ' || c == '\t' || c == '\n');
+	char	*start;
+	int		len;
+
+	start = (*p)++;
+	if(**p == '>')
+	{
+		len = 2;
+		(*tokens)[(*num_tokens)].type = APPEND;
+		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+		(*p)++;
+	}
+	else
+	{
+		len = 1;
+		(*tokens)[(*num_tokens)].type = OUT;
+		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+	}
 }
-
-Token* tokenize(const char *input_str, int *num_tokens)
+void in(char **p, Token **tokens, int *num_tokens)
 {
-    Token *tokens = NULL;
-	const char *start;
-    *num_tokens = 0;
-    int max_tokens = 10;
+	char	*start;
+	int		len;
+
+	start = (*p)++;
+	if(**p == '<')
+	{
+		len = 2;
+		(*tokens)[(*num_tokens)].type = HER_DOC;
+		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+		(*p)++;
+	}
+	else
+	{
+		len = 1;
+		(*tokens)[(*num_tokens)].type = IN;
+		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+	}
+}
+void word(char **p, Token **tokens, int *num_tokens, char c)
+{
+	char	*start;
+	int		len;
+
+	start = *p;
+    while (**p && (isalnum(**p) || **p == '_' || **p == '-'))
+        (*p)++;
+    len = (*p) - start;
+	if(c == '<' || c == '>')
+	{
+		(*tokens)[(*num_tokens)].type = FILE_NAME;
+		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+	}
+	else
+	{
+		(*tokens)[(*num_tokens)].type = WORD;
+		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+	}
+}
+Token* tokenize(char *p, int *num_tokens)
+{
+    Token *tokens;
+	char *start;
+    int max_tokens;
 	int len;
     char c;
+
+	tokens = NULL;
+	max_tokens = 10;
+	*num_tokens = 0;
     tokens = (Token*)malloc(max_tokens * sizeof(Token));
     if (!tokens)
-	{
-        perror("Allocation error");
-        exit(EXIT_FAILURE);
-    }
-    
-    const char *p = input_str;
+		error_alocation();
     while (*p)
 	{
         if (is_space(*p))
@@ -61,42 +113,11 @@ Token* tokenize(const char *input_str, int *num_tokens)
 			tokens[(*num_tokens)++].value = strndup(start, len);
         }
 		if(*p == '<')
-		{
-			start = p++;
-			if(*p == '<')
-			{
-				len = 2;
-				tokens[(*num_tokens)].type = HER_DOC;
-				tokens[(*num_tokens)++].value = strndup(start, len);
-				p++;
-			}
-			else
-			{
-				len = 1;
-				tokens[(*num_tokens)].type = IN;
-				tokens[(*num_tokens)++].value = strndup(start, len);
-			}
-		}
+			in(&p, &tokens, num_tokens);
 		if(*p == '>')
-		{
-			start = p++;
-			if(*p == '>')
-			{
-				len = 2;
-				tokens[(*num_tokens)].type = APPEND;
-				tokens[(*num_tokens)++].value = strndup(start, len);
-				p++;
-			}
-			else
-			{
-				len = 1;
-				tokens[(*num_tokens)].type = OUT;
-				tokens[(*num_tokens)++].value = strndup(start, len);
-			}
-		}
+			out(&p,&tokens, num_tokens);
 		if (is_space(*p))
 		{
-			start = p;
 			while (*p && is_space(*p))
 				p++;
 		}
@@ -104,24 +125,17 @@ Token* tokenize(const char *input_str, int *num_tokens)
 			c = *p;
 		p++;
         if (isalnum(*p) || *p == '_' || *p == '-')
+			word(&p, &tokens, num_tokens, c);
+		if (*p == '/' || *p == '.')
 		{
-            start = p;
-            while (*p && (isalnum(*p) || *p == '_' || *p == '-'))
-                p++;
-            len = p - start;
-			if(c == '<' || c == '>')
-			{
-				tokens[(*num_tokens)].type = FILE_NAME;
-		   		tokens[(*num_tokens)++].value = strndup(start, len);
-			}
-			else
-			{
-				tokens[(*num_tokens)].type = WORD;
-				tokens[(*num_tokens)++].value = strndup(start, len);
-			}
-           
-        }
-        
+			start = p++;
+			while(*p != ' ' && *p)
+				p++;
+			len = p - start;
+			tokens[(*num_tokens)].type = WORD;
+			tokens[(*num_tokens)++].value = strndup(start, len);
+		}
+
     }
     return (tokens);
 }
@@ -161,8 +175,8 @@ void parse(Token **tokens, int num_tokens, char **envp)
 			printf("File: %s\n", (*tokens)[i].value);
         else
         {
-            fprintf(stderr, "Unexpected token type: %d\n", (*tokens)[i].type);
-            exit(EXIT_FAILURE);
+            printf("Invalid token type\n");
+			exit(1);
         }
         i++;
     }
@@ -171,7 +185,7 @@ int main(int argc ,char **argv , char **envp)
 {
 	(void)argc;
 	(void)argv;
-    const char *command =  "ls \"\" \"-l\"";
+    char *command =  "/bin/ls";
     int num_tokens;
     Token *tokens = tokenize(command, &num_tokens);
     int i = 0;
