@@ -135,6 +135,15 @@ Token* tokenize(char *p, int *num_tokens)
 			tokens[(*num_tokens)].type = WORD;
 			tokens[(*num_tokens)++].value = strndup(start, len);
 		}
+		if(*p == '$')
+		{
+			start = p++;
+			while(*p != ' ' && *p)
+				p++;
+			len = p - start;
+			tokens[(*num_tokens)].type = WORD;
+			tokens[(*num_tokens)++].value = strndup(start, len);
+		}
 
     }
     return (tokens);
@@ -160,7 +169,11 @@ void parse(Token **tokens, int num_tokens, char **envp)
 			printf("Double quote: %s\n", (*tokens)[i].value);
 		} 
         else if ((*tokens)[i].type == WORD)
-             printf("Word: %s\n", (*tokens)[i].value);
+		{
+			if(ft_strchr((*tokens)[i].value, '$'))
+				(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp);
+			 printf("Word: %s\n", (*tokens)[i].value);
+		}
         else if ((*tokens)[i].type == SPACE)
             printf("Space: %s\n", (*tokens)[i].value);
 		else if ((*tokens)[i].type == IN)
@@ -185,7 +198,7 @@ int main(int argc ,char **argv , char **envp)
 {
 	(void)argc;
 	(void)argv;
-    char *command =  "/bin/ls";
+    char *command =  "/bin/ls $PATH$USER";
     int num_tokens;
     Token *tokens = tokenize(command, &num_tokens);
     int i = 0;
