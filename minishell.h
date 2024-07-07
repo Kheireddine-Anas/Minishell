@@ -44,15 +44,17 @@ typedef struct s_fd
 } t_fd_ch;
 typedef enum
 {
-    QUOTE_SINGLE,
-    QUOTE_DOUBLE,
-    WORD,
-    SPACE,
-	IN,
-	OUT,
-	APPEND,
-	HER_DOC,
-	FILE_NAME
+    QUOTE_SINGLE ,//0
+    QUOTE_DOUBLE,//1
+    WORD,//2
+    SPACE_c,//3
+	IN,//4
+	OUT,//5
+	APPEND,//6
+	HER_DOC,//7
+	FILE_NAME,//8
+	CMD,//9
+	VARIABLE//10
 } TokenType;
 
 typedef struct
@@ -60,6 +62,9 @@ typedef struct
     TokenType type;
     char *value;
 } Token;
+t_cmd	*lstnew(char *command, char **env);
+char	*get_path(char **envp, char *cmd, int i);
+Token	*realloc_cmd( Token **tokens, int *capacity);
 void	out(char **p, Token **tokens, int *num_tokens);
 void	in(char **p, Token **tokens, int *num_tokens);
 void	word(char **p, Token **tokens, int *num_tokens);
@@ -86,8 +91,6 @@ void	execute(t_cmd	*cmd, char **envp);
 void	commad_path(t_cmd *cmd, char **envp);
 int		lstsize(t_cmd *lst);
 t_cmd	*lstlast(t_cmd *lst);
-char 	**split_and_include_symbols(const char *str);
-char	**realloc_cmd(char ***cmd, int *capacity);
 char	**ft_split_pipe(char *s);
 int 	chek_herdoc(char *str);
 char	*get_path(char **envp, char *cmd, int i);

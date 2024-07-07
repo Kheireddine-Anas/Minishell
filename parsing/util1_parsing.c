@@ -50,7 +50,7 @@ char *remove_doubl_qoute(char *str)
 	if(!str)
 		return (NULL);
 	len = strlen(str);
-	dst = (char *)malloc(len + 1);
+	dst = ft_calloc(len + 1, 1);;
 	if (!dst)
 	{
 		perror("Allocation error");
@@ -60,7 +60,7 @@ char *remove_doubl_qoute(char *str)
 	{
 		while (str[i])
         {
-            if (str[i] != '\'' && (i == 0 || str[i - 1] != '}') && (str[i + 1] == '\0' || str[i + 1] != '{'))
+            if (str[i] != '\"' )
                 dst[j++] = str[i];
             i++;
         }
@@ -105,25 +105,27 @@ char *chercher_variable(char *str, char **envp)
 }
 
 
-char	**realloc_cmd(char ***cmd, int *capacity)
+Token	*realloc_cmd( Token **tokens, int *capacity)
 {
 	int		i;
-	char	**new_cmd;
+	Token	*new_cmd;
 
 	*capacity *= 2;
-	new_cmd = ft_calloc(*capacity , sizeof(char *));
+	new_cmd = ft_calloc(*capacity , sizeof(Token));
 	if (!new_cmd)
 	{
-		free(*cmd);
+		free(*tokens);
 		exit(EXIT_FAILURE);
 	}
 	i = 0;
 	while (i < *capacity / 2)
 	{
-		new_cmd[i] = (*cmd)[i];
+		new_cmd[i].type = (*tokens)[i].type;
+		new_cmd[i].value = ft_strdup((*tokens)[i].value);
+		free((*tokens)[i].value);
 		i++;
 	}
-	free(*cmd);
+	free(*tokens);
 	return (new_cmd);
 }
 
@@ -163,7 +165,6 @@ char *add_valu_variable(char *str, char **envp)
         return NULL;
 
     char **str1 = NULL;
-	char *result;
     int k = 0;
     int i = 0;
     int j = 0;

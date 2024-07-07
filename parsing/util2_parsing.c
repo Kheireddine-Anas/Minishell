@@ -80,6 +80,7 @@ void quot(char **p, Token **tokens, int *num_tokens)
 {
 	char *start;
 	int len;
+    char c;
 
 	if (**p == '\'' )
 	{
@@ -107,13 +108,20 @@ void quot(char **p, Token **tokens, int *num_tokens)
         (*tokens)[(*num_tokens)].type = QUOTE_DOUBLE;
 		(*tokens)[(*num_tokens)++].value = strndup(start, len);
     }
+    
     if (**p == '/' || **p == '.' || **p == '$')
 	{
+        c = **p;
 		start = (*p)++;
 		while(**p != ' ' && **p)
 			(*p)++;
 		len = *p - start;
-		(*tokens)[(*num_tokens)].type = WORD;
+        if(c == '$')
+            (*tokens)[(*num_tokens)].type = VARIABLE;
+        else if(c == '/' || c == '.')
+            (*tokens)[(*num_tokens)].type = CMD;
+        else
+		    (*tokens)[(*num_tokens)].type = WORD;
 		(*tokens)[(*num_tokens)++].value = strndup(start, len);
 	}
 }
