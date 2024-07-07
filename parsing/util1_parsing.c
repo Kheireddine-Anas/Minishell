@@ -9,8 +9,10 @@ char *remove_single_qoute(char *str)
 
 	i = 0;
 	j = 0;
+	if(!str)
+		return (NULL);
 	len = strlen(str);
-	dst = (char *)malloc(len + 1);
+	dst = ft_calloc(len + 1, 1);
 	if (!dst)
 	{
 		perror("Allocation error");
@@ -18,11 +20,12 @@ char *remove_single_qoute(char *str)
 	}
 	if(str[0]== '\'' && str[len - 1]== '\'' && len != 1)
 	{
-		while (str[i++])
-		{
-			if (str[i] != '\'' && (str[i +1 ] != '{' || str[i -1 ] != '}'))
-				dst[j++] = str[i];
-		}
+		while (str[i])
+        {
+            if (str[i] != '\'' && (i == 0 || str[i - 1] != '}') && (str[i + 1] == '\0' || str[i + 1] != '{'))
+                dst[j++] = str[i];
+            i++;
+        }
 	}
 	else
 	{
@@ -44,6 +47,8 @@ char *remove_doubl_qoute(char *str)
 
 	i = 0;
 	j = 0;
+	if(!str)
+		return (NULL);
 	len = strlen(str);
 	dst = (char *)malloc(len + 1);
 	if (!dst)
@@ -53,11 +58,12 @@ char *remove_doubl_qoute(char *str)
 	}
 	if(str[0]== '"' && str[len - 1]== '"' && len != 1)
 	{
-		while (str[i++])
-		{
-			if (str[i] != '"' && (str[i +1 ] != '{' || str[i -1 ] != '}'))
-				dst[j++] = str[i];
-		}
+		while (str[i])
+        {
+            if (str[i] != '\'' && (i == 0 || str[i - 1] != '}') && (str[i + 1] == '\0' || str[i + 1] != '{'))
+                dst[j++] = str[i];
+            i++;
+        }
 	}
 	else
 	{
@@ -157,6 +163,7 @@ char *add_valu_variable(char *str, char **envp)
         return NULL;
 
     char **str1 = NULL;
+	char *result;
     int k = 0;
     int i = 0;
     int j = 0;
@@ -165,17 +172,15 @@ char *add_valu_variable(char *str, char **envp)
 
     if (ft_strchr(str, '$'))
         str1 = split_variable(str);
-
     if (!str1)
         return NULL;
-
     while (str1[j])
     {
         variable = ft_strchr(str1[j], '$');
         if (str1[j] && variable != NULL && !ft_strchr(str1[j], '\''))
         {
             tmp = str1[j];
-            str1[j] = ft_strdup(chercher_variable(variable, envp));
+            str1[j] = chercher_variable(variable, envp);
             if (!str1[j] || ft_strlen(str1[j]) == 0)
                 k = 1;
             free(tmp);
@@ -185,7 +190,7 @@ char *add_valu_variable(char *str, char **envp)
 
     if (k == 1)
         str1 = create_cmmmand(str1);
-
+	free(str);
     str = NULL;
     while (str1 && str1[i])
     {
@@ -199,8 +204,13 @@ char *add_valu_variable(char *str, char **envp)
         }
         i++;
     }
-
-    return str;
+	while(str1[i])
+	{
+		free(str1[i]);
+		i++;
+	}
+	free(str1);
+    return (str);
 }
 char	*strjoi(char *s1, char *s2, char *s3)
 {

@@ -60,6 +60,10 @@ typedef struct
     TokenType type;
     char *value;
 } Token;
+void	out(char **p, Token **tokens, int *num_tokens);
+void	in(char **p, Token **tokens, int *num_tokens);
+void	word(char **p, Token **tokens, int *num_tokens);
+void	quot(char **p, Token **tokens, int *num_tokens);
 int		is_space(char c);
 void	error_alocation(void);
 char	*add_valu_variable(char *str, char **envp);
