@@ -23,6 +23,28 @@ typedef struct s_data
 
 }	t_data;
 
+enum				e_token
+{
+	D_QUOTE = '\"',
+	S_QUOTE = '\'',
+	BK_SL = '\\',
+	WSPACE = ' ',
+	PIPE = '|',
+	VAR = '$',
+	OUT = '>',
+	IN = '<',
+	WORD,
+	HERE_DOC,
+	OUT_FILE,
+};
+
+typedef struct s_lexer
+{
+	char			*value;
+	enum e_token	type;
+	struct s_lexer	*next;
+}	t_lexer;
+
 void	*ft_calloc(int count, int size);
 char	*ft_strdup(char *s);
 char	*ft_strjoin(char *s1, char *s2, int val);
@@ -37,5 +59,7 @@ t_env	*set_env(char *str);
 void	cmd_export(t_env *env, char **add);
 void	cmd_unset(t_env **env, char *var);
 char	**ft_split(char const *str, char c);
+
+void	ft_print_lexer(t_lexer *lexer);
 
 #endif
