@@ -52,6 +52,52 @@ char	*word_type(char *input, int *i)
 	return (word);
 }
 
+char	*dollar_name(char *name, int *i)
+{
+	int		j;
+	char	*str;
+
+	j = 0;
+	while (ft_isalnum(name[*i + j]) || name[*i + j] == '_')
+		j++;
+	str = ft_calloc(j + 2, sizeof(char));
+	j = 0;
+	while (ft_isalnum(name[*i]) || name[*i] == '_')
+		str[j++] = name[(*i)++];
+	str[j] = '\0';
+	(*i)--;
+	return (str);
+}
+
+char	*set_dollar(char *name, int *i)
+{
+	char	value[5];
+
+	while (name[*i])
+	{
+		*(i)++;
+		if (name[*(i)] == '$')
+			return (ft_strdup("$$"));
+		else if (name[*(i)] == '?')
+			return (ft_strdup("$?"));
+		else if (name[*(i)] == '@')
+			return (ft_strdup(""));
+		else if (ft_isalpha(name[*(i)]) || name[(*i) == '_'])
+			return (dollar_name(name, i));
+		else if (ft_isdigit(name[*(i)]))
+		{
+			value[0] = '$';
+			value[1] = name[*i];
+			value[2] = '\0';
+		}
+		else
+		{
+			(*i)--;
+			return (ft_strdup("$"));
+		}
+	}
+}
+
 t_lexer	*lex(t_lexer *lexer, char *input)
 {
 	int	i;
@@ -71,17 +117,15 @@ t_lexer	*lex(t_lexer *lexer, char *input)
 				lex_init(&lexer, ft_strdup(" "), WSPACE);
 		else if (input[i] == '|') //// pipe
 			lex_init(&lexer, ft_strdup(&input[i]), PIPE);
+		else if (input[i] == '$') /////dolar
+			lex_init(&lexer, set_dollar(input, &i), VAR);
+		// else if (input[i] == '>' || input[i] == '<') /////Redirections
+		// 	lex_init(&lexer, input[i], );
 		else
-		{
 			lex_init(&lexer, word_type(input, &i), WORD);
-		}
 		i++;
 	}
 	return (lexer);
-	// else if (input[i] == '$') /////dolar
-	// 	lex_init(&lexer, input[i], VAR);
-	// else if (input[i] == '>' || input[i] == '<') /////Redirections
-	// 	lex_init(&lexer, input[i], );
 }
 
 int main()

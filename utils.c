@@ -10,6 +10,21 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
+int	ft_isalpha(int c)
+{
+	return ((c >= 65 && c <= 90) || (c >= 97 && c <= 122));
+}
+
+int	ft_isdigit(int c)
+{
+	return (c >= 48 && c <= 57);
+}
+
+int	ft_isalnum(int c)
+{
+	return (ft_isdigit(c) || ft_isalpha(c));
+}
+
 void	*ft_calloc(int count, int size)
 {
 	char	*hld;

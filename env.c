@@ -119,32 +119,32 @@ int main(int ac, char **av, char **envs)
 		tmp = tmp->next;
 		i++;
 	}
-		cmd_export(env, av + 1); // HERE We export av[1] to env struct
-	while (tmp1) //Uncomment this loop to see ENV struct
-	{
-		printf("%s*****%s\n", tmp1->variable, tmp1->value);
-		tmp1 = tmp1->next;
-	}
-	while (1)
-	{
-		input = readline("Enter CMD: ");
-		if (!input)
-		{
-			printf("\nCtrl+D pressed. Exiting...\n");
-			break;
-		}
-		// cmd_unset(&env, "abcq");
-		add_history(input);
-		printf("CMD: %s\n", input);
-		free(input);
-	}
+	// 	cmd_export(env, av + 1); // HERE We export av[1] to env struct
+	// while (tmp1) //Uncomment this loop to see ENV struct
+	// {
+	// 	printf("%s*****%s\n", tmp1->variable, tmp1->value);
+	// 	tmp1 = tmp1->next;
+	// }
+	// while (1)
+	// {
+	// 	input = readline("Enter CMD: ");
+	// 	if (!input)
+	// 	{
+	// 		printf("\nCtrl+D pressed. Exiting...\n");
+	// 		break;
+	// 	}
+	// 	// cmd_unset(&env, "abcq");
+	// 	add_history(input);
+	// 	printf("CMD: %s\n", input);
+	// 	free(input);
+	// }
 	envirs = env_set(env); //ENV as char **
 	// check_cmd(av);
-	// cmd_cd((av + 1), env);
-	while (env) //Uncomment this loop to see ENV struct
-	{
-		printf("%s=%s\n", env->variable, env->value);
-		env = env->next;
-	}
+	cmd_cd((av + 1), env);
+	// while (env) //Uncomment this loop to see ENV struct
+	// {
+	// 	printf("%s=%s\n", env->variable, env->value);
+	// 	env = env->next;
+	// }
 	return 0;
 }

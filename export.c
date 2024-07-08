@@ -1,14 +1,5 @@
 #include "minishell.h"
 
-int	ft_isalpha(int c)
-{
-	return ((c >= 65 && c <= 90) || (c >= 97 && c <= 122));
-}
-
-int	ft_isdigit(int c)
-{
-	return (c >= 48 && c <= 57);
-}
 
 void	show_exp(t_env *env)
 {
