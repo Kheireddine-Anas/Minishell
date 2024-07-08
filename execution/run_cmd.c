@@ -3,6 +3,8 @@ static int strlen_2darray(char **str)
 {
 	int i;
 
+	if (!str ||!*str)
+		return (0);
 	i = 0;
 	while (str[i])
 		i++;
@@ -18,9 +20,7 @@ char **prepend_string_to_array(char **array, char *string)
 	array_length = strlen_2darray(array);
     new_array = malloc((array_length + 2) * sizeof(char *));
     if (new_array == NULL)
-    {
         exit(EXIT_FAILURE);
-    }
     new_array[0] = strdup(string);
     while (i < array_length)
     {
@@ -87,7 +87,7 @@ void	commad_path(t_cmd *cmd, char **envp)
 	}
 	if (execve(path, str_cmd, envp) == -1)
 	{
-		perror("Bad command");
+		printf("\033[1;31mminishell : %s : %s\033[0m\n",cmd->cmd, strerror(errno));
 		exit(0);
 	}
 }
@@ -97,20 +97,20 @@ void	execute(t_cmd	*cmd, char **envp)
 	int		i;
 	char	*path;
 	char 	**str_cmd;
+
 	i = 0;
 	str_cmd = prepend_string_to_array(cmd->option, cmd->cmd);
-	i = 0;
-	path = get_path(envp, str_cmd[0], i);
-	if (!path)
-	{
-		i = 0;
-		while (str_cmd[i])
-			free(str_cmd[i++]);
-		free(str_cmd);
-	}
+	path = get_path(envp, cmd->cmd, 0);
+	// if (!path)
+	// {
+	// 	i = 0;
+	// 	while (str_cmd[i])
+	// 		free(str_cmd[i++]);
+	// 	free(str_cmd);
+	// }
 	if (execve(path, str_cmd, envp) == -1)
 	{
-		perror("Bad command");
+		printf("\033[1;31mminishell xas: %s : %s\033[0m\n",cmd->cmd, strerror(errno));
 		exit(0);
 	}
 }
@@ -126,7 +126,7 @@ void	run_script(t_cmd	*cmd, char **envp)
 	str_cmd[1] = NULL;
 	if (execve(str_cmd[0], str_cmd, envp) == -1)
 	{
-		perror("Bad command");
+		printf("\033[1;31mminishell : %s : %s033[0m\n",str_cmd[0], strerror(errno));
 		exit(0);
 	}
 }

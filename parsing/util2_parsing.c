@@ -56,24 +56,21 @@ void word(char **p, Token **tokens, int *num_tokens)
 	char	*start;
 	int		len;
     char	c;
-
-    if(**p--)
-			c = **p;
-		(*p)++;
+	char	h;
+    if(*num_tokens != 0)
+        c = *(*p- 1);
+	h = **p;
 	start = *p;
-    while (**p && (isalnum(**p) || **p == '_' || **p == '-'))
+    while (**p != '\0' &&  **p != '$' && **p != '\"' && **p != '\'' && !is_space(**p))
         (*p)++;
     len = (*p) - start;
-	if(c == '<' || c == '>')
-	{
+	if(h == '-')
+		(*tokens)[(*num_tokens)].type = OPTION;
+	else if(c == '<' || c == '>')
 		(*tokens)[(*num_tokens)].type = FILE_NAME;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
-	}
 	else
-	{
 		(*tokens)[(*num_tokens)].type = WORD;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
-	}
+	(*tokens)[(*num_tokens)++].value = strndup(start, len);
 }
 
 void quot(char **p, Token **tokens, int *num_tokens)
@@ -113,7 +110,7 @@ void quot(char **p, Token **tokens, int *num_tokens)
 	{
         c = **p;
 		start = (*p)++;
-		while(**p != ' ' && **p)
+		while(**p != ' ' && **p && **p != '\"' && **p != '\"')
 			(*p)++;
 		len = *p - start;
         if(c == '$')

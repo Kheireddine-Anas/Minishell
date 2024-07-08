@@ -12,11 +12,16 @@ void	lstclear(t_cmd **lst)
 	while (help != NULL)
 	{
 		next = help -> next;
-		free(help->cmd);
-		free(help->in);
-		free(help->out);
-		free(help->option);
-		free(help->extra_arg);
+		if(help->cmd)
+			free(help->cmd);
+		if(help->in)
+			free(help->in);
+		if(help->out)
+			free(help->out);
+		if(help->option && *help->option )
+			free(help->option);
+		if(help->extra_arg &&* help->extra_arg)
+			free(help->extra_arg);
 		free (help);
 		help = next;
 	}
@@ -70,7 +75,6 @@ void creat_cmd(t_cmd	**lst, char **command, char **env)
 	new = NULL;
 	while(command[i])
 	{
-		printf("******\n");
 		new = lstnew(command[i], env);
 		new->index = j;
 		add_back(lst, new);

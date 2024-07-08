@@ -33,114 +33,56 @@ void handle_sigint(int sig)
 
 void	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ch **fd_in_out)
 {
-	int fd1 = 0;
-	int fd0;
 
-	if(chek_oune_qoute(cmd->option) == 1)
-	{
-		ft_putstr_fd("error in quote\n", 2);
-		exit(0);
-	}
 	if (!cmd->cmd)
 	{
 		perror("invalide command");
 		exit(0);
 	}
-    if(ft_strncmp("<<",cmd->in,ft_strlen(cmd->in)) == 0)
-    {
-        while_loop(cmd, fd);
-        dup2(fd[1], STDOUT_FILENO);
-        close(fd[0]);
-    }
-	else if(ft_strncmp("<",cmd->in,ft_strlen(cmd->in)) == 0)
+	if(cmd->single > 0 || cmd->double_q > 0)
 	{
-		fd0 = open(*(cmd->extra_arg), O_RDONLY);
-		if (fd0 == -1)
-			erro();
-		dup2(fd0, STDIN_FILENO);
-        (*fd_in_out)->fd0 = fd0;
+		printf("\033[1;31msyntax error : error in quot\033[0m\n");
+		exit(1);
 	}
-	if(ft_strncmp(">",cmd->out,ft_strlen(cmd->out)) == 0)
+	else if(ft_strncmp("<",*cmd->in,ft_strlen(*cmd->in)) == 0)
 	{
-		fd1 = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd1 == -1)
+		(*fd_in_out)->fd0 = open(*(cmd->extra_arg), O_RDONLY);
+		if ((*fd_in_out)->fd0 == -1)
 			erro();
-			cmd->extra_arg++;
-		dup2(fd1, STDOUT_FILENO);
-         (*fd_in_out)->fd1 = fd1;
-	}
-	else if(ft_strncmp(">>",cmd->out,ft_strlen(cmd->out)) == 0)
-	{
-		fd1 = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd1 == -1)
-			erro();
-		cmd->extra_arg++;
-		dup2(fd1, STDOUT_FILENO);
-        (*fd_in_out)->fd1 = fd1;
+		dup2((*fd_in_out)->fd0, STDIN_FILENO);
 	}
 	else
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[0]);
-	if (cmd->cmd[0] == '/')
-		commad_path(cmd, envp);
-	else if (cmd->cmd[0] == '.' && (cmd->cmd[1] == '/'))
-		run_script(cmd, envp);
-	else
-		execute(cmd, envp);
-	if (fd1 != 0)
-		close(fd1);	
+	exe_cmd(cmd, envp);
 }
-void	fin_commande(t_cmd *cmd, char **envp, t_fd_last **fd_last, int *fd, int fd0, int fd1)
+void	fin_commande(t_cmd *cmd, char **envp, t_fd_last **fd_last, int fd0, int fd1)
 {
 	(void)fd0;
 	(void)fd1;
-	if(chek_oune_qoute(cmd->option) == 1)
+	if (!cmd->cmd)
 	{
-		ft_putstr_fd("error in quote\n", 2);
+		perror("invalide command");
+		exit(0);
+	}
+	if(cmd->single > 0 || cmd->double_q > 0)
+	{
+		printf("\033[1;31msyntax error : error in quot\033[0m\n");
 		exit(1);
 	}
-	if(cmd->index == 0 && ft_strncmp("<<",cmd->in,ft_strlen(cmd->in)) == 0)
-    {
-        while_loop(cmd, fd);
-        dup2(fd[0], STDIN_FILENO);
-        close(fd[1]);
-    }
-    else if(cmd->index != 0 && ft_strncmp("<<",cmd->in,ft_strlen(cmd->in)) == 0)
-    {
-		dup2(fd0,STDIN_FILENO);
-        here_doc(cmd, fd, fd0);
-        dup2(fd0, STDIN_FILENO);
-        close(fd[1]);
-    }
-	if (cmd->index == 0 && ft_strncmp("<",cmd->in,ft_strlen(cmd->in)) == 0)
+	while (cmd->in &&(*cmd->in))
 	{
-		(*fd_last)->fd0 = open(*(cmd->extra_arg), O_RDONLY);
-		if ((*fd_last)->fd0 == -1)
-			erro();
-		dup2((*fd_last)->fd0, STDIN_FILENO);
+		if(ft_strncmp("<",*cmd->in,ft_strlen(*cmd->in)) == 0)
+		{
+			(*fd_last)->fd0 = open(*(cmd->extra_arg), O_RDONLY);
+			if ((*fd_last)->fd0 == -1)
+				erro();
+			dup2((*fd_last)->fd0, STDIN_FILENO);
+			cmd->extra_arg++;
+			cmd->in++;
+		}
 	}
-	if (ft_strncmp(">",cmd->out,ft_strlen(cmd->out)) == 0)
-	{
-		(*fd_last)->fd1 = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if ((*fd_last)->fd1 == -1)
-			erro();
-		cmd->extra_arg++;
-		dup2((*fd_last)->fd1, STDOUT_FILENO);
-	}
-	else if(ft_strncmp(">>",cmd->out,ft_strlen(cmd->out)) == 0)
-	{
-		(*fd_last)->fd1 = open(*(cmd->extra_arg), O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if ((*fd_last)->fd1 == -1)
-			erro();
-		dup2((*fd_last)->fd1, STDOUT_FILENO);
-		cmd->extra_arg++;
-	}
-	if (cmd->cmd[0] == '/')
-		commad_path(cmd, envp);
-	else if (cmd->cmd[0] == '.' && cmd->cmd[1] == '/')
-		run_script(cmd, envp);
-	else
-		execute(cmd, envp);
+	exe_cmd(cmd, envp);
 }
 
 int chek_herdoc(char *str)

@@ -6,7 +6,7 @@ void	whilloop(int *fd, t_cmd *cmd)
 
 	if(cmd != NULL && cmd->in != NULL)
 	{
-		if(cmd->index != 0 &&ft_strncmp("<", cmd->in, ft_strlen(cmd->in)) == 0)
+		if(cmd->index != 0 &&ft_strncmp("<", *cmd->in, ft_strlen(*cmd->in)) == 0)
 		{
 			fd0 = open(*(cmd->extra_arg), O_RDONLY);
 			if (fd0 == -1)
@@ -46,7 +46,6 @@ static void	lop(t_cmd	*lst_cmd, char **envp)
 	int fd1;
 	t_fd_ch *fd_in_out;
 	t_fd_last *fd_last;
-
 	fd0 = dup(STDIN_FILENO);
 	fd1 = dup(STDOUT_FILENO);
 	if(!lst_cmd || !envp)
@@ -55,9 +54,10 @@ static void	lop(t_cmd	*lst_cmd, char **envp)
 	pids = ft_calloc(lstsize(lst_cmd), sizeof(pid_t));
 	i = 0;
 	tmp = lst_cmd;
+	if (filecommade(last, envp) == 1)
+		return ;
 	while (lst_cmd)
 	{
-		// filecommade(last);
 		if (pipe(fd) == -1)
 		{
 			printf("error\n");
@@ -67,7 +67,7 @@ static void	lop(t_cmd	*lst_cmd, char **envp)
 		if (pids[i] == 0 && lst_cmd != last)
 			child_process(lst_cmd, envp, fd, &fd_in_out);
 		else if (pids[i] == 0 && lst_cmd == last)
-			fin_commande(lst_cmd, envp, &fd_last, fd, fd0, fd1);
+			fin_commande(lst_cmd, envp, &fd_last, fd0, fd1);
 		lst_cmd = lst_cmd->next;
 		close( fd_in_out->fd0);
 		close( fd_in_out->fd1);
@@ -108,12 +108,29 @@ int main (int argc, char *argv[], char **envp)
 	}
 	while(1)
 	{
-		line = readline("minishell-$ ");
+		line = readline("\033[1;32mminishell-$ \033[0m");
 		if(line == NULL)
 			break;
 		add_history(line);
 		split_pip = ft_split_pipe(line);
 		creat_cmd(&lst_cmd, split_pip, envp);
+		// while(lst_cmd)
+		// {
+		// 	printf("commande :%s\n",lst_cmd->cmd);
+		// 	printf("in :%s\n",lst_cmd->in);
+		// 	printf("out :%s\n",lst_cmd->out);
+		// 	while((*lst_cmd->extra_arg))
+		// 	{
+		// 		printf("extra_arg :%s\n",(*lst_cmd->extra_arg));
+		// 		lst_cmd->extra_arg++;
+		// 	}
+		// 	while((*lst_cmd->option))
+		// 	{
+		// 		printf("option :%s\n",(*lst_cmd->option));
+		// 		lst_cmd->option++;
+		// 	}
+		// 	lst_cmd = lst_cmd->next;
+		// }
 		lop(lst_cmd,envp);
 		free(line);
 		line = NULL;
