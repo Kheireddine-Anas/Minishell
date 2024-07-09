@@ -24,10 +24,11 @@ typedef struct env_s
 } env_t;
 typedef struct s_cmd
 {
-	char	*cmd;
 	char	**option;
 	char	**in;
 	char	*out;
+	char	**fil_in;
+	char	**fil_out;
 	char	**extra_arg;
 	int		index;
 	int		single;
@@ -58,16 +59,30 @@ typedef enum
 	FILE_NAME,//8
 	CMD,//9
 	VARIABLE,//10
-	OPTION//11
+	OPTION,//11
+	PIP ,//12
+	FILE_IN,//13,
+	FILE_OUT//14
 } TokenType;
+typedef struct s_env
+{
+	char			*variable;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
 
 typedef struct
 {
     TokenType type;
     char *value;
 } Token;
-
-int	filecommade(t_cmd *cmd, char **env);
+Token* tokenize(char *p, int *num_tokens);
+void	parse(Token **tokens, int num_tokens, char **envp, t_cmd	**new);
+int		builtten(t_cmd	*lst_cmd, char **env);
+t_env	*set_env(char *str);
+void	cmd_cd(char **path, t_env *env);
+void	error_ch(char *str);
+int		filecommade(t_cmd *cmd, char **env);
 t_cmd	*lstnew(char *command, char **env);
 char	*get_path(char **envp, char *cmd, int i);
 Token	*realloc_cmd( Token **tokens, int *capacity);
@@ -91,15 +106,13 @@ void	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ch **fd_in_out);
 void	fin_commande(t_cmd *cmd, char **envp, t_fd_last **fd_last, int fd0, int fd1);
 void 	close_file(int fd0,int fd1, int *fd, t_fd_last *fd_last);
 void	lstclear(t_cmd **lst);
-void	run_script(t_cmd	*cmd, char **envp);
 void	execute(t_cmd	*cmd, char **envp);
 void	commad_path(t_cmd *cmd, char **envp);
 int		lstsize(t_cmd *lst);
 t_cmd	*lstlast(t_cmd *lst);
-char	**ft_split_pipe(char *s);
 int 	chek_herdoc(char *str);
 char	*get_path(char **envp, char *cmd, int i);
-void 	creat_cmd(t_cmd	**lst, char **command, char **env);
+void 	creat_cmd(t_cmd	**lst, char *command, char **env);
 char	*strjoi(char *s1, char *s2, char *s3);
 char **split_variable(const char *str);
 #endif

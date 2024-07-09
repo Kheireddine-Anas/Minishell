@@ -31,6 +31,12 @@ Token* tokenize(char *p, int *num_tokens)
 			while (*p && is_space(*p))
 				p++;
 		}
+		if (*p == '|')
+		{
+			tokens[(*num_tokens)].type = PIP;
+			tokens[(*num_tokens)++].value = strndup(p, 1);
+			p++;
+		}
         if (*p != '\0' &&  *p != '$' && *p != '\"' && *p != '\'' && !is_space(*p) && *p != '<' && *p != '>')
 			word(&p, &tokens, num_tokens);
 		if(*num_tokens >= max_tokens)
@@ -88,78 +94,16 @@ void parse(Token **tokens, int num_tokens, char **envp, t_cmd	**new)
 			if (i != 0 && (*tokens)[i - 1].type == CMD)
 				(*tokens)[i].type = OPTION;
 		}
-		else if((*tokens)[i].type == WORD)
-		{
-			if (i == 0)
-				(*tokens)[i].type = CMD;
-			else if (access((*tokens)[i].value,X_OK) == 0)
-				(*tokens)[i].type = FILE_NAME;
-			else
-				(*tokens)[i].type = OPTION;
-		}
         i++;
     }
 }
 
-t_cmd	*lstnew(char *command, char **env)
-{
-	int		i;
-	t_cmd	*new;
-	int		j;
-	int		k;
-	int		l;
-	Token	*tokens;
-	int		num_tokens = 0;
-	j = 0;
-	k = 0;
-	i = 0;
-	l = 0;
-	new = ft_calloc(1, sizeof(t_cmd));
-	if (!new)
-		return (NULL);
-	new->single = 0;
-	new->double_q = 0;
-	new->cmd = NULL;
-	new->option = ft_calloc(5,sizeof(char *));
-	new->extra_arg = ft_calloc(5,sizeof(char *));
-	new->in = ft_calloc(5,sizeof(char *));
-	new->out = NULL;
-	tokens = tokenize(command, &num_tokens);
-	parse(&tokens, num_tokens, env, &new);
-	while(i < num_tokens)
-	{
-		if(tokens[i].type == CMD)
-			new->cmd =  tokens[i].value;
-		else if(tokens[i].type == IN || tokens[i].type == HER_DOC)
-		{
-			new->in[l] =  tokens[i].value;
-			l++;
-		}
-		else if(tokens[i].type == OUT || tokens[i].type == APPEND)
-			new->out = tokens[i].value;
-		else if(tokens[i].type == OPTION || tokens[i].type == VARIABLE || tokens[i].type == QUOTE_SINGLE || tokens[i].type == QUOTE_DOUBLE || tokens[i].type == WORD )
-		{
-			new->option[j] = tokens[i].value;
-			j++;
-		}
-		else if(tokens[i].type == FILE_NAME)
-		{
-			new->extra_arg[k] = tokens[i].value;
-			k++;
-		}
-		i++;
-	}
-	new->in[l] = NULL;
-	new->option[j] = NULL;
-	new->extra_arg[k] = NULL;
-	new->next = NULL;
-	return (new);
-}
+
 // int main (int argc ,char ** argv, char **envp)
 // {
 // 	(void)argc;
 // 	(void)argv;
-//     char *str = "echo 'hi     :'$USER '      .'  ,,,,,,,,      'Good'  <test ";
+//     char *str = "ls -l -a <test >hamdi ";
 //     Token *tokens;
 //     int i = 0;
 //     int num_tokens = 0;

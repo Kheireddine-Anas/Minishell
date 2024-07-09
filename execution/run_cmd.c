@@ -10,6 +10,7 @@ static int strlen_2darray(char **str)
 		i++;
 	return (i);
 }
+
 char **prepend_string_to_array(char **array, char *string)
 {
 	int i = 0;
@@ -69,64 +70,37 @@ char	*get_path(char **envp, char *cmd, int i)
 
 void	commad_path(t_cmd *cmd, char **envp)
 {
-	char	**str_cmd;
 	int		i;
 	char	*path;
 
 	i = 0;
-	str_cmd = prepend_string_to_array(cmd->option,cmd->cmd);
-	if(!str_cmd)
-		exit(1);
-	path = str_cmd[0];
+	path = cmd->option[0];
 	if (!path)
 	{
 		i = 0;
-		while (str_cmd[i])
-			free(str_cmd[i++]);
-		free(str_cmd);
+		while (cmd->option[i])
+			free(cmd->option[i++]);
+		free(cmd->option);
 	}
-	if (execve(path, str_cmd, envp) == -1)
-	{
-		printf("\033[1;31mminishell : %s : %s\033[0m\n",cmd->cmd, strerror(errno));
-		exit(0);
-	}
+	if (execve(path, cmd->option, envp) == -1)
+		error_ch(cmd->option[0]);
 }
 
 void	execute(t_cmd	*cmd, char **envp)
 {
 	int		i;
 	char	*path;
-	char 	**str_cmd;
 
 	i = 0;
-	str_cmd = prepend_string_to_array(cmd->option, cmd->cmd);
-	path = get_path(envp, cmd->cmd, 0);
-	// if (!path)
-	// {
-	// 	i = 0;
-	// 	while (str_cmd[i])
-	// 		free(str_cmd[i++]);
-	// 	free(str_cmd);
-	// }
-	if (execve(path, str_cmd, envp) == -1)
+	path = get_path(envp, cmd->option[0], 0);
+	if (!path)
 	{
-		printf("\033[1;31mminishell xas: %s : %s\033[0m\n",cmd->cmd, strerror(errno));
-		exit(0);
+		i = 0;
+		while (cmd->option[i])
+			free(cmd->option[i++]);
+		free(cmd->option);
 	}
+	if (execve(path, cmd->option, envp) == -1)
+		error_ch(cmd->option[0]);
 }
 
-void	run_script(t_cmd	*cmd, char **envp)
-{
-	char	**str_cmd;
-
-	str_cmd = malloc(2 * sizeof(char *));
-	if (!str_cmd)
-		exit(1);
-	str_cmd[0] = cmd->cmd;
-	str_cmd[1] = NULL;
-	if (execve(str_cmd[0], str_cmd, envp) == -1)
-	{
-		printf("\033[1;31mminishell : %s : %s033[0m\n",str_cmd[0], strerror(errno));
-		exit(0);
-	}
-}
