@@ -1,10 +1,11 @@
 #include "minishell.h"
 
-char	*cmd_pwd()
+char	*cmd_pwd(int val)
 {
 	char	*pwd;
 
 	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
+	if (val)
+		printf("%s\n", pwd);
 	return (pwd);
 }

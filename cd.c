@@ -44,7 +44,7 @@ void	cmd_cd(char **path, t_env *env)
 			// exit(1); 
 		}
 	}
-	update_env(env, "PWD", cmd_pwd()); //UPDATE PWD 
+	update_env(env, "PWD", cmd_pwd(0)); //UPDATE PWD 
 	update_env(env, "OLDPWD", crnt);  //UPDATE OLDPWD
 	// cmd_pwd(); // See if the location is changed or not
 }
