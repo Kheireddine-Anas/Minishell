@@ -57,7 +57,7 @@ char	*get_env(t_env *envs, char *srch);
 void	cmd_cd(char **path, t_env *env);
 char	*set_name(char *str);
 char	*set_value(char *str);
-void	cmd_pwd();
+char	*cmd_pwd();
 t_env	*set_env(char *str);
 void	cmd_export(t_env *env, char **add);
 void	cmd_unset(t_env **env, char *var);

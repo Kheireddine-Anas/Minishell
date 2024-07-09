@@ -141,10 +141,11 @@ int main(int ac, char **av, char **envs)
 	envirs = env_set(env); //ENV as char **
 	// check_cmd(av);
 	cmd_cd((av + 1), env);
-	// while (env) //Uncomment this loop to see ENV struct
-	// {
-	// 	printf("%s=%s\n", env->variable, env->value);
-	// 	env = env->next;
-	// }
+	cmd_cd((av + 2), env);
+	while (env) //Uncomment this loop to see ENV struct
+	{
+		printf("%s=%s\n", env->variable, env->value);
+		env = env->next;
+	}
 	return 0;
 }
