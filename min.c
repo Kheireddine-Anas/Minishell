@@ -62,6 +62,7 @@ char	*dollar_name(char *name, int *i)
 		j++;
 	str = ft_calloc(j + 2, sizeof(char));
 	j = 0;
+	str[j++] = '$';
 	while (ft_isalnum(name[*i]) || name[*i] == '_')
 		str[j++] = name[(*i)++];
 	str[j] = '\0';
@@ -75,7 +76,7 @@ char	*set_dollar(char *name, int *i)
 
 	while (name[*i])
 	{
-		*(i)++;
+		(*i)++;
 		if (name[*(i)] == '$')
 			return (ft_strdup("$$"));
 		else if (name[*(i)] == '?')
@@ -96,6 +97,12 @@ char	*set_dollar(char *name, int *i)
 			return (ft_strdup("$"));
 		}
 	}
+	return (ft_strdup("$"));
+}
+
+lex_red(t_env **lexer, char *input, int *i)
+{
+	
 }
 
 t_lexer	*lex(t_lexer *lexer, char *input)
@@ -119,8 +126,8 @@ t_lexer	*lex(t_lexer *lexer, char *input)
 			lex_init(&lexer, ft_strdup(&input[i]), PIPE);
 		else if (input[i] == '$') /////dolar
 			lex_init(&lexer, set_dollar(input, &i), VAR);
-		// else if (input[i] == '>' || input[i] == '<') /////Redirections
-		// 	lex_init(&lexer, input[i], );
+		else if (input[i] == '>' || input[i] == '<') /////Redirections
+			lex_red(&lexer, input, &i);
 		else
 			lex_init(&lexer, word_type(input, &i), WORD);
 		i++;
@@ -148,7 +155,7 @@ int main()
 		printf("CMD: %s\n", input);
 		lexing = lex(lexing, input);
 		ft_print_lexer(lexing);
-		pause();
+		// pause();
 		free(input);
 	}
 	return 0;
