@@ -11,7 +11,7 @@
 // 		return ("GENERAL");
 // }
 
-char	*get_type(enum e_token token)
+char	*get_type(e_token token)
 {
 	if (token == WSPACE)
 		return ("SPACE");

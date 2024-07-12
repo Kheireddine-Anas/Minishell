@@ -9,21 +9,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-
-typedef struct s_env
-{
-	char			*variable;
-	char			*value;
-	struct s_env	*next;
-}	t_env;
-
-typedef struct s_data
-{
-	char	**cmnd;
-
-}	t_data;
-
-enum				e_token
+typedef enum				s_token
 {
 	D_QUOTE = '\"',
 	S_QUOTE = '\'',
@@ -36,12 +22,39 @@ enum				e_token
 	WORD,
 	HERE_DOC,
 	OUT_FILE,
-};
+} e_token;
+
+typedef struct s_env
+{
+	char			*variable;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
+
+typedef struct  s_red
+{
+	/* data */
+	e_token type;
+	char *file;
+	struct s_red *next;
+
+} t_redir;
+ 
+typedef struct s_data
+{
+	char	**cmnd;
+	t_redir *red;
+	char **env;
+	struct s_data *next;
+
+}	t_data;
+
+
 
 typedef struct s_lexer
 {
 	char			*value;
-	enum e_token	type;
+	e_token	type;
 	struct s_lexer	*next;
 }	t_lexer;
 

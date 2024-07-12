@@ -11,7 +11,7 @@
 // 	}
 // }
 
-void	lex_init(t_lexer **lex, char *value, enum e_token type)
+void	lex_init(t_lexer **lex, char *value, e_token type)
 {
 	t_lexer	*new;
 	t_lexer	*tmp;
@@ -100,10 +100,10 @@ char	*set_dollar(char *name, int *i)
 	return (ft_strdup("$"));
 }
 
-lex_red(t_env **lexer, char *input, int *i)
-{
+// void lex_red(t_env **lexer, char *input, int *i)
+// {
 	
-}
+// }
 
 t_lexer	*lex(t_lexer *lexer, char *input)
 {
@@ -126,8 +126,8 @@ t_lexer	*lex(t_lexer *lexer, char *input)
 			lex_init(&lexer, ft_strdup(&input[i]), PIPE);
 		else if (input[i] == '$') /////dolar
 			lex_init(&lexer, set_dollar(input, &i), VAR);
-		else if (input[i] == '>' || input[i] == '<') /////Redirections
-			lex_red(&lexer, input, &i);
+		// else if (input[i] == '>' || input[i] == '<') /////Redirections
+		// 	lex_red(&lexer, input, &i);
 		else
 			lex_init(&lexer, word_type(input, &i), WORD);
 		i++;
