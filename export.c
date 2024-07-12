@@ -17,6 +17,7 @@ void	show_exp(t_env *env)
 		tmp = tmp->next;
 	}
 }
+
 int	check_exp(char *name)
 {
 	int	i;
