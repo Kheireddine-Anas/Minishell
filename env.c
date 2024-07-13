@@ -24,13 +24,13 @@ char	*set_value(char *str)
 
 	i = 0;
 	j = 0;
-	while (str[i] && str[i] != '=')
+	while (str[i] && str[i] != '=' && str[i] != ' ')
 		i++;
 	if (!str[i])
 		return (ft_strdup(""));
 	value = ft_calloc((ft_strlen(str) - i) , sizeof(char));
 	i++;
-	while (str[i])
+	while (str[i] && str[i] != '=' && str[i] != ' ')
 		value[j++] = str[i++];
 	value[j] = '\0';
 	return (value);
@@ -140,13 +140,13 @@ int main(int ac, char **av, char **envs)
 	// }
 	envirs = env_set(env); //ENV as char **
 	// check_cmd(av);
-	cmd_cd((av + 1), env);
+	// cmd_cd((av + 1), env);
 	// cmd_cd((av + 2), env);
 	i = 0;
-	// while (envirs[i]) //Uncomment this loop to see ENV struct
-	// {
-	// 	printf("%s\n", envirs[i++]);
-	// }
+	while (envirs[i]) //Uncomment this loop to see ENV struct
+	{
+		printf("%s\n", envirs[i++]);
+	}
 	// printf("******\n");
 	return 0;
 }

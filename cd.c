@@ -25,7 +25,7 @@ void	cmd_cd(char **path, t_env *env)
 	crnt = getcwd(NULL, 0);
 	if(path[1])
 	{
-		if (chdir(path[1][0]) == '-') //Change the working directory if it not changed it print an error
+		if (path[1][0] == '-') //Change the working directory if it not changed it print an error
 		{
 			printf("cd: No doesn't accept options");
 			// exit(1);
