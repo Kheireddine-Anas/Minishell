@@ -16,6 +16,7 @@ void	update_env(t_env *env, char *var, char *value)
 		tmp = tmp->next;
 	}
 }
+
 void	cmd_cd(char **path, t_env *env)
 {
 	char	*pth;
@@ -24,6 +25,11 @@ void	cmd_cd(char **path, t_env *env)
 	crnt = getcwd(NULL, 0);
 	if(path[1])
 	{
+		if (chdir(path[1][0]) == '-') //Change the working directory if it not changed it print an error
+		{
+			printf("cd: No doesn't accept options");
+			// exit(1);
+		}
 		if (chdir(path[1]) == -1) //Change the working directory if it not changed it print an error
 		{
 			printf("cd: No such file or directory %s", path[1]);

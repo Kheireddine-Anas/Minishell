@@ -119,7 +119,7 @@ int main(int ac, char **av, char **envs)
 		tmp = tmp->next;
 		i++;
 	}
-	// 	cmd_export(env, av + 1); // HERE We export av[1] to env struct
+	cmd_export(env, av + 1); // HERE We export av[1] to env struct
 	// while (tmp1) //Uncomment this loop to see ENV struct
 	// {
 	// 	printf("%s*****%s\n", tmp1->variable, tmp1->value);
@@ -141,11 +141,12 @@ int main(int ac, char **av, char **envs)
 	envirs = env_set(env); //ENV as char **
 	// check_cmd(av);
 	cmd_cd((av + 1), env);
-	cmd_cd((av + 2), env);
-	while (env) //Uncomment this loop to see ENV struct
-	{
-		printf("%s=%s\n", env->variable, env->value);
-		env = env->next;
-	}
+	// cmd_cd((av + 2), env);
+	i = 0;
+	// while (envirs[i]) //Uncomment this loop to see ENV struct
+	// {
+	// 	printf("%s\n", envirs[i++]);
+	// }
+	// printf("******\n");
 	return 0;
 }

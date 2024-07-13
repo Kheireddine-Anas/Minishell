@@ -23,7 +23,7 @@ int	check_exp(char *name)
 	int	i;
 
 	i = 0;
-	if (ft_isdigit(name[0]))
+	if (ft_isdigit(name[0]) || name[0] == '=')
 		return (1);
 	while (name[i] && name[i] != '=')
 	{
@@ -58,18 +58,19 @@ void	add_exp(t_env *env, char *value, char *var)
 	}
 }
 
-void	export_add(t_env *env, char **value)
+void	export_add(t_env **env, char **value)
 {
 	int		i;
 	char	*var;
 	t_env	*tmp;
 
-	tmp = env;
+	tmp = *env;
 	i = 1;
 	while (value[i])
 	{
 		var = set_name(value[i]);
-		if (!check_exp(var))
+		// printf("///%s///*%s*///\n", value[i], var); //We Should set the EXIT status to 1
+		if (!check_exp(value[i]))
 			add_exp(tmp, value[i], var);
 		else
 		{
@@ -82,14 +83,9 @@ void	export_add(t_env *env, char **value)
 void	cmd_export(t_env *env, char **add)
 {
 	t_env	*tmp;
-	t_env	*tmp1;
 
-	tmp = env;
-	tmp1 = env;
-	while (tmp->next)
-		tmp = tmp->next;
 	if (!add[1])
 		show_exp(env);
 	else
-		export_add(tmp, add);
+		export_add(&env, add);
 }
