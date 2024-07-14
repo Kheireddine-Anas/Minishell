@@ -115,3 +115,16 @@ char	*ft_strjoin(char *s1, char *s2, int val)
 		free(s1);
 	return (str);
 }
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if ((char)c == '\0')
+		return ((char *)s);
+	return (NULL);
+}

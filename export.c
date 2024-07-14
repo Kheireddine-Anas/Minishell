@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 void	show_exp(t_env *env)
 {
 	t_env	*tmp;
@@ -68,13 +67,15 @@ void	export_add(t_env **env, char **value)
 	i = 1;
 	while (value[i])
 	{
-		var = set_name(value[i]);
-		// printf("///%s///*%s*///\n", value[i], var); //We Should set the EXIT status to 1
-		if (!check_exp(value[i]))
-			add_exp(tmp, value[i], var);
-		else
+		if (ft_strchr(value[i], '='))
 		{
-			printf("Valid Identifier\n"); //We Should set the EXIT status to 1
+			var = set_name(value[i]);
+			if (!check_exp(value[i]))
+				add_exp(tmp, value[i], var);
+			else
+			{
+				printf("Valid Identifier\n"); //We Should set the EXIT status to 1
+			}
 		}
 		i++;
 	}

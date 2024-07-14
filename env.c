@@ -95,7 +95,6 @@ char	**env_set(t_env *env)
 		envirs[i++] = ft_strjoin(tmp->variable, tmp->value, 1);
 		tmp = tmp->next;
 	}
-	// printf("%s\n", envirs[33]);
 	return (envirs);
 }
 

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include <signal.h>
 #include <readline/readline.h>
@@ -66,6 +67,7 @@ int		ft_isalpha(int c);
 int		ft_isalnum(int c);
 int		ft_strlen(char *str);
 int		ft_strcmp(char *s1, char *s2);
+char	*ft_strchr(const char *s, int c);
 char	*get_env(t_env *envs, char *srch);
 void	cmd_cd(char **path, t_env *env);
 char	*set_name(char *str);
