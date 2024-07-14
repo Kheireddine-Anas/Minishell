@@ -105,7 +105,8 @@ void print_env(env_t *env)
 	tmp = env;
 	while (tmp)
 	{
-		printf("%s=%s\n",tmp->key,tmp->value);
+		if(ft_strlen(tmp->value) != 0)
+			printf("%s=%s\n",tmp->key,tmp->value);
 		tmp =tmp->next;
 	}
 }
