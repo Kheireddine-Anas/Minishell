@@ -13,12 +13,18 @@ void	lstclear(t_cmd **lst)
 	{
 		next = help -> next;
 		if(help->in)
-			free(help->in);
+		{
+			while ((*help->in))
+			{
+				free(*help->in);
+				help->in++;
+			}
+		}
 		if(help->out)
 			free(help->out);
 		if(help->option && *help->option )
 			free(help->option);
-		if(help->extra_arg &&* help->extra_arg)
+		if(help->extra_arg && *help->extra_arg)
 			free(help->extra_arg);
 		free (help);
 		help = next;
@@ -70,7 +76,7 @@ void initialise_noud(t_cmd	**new)
 	(*new)->in = ft_calloc(5,sizeof(char *));
 	(*new)->fil_in = ft_calloc(5,sizeof(char *));
 	(*new)->fil_out = ft_calloc(5,sizeof(char *));
-	(*new)->out = NULL;
+	(*new)->out = ft_calloc(5,sizeof(char *));
 }
 int  add_to_noud(Token	*tokens, int *i,t_cmd **new , int num_tokens)
 {
@@ -78,9 +84,11 @@ int  add_to_noud(Token	*tokens, int *i,t_cmd **new , int num_tokens)
 	int		k;
 	int		m;
 	int		l;
-	int out;
+	int		o;
+	int		out;
 
 	j = 0;
+	o = 0;
 	k = 0;
 	l = 0;
 	m = 0;
@@ -91,6 +99,7 @@ int  add_to_noud(Token	*tokens, int *i,t_cmd **new , int num_tokens)
 	{
 		if(tokens[*i].type == PIP)
 		{
+			(*new)->out[o] = NULL;
 			(*new)->extra_arg[m] = NULL;
 			(*new)->in[l] = NULL;
 			(*new)->option[j] = NULL;
@@ -99,13 +108,20 @@ int  add_to_noud(Token	*tokens, int *i,t_cmd **new , int num_tokens)
 			(*new)->next = NULL;
 			return(1);
 		}
-		if(tokens[*i].type == IN || tokens[*i].type == HER_DOC)
+		else if(tokens[*i].type == QUOTE_SINGLE && tokens[*i].value[0] == '\'')
+				(*new)->single = 1;
+		else if(tokens[*i].type == QUOTE_DOUBLE && tokens[*i].value[0] == '\"')
+				(*new)->double_q = 1;
+		else if(tokens[*i].type == IN || tokens[*i].type == HER_DOC)
 		{
 			(*new)->in[l] =  tokens[*i].value;
 			l++;
 		}
 		else if(tokens[*i].type == OUT || tokens[*i].type == APPEND)
-			(*new)->out = tokens[*i].value;
+		{
+			(*new)->out[o] = tokens[*i].value;
+			o++;
+		}
 		else if(tokens[*i].type == OPTION || tokens[*i].type == VARIABLE || tokens[*i].type == QUOTE_SINGLE || tokens[*i].type == QUOTE_DOUBLE || tokens[*i].type == WORD || tokens[*i].type == CMD)
 		{
 			(*new)->option[j] = tokens[*i].value;
@@ -129,6 +145,7 @@ int  add_to_noud(Token	*tokens, int *i,t_cmd **new , int num_tokens)
 		*i+=1;
 	}
 	(*new)->extra_arg[m] = NULL;
+	(*new)->out[o] = NULL;
 	(*new)->in[l] = NULL;
 	(*new)->option[j] = NULL;
 	(*new)->fil_in[k] = NULL;
@@ -137,7 +154,7 @@ int  add_to_noud(Token	*tokens, int *i,t_cmd **new , int num_tokens)
 	return (0);
 }
 
-void creat_cmd(t_cmd	**lst, char *command, char **env)
+void creat_cmd(t_cmd	**lst, char *command, char **env, t_status	**status)
 {
 	int		i;
 	t_cmd	*new;
@@ -146,7 +163,7 @@ void creat_cmd(t_cmd	**lst, char *command, char **env)
 
 	i = 0;
 	tokens = tokenize(command, &num_tokens);
-	parse(&tokens, num_tokens, env, &new);
+	parse(&tokens, num_tokens, env, status);
 	while(i < num_tokens)
 	{
 		if(add_to_noud(tokens, &i, &new, num_tokens) == 1 && i < num_tokens)

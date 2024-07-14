@@ -1,0 +1,12 @@
+total 128
+-rw-r--r--   1 ahamdi  candidates    914 Jul 13 09:36 Makefile
+drwxr-xr-x   8 ahamdi  candidates    272 Jul 14 21:02 execution
+-rw-r--r--   1 ahamdi  candidates    728 Jul  8 21:58 extra.c
+drwxr-xr-x   5 ahamdi  candidates    170 Jul 14 21:02 getNextLine
+-rwxr-xr-x   1 ahamdi  candidates      0 Jul 14 21:04 her_doc
+drwxr-xr-x  49 ahamdi  candidates   1666 Jul 14 21:02 libft
+-rw-r--r--   1 ahamdi  candidates   3738 Jul 14 20:03 main.c
+-rwxr-xr-x   1 ahamdi  candidates  46888 Jul 14 21:02 minishell
+-rw-r--r--   1 ahamdi  candidates   3320 Jul 14 20:00 minishell.h
+drwxr-xr-x  10 ahamdi  candidates    340 Jul 14 21:02 parsing
+-rwxr-xr-x   1 ahamdi  candidates      0 Jul 14 21:04 test

@@ -159,7 +159,7 @@ char **create_cmmmand(char **str)
 	return (result);
 }
 
-char *add_valu_variable(char *str, char **envp)
+char *add_valu_variable(char *str, char **envp, t_status	**status)
 {
     if (!str)
         return NULL;
@@ -171,6 +171,8 @@ char *add_valu_variable(char *str, char **envp)
     char *variable;
     char *tmp;
 
+	if (ft_strcmp("$?", str) == 0)
+		return (ft_itoa((*status)->status));
     if (ft_strchr(str, '$'))
         str1 = split_variable(str);
     if (!str1)

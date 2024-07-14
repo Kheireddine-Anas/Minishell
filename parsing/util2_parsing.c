@@ -61,15 +61,11 @@ void word(char **p, Token **tokens, int *num_tokens)
         c = *(*p- 1);
 	h = **p;
 	start = *p;
-    while (**p != '\0' &&  **p != '$' && **p != '\"' && **p != '\'' && !is_space(**p) && **p != '|')
+    while (**p != '\0' &&  **p != '$' && **p != '\"' && **p != '\'' && !is_space(**p) && **p != '|' && **p != '<' && **p != '>')
         (*p)++;
     len = (*p) - start;
 	if(h == '-')
 		(*tokens)[(*num_tokens)].type = OPTION;
-	else if(c == '<')
-		(*tokens)[(*num_tokens)].type = FILE_IN;
-	else if (c == '>')
-		(*tokens)[(*num_tokens)].type = FILE_OUT;
 	else
 		(*tokens)[(*num_tokens)].type = WORD;
 	(*tokens)[(*num_tokens)++].value = strndup(start, len);

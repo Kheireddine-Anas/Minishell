@@ -45,7 +45,7 @@ Token* tokenize(char *p, int *num_tokens)
     return (tokens);
 }
 
-void parse(Token **tokens, int num_tokens, char **envp, t_cmd	**new)
+void parse(Token **tokens, int num_tokens, char **envp, t_status	**status)
 {
     int i;
 
@@ -54,41 +54,58 @@ void parse(Token **tokens, int num_tokens, char **envp, t_cmd	**new)
 
     while(i < num_tokens) 
     {
-        if ((*tokens)[i].type == QUOTE_SINGLE)
+		if((*tokens)[i].type == WORD)
+		{
+			if(i != 0 && (*tokens)[i - 1].type == IN)
+				(*tokens)[i].type = FILE_IN;
+			else if(i != 0 && (*tokens)[i - 1].type == HER_DOC)
+				(*tokens)[i].type = LIM;
+			else if(i != 0 && ((*tokens)[i - 1].type == OUT ||  (*tokens)[i - 1].type == APPEND))
+				(*tokens)[i].type = FILE_OUT;
+		}
+        else if ((*tokens)[i].type == QUOTE_SINGLE)
 		{
 			tmp = (*tokens)[i].value;
 			(*tokens)[i].value = remove_single_qoute((*tokens)[i].value);
 			free(tmp);
-			if((*tokens)[i].value[0] == '\'')
-				(*new)->single = 1;
 			if (i == 0)
 				(*tokens)[i].type = CMD;
-			else if ((*tokens)[i - 1].type == CMD || (*tokens)[i].value[0] == '-')
+			else if ((i != 0 && (*tokens)[i - 1].type == CMD) || (*tokens)[i].value[0] == '-')
 				(*tokens)[i].type = OPTION;
+			if(i != 0 && (*tokens)[i - 1].type == IN)
+				(*tokens)[i].type = FILE_IN;
+			else if(i != 0 && (*tokens)[i - 1].type == HER_DOC)
+				(*tokens)[i].type = LIM;
+			else if(i != 0 && ((*tokens)[i - 1].type == OUT ||  (*tokens)[i - 1].type == APPEND))
+				(*tokens)[i].type = FILE_OUT;
 		}
         else if ((*tokens)[i].type == QUOTE_DOUBLE)
 		{
 			tmp = (*tokens)[i].value;
 			(*tokens)[i].value = remove_doubl_qoute((*tokens)[i].value);
 			free(tmp);
-			if((*tokens)[i].value[0] == '\"')
-				(*new)->double_q = 1;
 			if(ft_strchr((*tokens)[i].value, '$'))
 			{
 				(*tokens)[i].type = VARIABLE;
-				(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp);
+				(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp, status);
 				if (i != 0 && (*tokens)[i - 1].type == CMD)
 					(*tokens)[i].type = OPTION;
 			}
 			if (i == 0)
 				(*tokens)[i].type = CMD;
-			if ((*tokens)[i - 1].type == CMD || (*tokens)[i].value[0] == '-')
+			if ((i != 0 &&(*tokens)[i - 1].type == CMD) || (*tokens)[i].value[0] == '-')
 				(*tokens)[i].type = OPTION;
+			if(i != 0 && (*tokens)[i - 1].type == IN)
+				(*tokens)[i].type = FILE_IN;
+			else if(i != 0 && (*tokens)[i - 1].type == HER_DOC)
+				(*tokens)[i].type = LIM;
+			else if(i != 0 && ((*tokens)[i - 1].type == OUT ||  (*tokens)[i - 1].type == APPEND))
+				(*tokens)[i].type = FILE_OUT;
 		} 
 		else if((*tokens)[i].type == VARIABLE)
 		{
 			if(ft_strchr((*tokens)[i].value, '$'))
-				(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp);
+				(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp, status);
 			if (i == 0)
 				(*tokens)[i].type = CMD;
 			if (i != 0 && (*tokens)[i - 1].type == CMD)
