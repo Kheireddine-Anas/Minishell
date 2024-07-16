@@ -88,7 +88,7 @@ void quot(char **p, Token **tokens, int *num_tokens)
     	(*tokens)[(*num_tokens)].type = QUOTE_SINGLE;
 		(*tokens)[(*num_tokens)++].value = strndup(start, len);
 	}
-	if (**p == '"') 
+	else if (**p == '"') 
 	{
         start = (*p)++;
         while (**p && **p != '"')
@@ -104,7 +104,7 @@ void quot(char **p, Token **tokens, int *num_tokens)
 		(*tokens)[(*num_tokens)++].value = strndup(start, len);
     }
     
-    if (**p == '/' || **p == '.' || **p == '$')
+    else if (**p == '/' || **p == '.' || **p == '$')
 	{
         c = **p;
 		start = (*p)++;

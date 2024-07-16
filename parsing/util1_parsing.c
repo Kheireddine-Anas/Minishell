@@ -128,7 +128,28 @@ Token	*realloc_cmd( Token **tokens, int *capacity)
 	free(*tokens);
 	return (new_cmd);
 }
+char	**realloc_array( char ***str, int capacity)
+{
+    int		i;
+    char	**new_cmd;
 
+    capacity += 2;
+    new_cmd = ft_calloc( capacity, sizeof(char *));
+    if (!new_cmd)
+    {
+        free(*str);
+        exit(EXIT_FAILURE);
+    }
+    i = 0;
+    while (i < (capacity - 2) && (*str)[i] != NULL)
+    {
+        new_cmd[i] = ft_strdup((*str)[i]);
+        // free((*str)[i]);
+        i++;
+    }
+    free(*str);
+    return (new_cmd);
+}
 char **create_cmmmand(char **str)
 {
 	int i;
@@ -214,6 +235,14 @@ char *add_valu_variable(char *str, char **envp, t_status	**status)
 	}
 	free(str1);
     return (str);
+}
+int	st_2derra(char **str, int k)
+{
+	str[k] = NULL;
+	int i = 0;
+	while(str[i])
+		i++;
+	return (i);
 }
 char	*strjoi(char *s1, char *s2, char *s3)
 {

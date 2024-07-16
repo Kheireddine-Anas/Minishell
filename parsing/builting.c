@@ -1,5 +1,5 @@
 #include "../minishell.h"
-size_t strle_2derra(char **str)
+int	strle_2derra(char **str)
 {
 	int i = 0;
 	while(str[i])
@@ -8,7 +8,7 @@ size_t strle_2derra(char **str)
 }
 int	rediraction(t_cmd	*lst_cmd, t_status **status,  t_fd_ **fd_in_out)
 {
-	size_t i = 0;
+	int i = 0;
 	int *fd;
 
 	fd = ft_calloc(ft_strlen(*lst_cmd->fil_out), sizeof(int));
@@ -22,7 +22,7 @@ int	rediraction(t_cmd	*lst_cmd, t_status **status,  t_fd_ **fd_in_out)
 				if ( (*fd_in_out)->her_doc == -2)
 					return (2);
 			}	
-			if( i  < (strle_2derra(lst_cmd->fil_in) - 1) && ft_strcmp("<<",lst_cmd->in[i]) != 0)
+			if( (i  < strle_2derra(lst_cmd->fil_in) - 1) && ft_strcmp("<<",lst_cmd->in[i]) != 0)
 			{
 				(*fd_in_out)->STDIN  = open(lst_cmd->fil_in[i], O_RDONLY );
 				if ((*fd_in_out)->STDIN == -1)

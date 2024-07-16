@@ -3,7 +3,7 @@ src  =  parsing/parssing.c   parsing/eroor.c main.c execution/rediraction.c pars
 obj = $(src:.c=.o) 
 NAME = minishell
 LIBFT = libft/libft.a
-CFLAG = -Wall -Wextra -Werror     -I/Users/ahamdi/.brew/opt/readline/include 
+CFLAG = -Wall -Wextra -Werror   -I/Users/ahamdi/.brew/opt/readline/include 
 # -fsanitize=address 
 LFLAG = -L/Users/ahamdi/.brew/opt/readline/lib   -lreadline -lncurses 
 

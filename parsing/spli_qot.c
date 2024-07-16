@@ -10,37 +10,38 @@ Token* tokenize(char *p, int *num_tokens)
     Token *tokens;
     int max_tokens;
 	tokens = NULL;
-	max_tokens = 10;
+	max_tokens = 2;
 	*num_tokens = 0;
     tokens = ft_calloc(max_tokens , sizeof(Token));
     if (!tokens)
 		error_alocation();
     while (*p)
 	{
-        if (is_space(*p))
+		if(*num_tokens >= max_tokens)
+			tokens = realloc_cmd(&tokens, &max_tokens);
+        else if (is_space(*p))
             p++;
-		if ((*p == '\'' && *(p+1) == '\'' && *(p+2) != ' ' )|| (*p == '\"' && *(p+1) == '\"' && *(p+2) != ' ')) 
-            p += 2; 
-        quot(&p, &tokens, num_tokens);
-		if(*p == '<')
+		else if ((*p == '\'' && *(p+1) == '\'' && *(p+2) != ' ' )|| (*p == '\"' && *(p+1) == '\"' && *(p+2) != ' ')) 
+            p += 2;
+		else if(*p == '/' || *p == '.' || *p == '$' || *p == '"' || *p == '\'')
+        	quot(&p, &tokens, num_tokens);
+		else if(*p == '<')
 			in(&p, &tokens, num_tokens);
-		if(*p == '>')
+		else if(*p == '>')
 			out(&p,&tokens, num_tokens);
-		if (is_space(*p))
+		else if (is_space(*p))
 		{
 			while (*p && is_space(*p))
 				p++;
 		}
-		if (*p == '|')
+		else if (*p == '|')
 		{
 			tokens[(*num_tokens)].type = PIP;
 			tokens[(*num_tokens)++].value = strndup(p, 1);
 			p++;
 		}
-        if (*p != '\0' &&  *p != '$' && *p != '\"' && *p != '\'' && !is_space(*p) && *p != '<' && *p != '>')
+        else if (*p != '\0' &&  *p != '$' && *p != '\"' && *p != '\'' && !is_space(*p) && *p != '<' && *p != '>')
 			word(&p, &tokens, num_tokens);
-		if(*num_tokens >= max_tokens)
-			tokens = realloc_cmd(&tokens, &max_tokens);
     }
     return (tokens);
 }
@@ -120,16 +121,14 @@ void parse(Token **tokens, int num_tokens, char **envp, t_status	**status)
 // {
 // 	(void)argc;
 // 	(void)argv;
-//     char *str = "ls -l -a <test >hamdi ";
+// 	t_status	*status;
+// 	status = ft_calloc(1, sizeof(t_status));
+//     char *str = "cat <l < k< k <p <m <l <<l <k <o <p <k <p <k <o <p <m <p <<n <m <n <o <p <p <p ";
 //     Token *tokens;
 //     int i = 0;
 //     int num_tokens = 0;
-// 	t_cmd	*new;
-// 		new = ft_calloc(1, sizeof(t_cmd));
-// 	if (!new)
-// 		return (0);
 //     tokens = tokenize(str, &num_tokens);
-// 	parse(&tokens, num_tokens, envp,&new);
+// 	parse(&tokens,num_tokens, envp, &status);
 //     if (!tokens)
 //         exit(EXIT_FAILURE);
 // 	while (i < num_tokens)

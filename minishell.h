@@ -76,6 +76,9 @@ typedef struct s_status
 {
 	int status;
 } t_status;
+int		st_2derra(char **str, int k);
+int		strle_2derra(char **str);
+char	**realloc_array( char ***str, int capacity);
 void	clo(int fd);
 int		error_rederaction(t_cmd *cmd);
 int		while_loop(t_cmd **cmd ,t_fd_ **fd_in_out);
