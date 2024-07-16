@@ -46,12 +46,8 @@ void	commad_path(t_cmd *cmd, char **envp ,t_status **status)
 
 	i = 0;
 	path = cmd->option[0];
-	(*status)->status = 0;
 	if (execve(path, cmd->option, envp) == -1)
-	{
-		error_ch(status);
-		exit(1);
-	}
+		error_ch(status, cmd->option[0]);
 }
 
 void	execute(t_cmd	*cmd, char **envp, t_status **status)
@@ -61,11 +57,7 @@ void	execute(t_cmd	*cmd, char **envp, t_status **status)
 
 	i = 0;
 	path = get_path(envp, cmd->option[0], 0);
-	(*status)->status = 0;
 	if (execve(path, cmd->option, envp) == -1)
-	{
-		error_ch(status);
-		exit(1);
-	}
+		error_ch(status, cmd->option[0]);
 }
 

@@ -1,10 +1,5 @@
 #include "../minishell.h"
 
-void	erro(t_status **status)
-{
-	perror("Error in open file");
-	(*status)->status = 3;
-}
 void handle_sigint(int sig)
 {
 	if (sig == SIGINT)
@@ -18,14 +13,13 @@ void handle_sigint(int sig)
 
 int	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ **fd_in_out,  t_status **status)
 {
-
+	(*status)->status = 0;
 	if(error_rederaction(cmd) == 1)
 		return (0);
 	
 	if (!cmd || !cmd->option || !envp)
 	{
-		perror("invalide command");
-		(*status)->status = 1;
+		error_ch( status, cmd->option[0]);
 		return (0);
 	}
 	if(cmd->single > 0 || cmd->double_q > 0)
@@ -38,24 +32,24 @@ int	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ **fd_in_out,  t_status
 	{
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-	}
+	} 
 	exe_cmd(cmd, envp, status);
 	return (0);
 }
 void	fin_commande(t_cmd *cmd, char **envp, t_status **status)
 {
-	if (!cmd->option[0])
+	if (!cmd || !cmd->option || !envp)
 	{
-		perror("invalide command");
-		(*status)->status = 1;
-		exit(1);
+		errer_cmd( status, cmd->option[0]);
+		return ;
 	}
 	if (cmd->single > 0 || cmd->double_q > 0)
 	{
 		ft_putstr_fd("\033[1;31msyntax error : error in quot\033[0m\n", 2);
 		(*status)->status = 1;
-		exit(1);
+		return ;
 	}
+	(*status)->status = 0;
 	exe_cmd(cmd, envp, status);
 }
 

@@ -76,6 +76,8 @@ typedef struct s_status
 {
 	int status;
 } t_status;
+void	errer_cmd( t_status **status, char *str);
+void	print_minishell(void);
 int		st_2derra(char **str, int k);
 int		strle_2derra(char **str);
 char	**realloc_array( char ***str, int capacity);
@@ -93,7 +95,7 @@ void	cmd_cd(char **path, env_t **env, t_status **status);
 char	**get_erray_env(env_t	*env);
 Token	*tokenize(char *p, int *num_tokens);
 void	parse(Token **tokens, int num_tokens, char **envp, t_status	**status);
-void	error_ch(t_status **status);
+void	error_ch( t_status **status, char *str);
 int		filecommade(t_cmd *cmd, char **env, t_status **status);
 char	*get_path(char **envp, char *cmd, int i);
 Token	*realloc_cmd( Token **tokens, int *capacity);
@@ -109,7 +111,7 @@ char	*remove_doubl_qoute(char *str);
 char 	**create_cmmmand(char **str);
 char 	*chercher_variable(char *str, char **envp);
 void	here_doc(t_cmd *cmd);
-void	erro(t_status **status);
+void	erro(t_status **status, char *str);
 void	exe_cmd(t_cmd *cmd, char **envp,  t_status **status);
 void	handle_sigint(int sig);
 int		child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ **fd_in_out, t_status **status);

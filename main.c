@@ -79,6 +79,7 @@ static void	lop(t_cmd	*lst_cmd, env_t	**env, t_status	**status , char *line)
 			child_process(lst_cmd, envp, fd, &fd_in_out,  status);
 		else if (pids[i] == 0 && lst_cmd == last)
 			fin_commande(lst_cmd, envp, status);
+		(*status)->status = 0;
 		lst_cmd = lst_cmd->next; 
 		whilloop(fd);
 	}
@@ -122,9 +123,10 @@ int main (int argc, char *argv[], char **envp)
 	if (!status)
 		return (0);
 	status->status = 0;
+	print_minishell();
 	while(1)
 	{
-		line = readline("\033[1;32mminishell-$ \033[0m");
+		line = readline("\033[1;32mmini-shell> \033[0m");
 		if(line == NULL)
 			break;
 		add_history(line);

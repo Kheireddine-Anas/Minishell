@@ -7,7 +7,7 @@ int	while_loop(t_cmd **cmd ,t_fd_ **fd_in_out)
 
 	dup2((*fd_in_out)->fd_in,STDIN_FILENO);
 	dup2((*fd_in_out)->fd_out,STDOUT_FILENO);
-	fd = open("her_doc", O_CREAT | O_RDWR | O_TRUNC, 0777);
+	fd = open("/tmp/her_doc", O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if(fd == -1)
 	{
 		perror("Error in open file");
