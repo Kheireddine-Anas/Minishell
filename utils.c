@@ -128,3 +128,26 @@ char	*ft_strchr(const char *s, int c)
 		return ((char *)s);
 	return (NULL);
 }
+
+char	*ft_strstr(char *str, char *to_find)
+{
+	unsigned int	cc;
+	unsigned int	i;
+
+	if (!*to_find)
+		return ((char*)str);
+	cc = 0;
+	while (str[cc] != '\0')
+	{
+		if (str[cc] == to_find[0])
+		{
+			i = 1;
+			while (to_find[i] != '\0' && str[cc + i] == to_find[i])
+				++i;
+			if (to_find[i] == '\0')
+				return ((char*)&str[cc]);
+		}
+		++cc;
+	}
+	return (0);
+}

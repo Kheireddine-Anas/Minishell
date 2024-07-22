@@ -1,4 +1,54 @@
-#include "crd.h"
+#include "w_crd.h"
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if ((s1[i] != s2[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if ((char)c == '\0')
+		return ((char *)s);
+	return (NULL);
+}
+
+char	*ft_strstr(char *str, char *to_find)
+{
+	unsigned int	cc;
+	unsigned int	i;
+
+	if (!*to_find)
+		return ((char*)str);
+	cc = 0;
+	while (str[cc] != '\0')
+	{
+		if (str[cc] == to_find[0])
+		{
+			i = 1;
+			while (to_find[i] != '\0' && str[cc + i] == to_find[i])
+				++i;
+			if (to_find[i] == '\0')
+				return ((char*)&str[cc]);
+		}
+		++cc;
+	}
+	return (0);
+}
 
 int	ft_strlen(char *str)
 {
@@ -45,40 +95,51 @@ void	*ft_calloc(int count, int size)
 	return (hld);
 }
 
-char	**list_directory(const char *path, int *count)
+char	**resizer(char **entries, int *capacity, int size)
+{
+	char	**new_entries;
+	int		new_capacity;
+	int		i;
+
+	new_capacity = *capacity * 2;
+	new_entries = ft_calloc(new_capacity, sizeof(char *));
+	if (!new_entries)
+		perror("ft_calloc");
+	i = 0;
+	while (i < size)
+	{
+		new_entries[i] = entries[i];
+		i++;
+	}
+	free(entries);
+	*capacity = new_capacity;
+	return (new_entries);
+}
+
+char	**list_directory(char *path, int *count)
 {
 	DIR				*dir;
 	struct dirent	*entry;
 	char			**entries;
-	char			**new_entries;
 	int				capacity;
-	int				new_capacity;
 	int				size;
-	int				i;
 
 	dir = opendir(path);
 	if (!dir)
+	{
 		perror("opendir problem");
+		exit(EXIT_FAILURE);
+	}
 	capacity = 10;
 	size = 0;
-	i = 0;
-	entries = ft_calloc(capacity, sizeof(char *)); //Protect the allocation
+	entries = ft_calloc(capacity, sizeof(char *));
 	while ((entry = readdir(dir)) != NULL)
 	{
 		if (size >= capacity)
 		{
-			new_capacity = capacity * 2;
-			new_entries = ft_calloc(new_capacity, sizeof(char *)); //Protect the allocation
-			while (i < size)
-			{
-				new_entries[i] = entries[i];
-				i++;
-			}
-			free(entries);
-			entries = new_entries;
-			capacity = new_capacity;
+			entries = resizer(entries, &capacity, size);
 		}
-		entries[size] = ft_strdup(entry->d_name); //Protect the allocation
+		entries[size] = ft_strdup(entry->d_name);
 		size++;
 	}
 	closedir(dir);
@@ -86,16 +147,15 @@ char	**list_directory(const char *path, int *count)
 	return (entries);
 }
 
-int	match_pattern(const char *filename, const char *pattern)
+int	search_match(char *filename, char *pattern)
 {
-	if (pattern[0] == '*' && pattern[strlen(pattern) - 1] == '*')
-		return (strstr(filename, pattern + 1) != NULL);
+	if (pattern[0] == '*' && pattern[ft_strlen(pattern) - 1] == '*')
+		return (ft_strstr(filename, pattern + 1) != NULL);
 	if (pattern[0] == '*')
-		return (strstr(filename, pattern + 1) ==
-			filename + strlen(filename) - strlen(pattern) + 1);
-	if (pattern[strlen(pattern) - 1] == '*')
-		return (strncmp(filename, pattern, strlen(pattern) - 1) == 0);
-	return (strcmp(filename, pattern) == 0);
+		return (ft_strstr(filename, pattern + 1) == filename + ft_strlen(filename) - ft_strlen(pattern) + 1);
+	if (pattern[ft_strlen(pattern) - 1] == '*')
+		return (strncmp(filename, pattern, ft_strlen(pattern) - 1) == 0);
+	return (ft_strcmp(filename, pattern) == 0);
 }
 
 void	exe_wildcard(char *argv[])
@@ -106,19 +166,15 @@ void	exe_wildcard(char *argv[])
 	int		j;
 
 	entries = list_directory(".", &count);
-	i = 0;
-	while (entries[i])
-	{
-		printf(">%s\n", entries[i++]); // Just to show the entries
-	}
 	i = 1;
 	while (argv[i])
 	{
-		if (strchr(argv[i], '*'))
+		j = 0;
+		if (ft_strchr(argv[i], '*'))
 		{
 			while (j < count)
 			{
-				if (match_pattern(entries[j], argv[i]))
+				if (search_match(entries[j], argv[i]))
 					printf("%s ", entries[j]);
 				j++;
 			}
@@ -133,25 +189,23 @@ void	exe_wildcard(char *argv[])
 	free(entries);
 }
 
-void	handle_command(int argc, char *argv[])
-{
-	if (argc > 1)
-	{
-		exe_wildcard(argv);
+
+int main(int argc, char **argv) {
+	char	**array;
+	int		i;
+
+	array = (char **)malloc((argc - 1) * sizeof(char *));
+	if (!array) {
+		perror("Memory allocation failed");
+		return 1;
 	}
-	else
-	{
-		printf("Usage: <command> <arguments>\n");
+	i = 1;
+	while (i < argc) {
+		array[i - 1] = ft_strdup(argv[i]);
+		i++;
 	}
+	exe_wildcard(array);
+	return 0;
 }
 
-int	main(int argc, char *argv[])
-{
-	if (argc < 2)
-	{
-		printf("Usage: <command> <arguments>\n");
-		return (1);
-	}
-	handle_command(argc, argv);
-	return (0);
-}
+
