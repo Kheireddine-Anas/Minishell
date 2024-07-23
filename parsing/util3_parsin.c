@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 13:17:59 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/22 16:16:42 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/23 17:06:15 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	process_quotes(char **p, t_Token **tokens, int *num_tokens)
 				(*p)++;
 			if (**p == '\'')
 				(*p)++;
+			if (**p == '*')
+				(*p)++;
 		}
 		len = *p - start;
 		(*tokens)[(*num_tokens)].type = QUOTE_SINGLE;
@@ -47,6 +49,8 @@ void	process_quotes(char **p, t_Token **tokens, int *num_tokens)
 		while (**p && **p != '"')
 			(*p)++;
 		if (**p == '"')
+			(*p)++;
+		if (**p == '*')
 			(*p)++;
 		len = *p - start;
 		(*tokens)[(*num_tokens)].type = QUOTE_DOUBLE;

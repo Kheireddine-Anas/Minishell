@@ -6,44 +6,50 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 09:18:04 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 16:22:43 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/23 16:32:56 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 #include <string.h>
 
-int strnrcmp(const char *s1, const char *s2, size_t n) {
-    size_t len1 = ft_strlen(s1);
-    size_t len2 = ft_strlen(s2);
-    size_t min_len;
+int	strnrcmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	len1;
+	size_t	len2;
+	size_t	min_len;
+	size_t	compare_len;
 
-    if (len1 < len2) {
-        min_len = len1;
-    } else {
-        min_len = len2;
-    }
-
-    size_t compare_len;
-
-    if (min_len < n) {
-        compare_len = min_len;
-    } else {
-        compare_len = n;
-    }
-
-    s1 += len1 - compare_len;
-    s2 += len2 - compare_len;
-
-    while (compare_len-- > 0) {
-        if (*s1 != *s2) {
-            return *(unsigned char *)s1 - *(unsigned char *)s2;
-        }
-        s1++;
-        s2++;
-    }
-
-    return 0;
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	if (len1 < len2)
+	{
+		min_len = len1;
+	}
+	else
+	{
+		min_len = len2;
+	}
+	if (min_len < n)
+	{
+		compare_len = min_len;
+	}
+	else
+	{
+		compare_len = n;
+	}
+	s1 += len1 - compare_len;
+	s2 += len2 - compare_len;
+	while (compare_len-- > 0)
+	{
+		if (*s1 != *s2)
+		{
+			return (*(unsigned char *)s1 - *(unsigned char *)s2);
+		}
+		s1++;
+		s2++;
+	}
+	return (0);
 }
 char	*ft_strstr(char *str, char *to_find)
 {
@@ -161,13 +167,14 @@ int	search_match(char *filename, char *pattern)
 	char	*result;
 
 	pattern_len = ft_strlen(pattern);
-	if (pattern_len == 1 && pattern[0]== '*')
+	if (pattern_len == 1 && pattern[0] == '*')
 	{
 		if (!chek_point(filename))
 			return (1);
 		return (0);
 	}
-	if (pattern[0] == '*' && pattern[pattern_len - 1] == '*')
+	if (pattern[0] == '*' && pattern[pattern_len - 1] == '*'
+		&& !chek_point(filename))
 	{
 		pattern[pattern_len - 1] = '\0';
 		result = ft_strstr(filename, pattern + 1);
@@ -185,9 +192,10 @@ int	search_match(char *filename, char *pattern)
 		}
 		pattern[pattern_len - 1] = '*';
 	}
-	if (pattern[0] == '*'  && pattern[pattern_len - 1] != '*' && !chek_point(filename))
+	if (pattern[0] == '*' && pattern[pattern_len - 1] != '*'
+		&& !chek_point(filename))
 	{
-		if(strnrcmp(filename, pattern, pattern_len - 1) == 0)
+		if (strnrcmp(filename, pattern, pattern_len - 1) == 0)
 			return (1);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:36:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/22 16:19:09 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/23 18:12:40 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static char	*process_quotes(char *str, char *dst)
 	}
 	else
 	{
-		if(str[1] && str[1] == '*')
+		if (str[1] && str[1] == '*')
 		{
 			while (str[i])
 			{
@@ -87,7 +87,7 @@ static char	*process_double_quotes(char *str, char *dst)
 	}
 	else
 	{
-		if(str[1] && str[1] == '*')
+		if (str[1] && str[1] == '*')
 		{
 			while (str[i])
 			{
