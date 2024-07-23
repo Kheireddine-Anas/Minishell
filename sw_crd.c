@@ -33,7 +33,7 @@ char	*ft_strstr(char *str, char *to_find)
 	unsigned int	i;
 
 	if (!*to_find)
-		return ((char*)str);
+		return ((char *)str);
 	cc = 0;
 	while (str[cc] != '\0')
 	{
@@ -43,7 +43,7 @@ char	*ft_strstr(char *str, char *to_find)
 			while (to_find[i] != '\0' && str[cc + i] == to_find[i])
 				++i;
 			if (to_find[i] == '\0')
-				return ((char*)&str[cc]);
+				return ((char *)&str[cc]);
 		}
 		++cc;
 	}
@@ -68,7 +68,7 @@ char	*ft_strdup(char *s)
 	i = 0;
 	dst = (char *)malloc(ft_strlen(s) + 1);
 	if (!dst)
-			return (NULL);
+		return (NULL);
 	while (s[i])
 	{
 		dst[i] = s[i];
@@ -126,16 +126,23 @@ char	**list_directory(char *path, int *count)
 
 	dir = opendir(path);
 	if (!dir)
+	{
 		perror("opendir problem");
+		exit(EXIT_FAILURE);
+	}
 	capacity = 10;
 	size = 0;
 	entries = ft_calloc(capacity, sizeof(char *));
-	while ((entry = readdir(dir)) != NULL)
+	while (1)
 	{
-		if (size >= capacity)
-			entries = resizer(entries, &capacity, size);
-		entries[size] = ft_strdup(entry->d_name);
-		size++;
+		entry = readdir(dir);
+		if (entry != NULL)
+		{
+			if (size >= capacity)
+				entries = resizer(entries, &capacity, size);
+			entries[size] = ft_strdup(entry->d_name);
+			size++;
+		}
 	}
 	closedir(dir);
 	*count = size;
@@ -144,59 +151,82 @@ char	**list_directory(char *path, int *count)
 
 int	search_match(char *filename, char *pattern)
 {
-	if (pattern[0] == '*' && pattern[ft_strlen(pattern) - 1] == '*')
-		return (ft_strstr(filename, pattern + 1) != NULL);
+	int		pattern_len;
+	int		filename_len;
+	char	*result;
+
+	pattern_len = ft_strlen(pattern);
+	if (pattern[0] == '*' && pattern[pattern_len - 1] == '*')
+	{
+		pattern[pattern_len - 1] = '\0';
+		result = ft_strstr(filename, pattern + 1);
+		pattern[pattern_len - 1] = '*';
+		return (result != NULL);
+	}
 	if (pattern[0] == '*')
-		return (ft_strstr(filename, pattern + 1) == filename + ft_strlen(filename) - ft_strlen(pattern) + 1);
+		return (ft_strstr(filename, pattern + 1) == filename
+			+ ft_strlen(filename) - ft_strlen(pattern) + 1);
 	if (pattern[ft_strlen(pattern) - 1] == '*')
 		return (strncmp(filename, pattern, ft_strlen(pattern) - 1) == 0);
 	return (ft_strcmp(filename, pattern) == 0);
 }
 
-void	exe_wildcard(char *argv)
+char	**store_matches(char **entries, char *argv, int count)
+{
+	char	**matched_entries;
+	int		match_count;
+	int		j;
+
+	match_count = 0;
+	matched_entries = ft_calloc(count + 1, sizeof(char *));
+	if (!matched_entries)
+	{
+		perror("ft_calloc");
+		//exit(1);
+	}
+	j = 0;
+	while (j < count)
+	{
+		if (search_match(entries[j], argv))
+		{
+			printf("%s ", entries[j]);
+			matched_entries[match_count] = ft_strdup(entries[j]);
+			(match_count)++;
+		}
+		j++;
+	}
+	printf("\n");
+	return (matched_entries);
+}
+
+char	**exe_wildcard(char *argv)
 {
 	int		count;
 	char	**entries;
-	char	**files;
-	int		i;
-	int		j;
+	char	**matched_entries;
 
 	entries = list_directory(".", &count);
-	files = malloc(sizeof(char *));
-	if (argv)
+	if (argv && ft_strchr(argv, '*'))
+		matched_entries = store_matches(entries, argv, count);
+	else if (argv)
 	{
-		j = 0;
-		i = 0;
-		if (ft_strchr(argv, '*'))
-		{
-			while (j < count)
-			{
-				if (search_match(entries[j], argv))
-				{
-					printf("%s ", entries[j]);
-					files[i] = ft_strdup(entries[j]);
-					i++;
-				}
-				j++;
-			}
-		}
-		else
-			printf("%s ", argv);
+		printf("Non Matched: %s ", argv);
+		// matched_entries = ft_calloc(2, sizeof(char *)); //This two lines just for return argv if it not containe *
+		// matched_entries[0] = ft_strdup(argv);
 	}
-	printf("\n");
-	i = 0;
-	while (i < count)
-		free(entries[i++]);
+	while (count--)
+		free(entries[count]);
 	free(entries);
+	return (matched_entries);
 }
 
-
-int main(int argc, char **argv) {
+int	main(int argc, char **argv) {
 	char	*array;
+	int		i;
 
-	array = ft_strdup(argv[1]);
+	i = 1;
+	array = ft_strdup(argv[i]);
+	// printf("|%s| \n", array);
 	exe_wildcard(array);
-	return 0;
+	return (0);
 }
-
-

@@ -149,8 +149,18 @@ char	**list_directory(char *path, int *count)
 
 int	search_match(char *filename, char *pattern)
 {
-	if (pattern[0] == '*' && pattern[ft_strlen(pattern) - 1] == '*')
-		return (ft_strstr(filename, pattern + 1) != NULL);
+	int		pattern_len;
+    int		filename_len;
+	char	*result;
+
+	pattern_len = ft_strlen(pattern);
+    if (pattern[0] == '*' && pattern[pattern_len - 1] == '*')
+    {
+        pattern[pattern_len - 1] = '\0';
+        result = ft_strstr(filename, pattern + 1);
+        pattern[pattern_len - 1] = '*';
+        return (result != NULL);
+    }
 	if (pattern[0] == '*')
 		return (ft_strstr(filename, pattern + 1) == filename + ft_strlen(filename) - ft_strlen(pattern) + 1);
 	if (pattern[ft_strlen(pattern) - 1] == '*')
@@ -158,7 +168,7 @@ int	search_match(char *filename, char *pattern)
 	return (ft_strcmp(filename, pattern) == 0);
 }
 
-void	exe_wildcard(char *argv[])
+void	exe_wildcard(char *argv)
 {
 	int		count;
 	char	**entries;
@@ -167,21 +177,20 @@ void	exe_wildcard(char *argv[])
 
 	entries = list_directory(".", &count);
 	i = 1;
-	while (argv[i])
+	if (argv)
 	{
 		j = 0;
-		if (ft_strchr(argv[i], '*'))
+		if (ft_strchr(argv, '*'))
 		{
 			while (j < count)
 			{
-				if (search_match(entries[j], argv[i]))
+				if (search_match(entries[j], argv))
 					printf("%s ", entries[j]);
 				j++;
 			}
 		}
 		else
-			printf("%s ", argv[i]);
-		i++;
+			printf("%s ", argv);
 	}
 	printf("\n");
 	while (i < count)
@@ -191,21 +200,12 @@ void	exe_wildcard(char *argv[])
 
 
 int main(int argc, char **argv) {
-	char	**array;
+	char	*array;
 	int		i;
 
-	array = (char **)malloc((argc - 1) * sizeof(char *));
-	if (!array) {
-		perror("Memory allocation failed");
-		return 1;
-	}
 	i = 1;
-	while (i < argc) {
-		array[i - 1] = ft_strdup(argv[i]);
-		i++;
-	}
+	array = ft_strdup(argv[i]);
+	// printf("|%s| \n", array);
 	exe_wildcard(array);
 	return 0;
 }
-
-
