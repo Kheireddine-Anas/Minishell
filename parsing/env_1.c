@@ -1,30 +1,44 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_1.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/20 10:49:47 by ahamdi            #+#    #+#             */
+/*   Updated: 2024/07/20 11:33:32 by ahamdi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
-static env_t	*last_f(env_t *lst)
+
+static t_env	*last_f(t_env *lst)
 {
 	if (lst == NULL)
 		return (NULL);
 	while (lst->next != NULL)
-		lst = lst-> next;
+		lst = lst->next;
 	return (lst);
 }
-static int	size_(env_t*lst)
+
+static int	size_(t_env *lst)
 {
-	env_t	*help;
+	t_env	*help;
 	int		len;
 
 	len = 0;
 	help = lst;
 	while (help != NULL)
 	{
-		help = help -> next;
+		help = help->next;
 		len++;
 	}
 	return (len);
 }
 
-static void	add_back(env_t **lst, env_t *new)
+static void	add_back(t_env **lst, t_env *new)
 {
-	env_t	*last;
+	t_env	*last;
 
 	if (!*lst)
 	{
@@ -37,51 +51,50 @@ static void	add_back(env_t **lst, env_t *new)
 	}
 }
 
-
-static env_t *get_env_data(char *envp)
+static t_env	*get_env_data(char *envp)
 {
-
-	env_t *noud;
+	t_env	*noud;
 
 	noud = NULL;
-	if(!envp)
+	if (!envp)
 		return (NULL);
-	noud = malloc(sizeof(env_t));
+	noud = malloc(sizeof(t_env));
 	if (noud == NULL)
 		return (NULL);
 	else
 	{
 		noud->value = ft_strdup(ft_strchr(envp, '=') + 1);
-		noud->key = ft_substr(envp, 0, ft_strlen(envp) - ft_strlen(noud->value) - 1);
-		noud -> next = NULL;
+		noud->key = ft_substr(envp, 0, ft_strlen(envp) - ft_strlen(noud->value)
+				- 1);
+		noud->next = NULL;
 	}
 	return (noud);
 }
 
-env_t *get_env(char **envp)
+t_env	*get_env(char **envp)
 {
-    int		i;
-    env_t	*env;
+	int		i;
+	t_env	*env;
 
 	env = NULL;
-    i = 0;
-    if(!envp)
-        return (NULL);
-    while (envp[i])
-    {
-        add_back(&env, get_env_data(envp[i]));
-        i++;
-    }
-    return (env);
+	i = 0;
+	if (!envp)
+		return (NULL);
+	while (envp[i])
+	{
+		add_back(&env, get_env_data(envp[i]));
+		i++;
+	}
+	return (env);
 }
 
-char **get_erray_env(env_t	*env)
+char	**get_erray_env(t_env *env)
 {
-	int i;
-	char **env_arr;
-	int len;
+	int		i;
+	char	**env_arr;
+	int		len;
 
-	if(!env)
+	if (!env)
 		return (NULL);
 	i = 0;
 	len = size_(env);
@@ -91,22 +104,22 @@ char **get_erray_env(env_t	*env)
 	env_arr[len] = NULL;
 	while (env)
 	{
-		env_arr[i] = strjoi(env->key,"=" ,env->value);
+		env_arr[i] = strjoi(env->key, "=", env->value);
 		env = env->next;
 		i++;
 	}
 	return (env_arr);
 }
 
-void print_env(env_t *env)
+void	print_env(t_env *env)
 {
-	env_t *tmp; 
+	t_env	*tmp;
 
 	tmp = env;
 	while (tmp)
 	{
-		if(ft_strlen(tmp->value) != 0)
-			printf("%s=%s\n",tmp->key,tmp->value);
-		tmp =tmp->next;
+		if (ft_strlen(tmp->value) != 0)
+			printf("%s=%s\n", tmp->key, tmp->value);
+		tmp = tmp->next;
 	}
 }

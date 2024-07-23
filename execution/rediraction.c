@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rediraction.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/20 10:46:31 by ahamdi            #+#    #+#             */
+/*   Updated: 2024/07/20 14:46:45 by ahamdi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-void handle_sigint(int sig)
+void	handle_sigint(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -11,59 +23,47 @@ void handle_sigint(int sig)
 	}
 }
 
-int	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ **fd_in_out,  t_status **status)
+void	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ **fd_in_out)
 {
-	(*status)->status = 0;
-	if(error_rederaction(cmd) == 1)
-		return (0);
-	
-	if (!cmd || !cmd->option || !envp)
+	if (!cmd || !envp)
+		error_ch(cmd->option[0]);
+	if (cmd->single > 0 || cmd->double_q > 0)
 	{
-		error_ch( status, cmd->option[0]);
-		return (0);
+		ft_putstr_fd("\033[34minishell: ", 2);
+		ft_putstr_fd("syntax error : error in quot\033[0m\n", 2);
+		exit(1);
 	}
-	if(cmd->single > 0 || cmd->double_q > 0)
-	{
-		ft_putstr_fd("\033[1;31msyntax error : error in quot\033[0m\n", 2);
-		(*status)->status = 1;
-		return (0);
-	}
-	if( (*fd_in_out)->retu_red != 3)
+	if ((*fd_in_out)->retu_red != 3)
 	{
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-	} 
-	exe_cmd(cmd, envp, status);
-	return (0);
-}
-void	fin_commande(t_cmd *cmd, char **envp, t_status **status)
-{
-	if (!cmd || !cmd->option || !envp)
-	{
-		errer_cmd( status, cmd->option[0]);
-		return ;
 	}
-	if (cmd->single > 0 || cmd->double_q > 0)
-	{
-		ft_putstr_fd("\033[1;31msyntax error : error in quot\033[0m\n", 2);
-		(*status)->status = 1;
-		return ;
-	}
-	(*status)->status = 0;
-	exe_cmd(cmd, envp, status);
+	exe_cmd(cmd, envp);
 }
 
-int chek_herdoc(char *str)
+void	fin_commande(t_cmd *cmd, char **envp)
 {
-	int i;
+	if (!cmd || !envp)
+	{
+		errer_cmd(cmd->option[0]);
+		return ;
+	}
+	filecommade(cmd, envp);
+	exe_cmd(cmd, envp);
+}
+
+int	chek_herdoc(char *str)
+{
+	int	i;
 
 	i = 0;
 	if (!str)
 		return (0);
-	while(str[i] && str[i + 1])
+	while (str[i] && str[i + 1])
 	{
-		if ((str[i] == '<' && str[i +1] == '<') || (str[i] == '>' && str[i +1] == '>'))
-		return (1);
+		if ((str[i] == '<' && str[i +1] == '<') 
+			|| (str[i] == '>' && str[i +1] == '>'))
+			return (1);
 		i++;
 	}
 	return (0);

@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/20 10:43:15 by ahamdi            #+#    #+#             */
+/*   Updated: 2024/07/20 15:01:21 by ahamdi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 char	*set_name(char *str)
 {
-	int	i;
+	int		i;
 	char	*name;
 
 	i = 0;
@@ -28,7 +40,7 @@ char	*set_value(char *str)
 		i++;
 	if (!str[i])
 		return (ft_strdup(""));
-	value = ft_calloc((ft_strlen(str) - i) , sizeof(char));
+	value = ft_calloc((ft_strlen(str) - i), sizeof(char));
 	i++;
 	while (str[i])
 		value[j++] = str[i++];
@@ -36,22 +48,20 @@ char	*set_value(char *str)
 	return (value);
 }
 
-env_t	*seenv_t(char *str)
+t_env	*seenv_t(char *str)
 {
-	env_t	*head;
+	t_env	*head;
 
-	head = ft_calloc(1, sizeof(env_t));
+	head = ft_calloc(1, sizeof(t_env));
 	head->key = set_name(str);
-	// printf(">>>>>>>>>>>>>>>>>%s\n", head->key);
 	head->value = set_value(str);
-	// printf(">>>>>>>>>>>>>>>>>%s\n", head->value);
 	head->next = NULL;
 	return (head);
 }
 
-void	show_exp(env_t *env)
+void	show_exp(t_env *env)
 {
-	env_t	*tmp;
+	t_env	*tmp;
 
 	tmp = env;
 	while (tmp)
@@ -64,7 +74,6 @@ void	show_exp(env_t *env)
 	}
 }
 
-
 int	check_exp(char *name)
 {
 	int	i;
@@ -74,14 +83,14 @@ int	check_exp(char *name)
 		return (1);
 	while (name[i] && name[i] != '=')
 	{
-		if (!ft_isalpha(name[i]) && !ft_isdigit(name[i]))
+		if (!ft_isalpha(name[i]) && !ft_isdigit(name[i]) && name[i] != ' ')
 			return (1);
 		i++;
 	}
 	return (0);
 }
 
-void	add_exp(env_t *env, char *value, char *var)
+void	add_exp(t_env *env, char *value, char *var)
 {
 	while (env)
 	{
@@ -105,32 +114,36 @@ void	add_exp(env_t *env, char *value, char *var)
 	}
 }
 
-void	export_add(env_t **env, char **value)
+void	export_add(t_env **env, char **value,  t_status **status)
 {
 	int		i;
 	char	*var;
-	env_t	*tmp;
+	t_env	*tmp;
 
 	tmp = *env;
 	i = 1;
 	while (value[i])
 	{
-
 		var = set_name(value[i]);
-		// printf("///%s///*%s*///\n", value[i], var); //We Should set the EXIT status to 1
 		if (!check_exp(value[i]))
 			add_exp(tmp, value[i], var);
 		else
-			ft_putstr_fd("invalid Identifier\n", 2); //We Should set the EXIT status to 1
+		{
+			ft_putstr_fd("mini-shell: ", 2);
+			ft_putstr_fd(value[i], 2);
+			ft_putendl_fd(": not a valid identifier", 2);
+			(*status)->status = 1;
+			return ;
+		}
 		i++;
 	}
+	(*status)->status = 0;
 }
 
-void	cmd_export(env_t **env, char **add)
+void	cmd_export(t_env **env, char **add,  t_status **status)
 {
-
 	if (!add[1])
 		show_exp(*env);
 	else
-		export_add(env, add);
+		export_add(env, add, status);
 }

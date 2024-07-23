@@ -1,5 +1,16 @@
-#include "../minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run_cmd.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/19 17:51:57 by ahamdi            #+#    #+#             */
+/*   Updated: 2024/07/20 10:48:26 by ahamdi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "../minishell.h"
 
 char	*get_path(char **envp, char *cmd, int i)
 {
@@ -39,7 +50,7 @@ char	*get_path(char **envp, char *cmd, int i)
 	return (path_new);
 }
 
-void	commad_path(t_cmd *cmd, char **envp ,t_status **status)
+void	commad_path(t_cmd *cmd, char **envp)
 {
 	int		i;
 	char	*path;
@@ -47,10 +58,10 @@ void	commad_path(t_cmd *cmd, char **envp ,t_status **status)
 	i = 0;
 	path = cmd->option[0];
 	if (execve(path, cmd->option, envp) == -1)
-		error_ch(status, cmd->option[0]);
+		error_ch(cmd->option[0]);
 }
 
-void	execute(t_cmd	*cmd, char **envp, t_status **status)
+void	execute(t_cmd	*cmd, char **envp)
 {
 	int		i;
 	char	*path;
@@ -58,6 +69,6 @@ void	execute(t_cmd	*cmd, char **envp, t_status **status)
 	i = 0;
 	path = get_path(envp, cmd->option[0], 0);
 	if (execve(path, cmd->option, envp) == -1)
-		error_ch(status, cmd->option[0]);
+		error_ch(cmd->option[0]);
 }
 

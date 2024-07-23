@@ -1,184 +1,126 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/20 11:40:06 by ahamdi            #+#    #+#             */
+/*   Updated: 2024/07/22 21:25:41 by ahamdi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void	whilloop(int *fd)
+void	fin_lop(t_fd_ *fd_in_out, int i, t_status **status)
 {
-	dup2(fd[0], STDIN_FILENO);
-	close(fd[1]);
-}
-void	wit_process(int argc, pid_t **pids,int fd0, int fd1)
-{
-	int	j;
-
-	j = 0;
-	while (j < argc)
-	{
-		waitpid((*pids)[j], NULL, 0);
-		j++;
-	}
-	free(*pids);
-	dup2(fd0, STDIN_FILENO);
-	dup2(fd1, STDOUT_FILENO);
+	wit_process(i, &fd_in_out->pids, fd_in_out, status);
+	close_file(fd_in_out, fd_in_out->fd);
+	free(fd_in_out);
 }
 
-void clo(int fd)
+static t_fd_	*init_and_create_cmd(t_cmd **lst_cmd, t_env **env, char *line,
+		t_status **status)
 {
-	if(fd > 0)
-		close(fd);
-}
-static void	lop(t_cmd	*lst_cmd, env_t	**env, t_status	**status , char *line)
-{
-	int		i = 0;
-	int		fd[2];
-	pid_t	*pids;
-	t_cmd	 *last;
-	t_cmd	 *tmp;
-	t_fd_ *fd_in_out;
-	char **envp;
+	t_fd_	*fd_in_out;
 
 	fd_in_out = ft_calloc(1, sizeof(t_fd_));
-	fd_in_out->fd0 = 0;
-	fd_in_out->fd1 = 0;
-	fd_in_out->STDIN = 0;
-	fd_in_out->STDOUT = 0;
+	fd_in_out->stdin = 0;
+	fd_in_out->stdout = 0;
 	fd_in_out->her_doc = 0;
-	envp = get_erray_env(*env);
-	creat_cmd(&lst_cmd, line, envp, status);
-	// print_list(lst_cmd);
+	fd_in_out->envp = get_erray_env(*env);
+	creat_cmd(lst_cmd, line, fd_in_out->envp, status);
 	if (!lst_cmd)
 	{
+		printf("9999999\n");
 		(*status)->status = 1;
-		return ;
+		return (NULL);
 	}
 	fd_in_out->fd_in = dup(STDIN_FILENO);
 	fd_in_out->fd_out = dup(STDOUT_FILENO);
-	last = lstlast(lst_cmd);
-	if((*lst_cmd->option) && builting(last, env, status, &fd_in_out) == 1)
+	fd_in_out->retu_red = 0;
+	fd_in_out->last = lstlast(*lst_cmd);
+	return (fd_in_out);
+}
+
+static int	whillop(t_cmd	*lst_cmd, t_fd_	*fd_in_out, 
+		t_status **status, int i)
+{
+	fd_in_out->retu_red = rediraction(lst_cmd, &fd_in_out, status);
+	if (fd_in_out->retu_red == 2)
+		return (1);
+	if (pipe(fd_in_out->fd) == -1)
+		hand_error(status, "pipe");
+	fd_in_out->pids[i] = fork();
+	if (fd_in_out->pids[i] == -1)
+		hand_error(status, "fork");
+	if (fd_in_out->pids[i] == 0 && lst_cmd != fd_in_out->last)
+		child_process(lst_cmd, fd_in_out->envp, fd_in_out->fd, &fd_in_out);
+	else if (fd_in_out->pids[i] == 0 && lst_cmd == fd_in_out->last)
+		fin_commande(lst_cmd, fd_in_out->envp);
+	else if (fd_in_out->pids[i] > 0)
+		parent_prossuce(fd_in_out->fd, &fd_in_out, i);
+	whilloop(fd_in_out->fd);
+	return (0);
+}
+
+static void	lop(t_env **env, char *line, t_status **status)
+{
+	int		i;
+	t_fd_	*fd_in_out;
+	t_cmd	*lst_cmd;
+
+	if(!line || ft_strlen(line) == 0)
+		return ;
+	lst_cmd = NULL;
+	i = 0;
+	fd_in_out = init_and_create_cmd(&lst_cmd, env, line, status);
+	if (!fd_in_out)
+		return ;
+	if ((*lst_cmd->option) && 
+		builting(fd_in_out->last, env, status, &fd_in_out) == 1)
 	{
-		close_file(fd_in_out, fd);
+		close_file(fd_in_out, fd_in_out->fd);
 		return ;
 	}
-	if(!lst_cmd || !envp)
+	if (!lst_cmd || !fd_in_out->envp)
 		return ;
-	pids = ft_calloc(lstsize(lst_cmd), sizeof(pid_t));
-	tmp = lst_cmd;
-	if (filecommade(last, envp, status) == 1)
-		return ;
+	fd_in_out->pids = ft_calloc(lstsize(lst_cmd), sizeof(pid_t));
 	while (lst_cmd)
 	{
-		fd_in_out->retu_red = rediraction(lst_cmd, status, &fd_in_out);
-		if (fd_in_out->retu_red == 2)
-			break;
-		if (pipe(fd) == -1)
-		{
-			ft_putstr_fd("error\n", 2);
-			(*status)->status = 1;
+		if (whillop(lst_cmd, fd_in_out, status, i) == 1)
 			return ;
-		}
-		pids[i] = fork();
-		if (pids[i] == 0 && lst_cmd != last)
-			child_process(lst_cmd, envp, fd, &fd_in_out,  status);
-		else if (pids[i] == 0 && lst_cmd == last)
-			fin_commande(lst_cmd, envp, status);
-		(*status)->status = 0;
-		lst_cmd = lst_cmd->next; 
-		whilloop(fd);
+		lst_cmd = lst_cmd->next;
+		i++;
 	}
-	wit_process(lstsize(tmp), &pids,fd_in_out->fd_in,fd_in_out->fd_out);
-	close_file(fd_in_out, fd);
+	fin_lop(fd_in_out, i, status);
+	lstclear(&lst_cmd);
 }
-void close_file(t_fd_ *fd_in_out, int *fd)
-{
-	clo(fd_in_out->fd_out);
-	clo(fd_in_out->her_doc);
-	clo(fd[0]);
-	clo(fd[1]);
-	clo(fd_in_out->fd0);
-	clo(fd_in_out->fd1);
-	clo(fd_in_out->STDIN);
-	clo(fd_in_out->STDOUT);
-	clo(fd_in_out->fd_in);
-	
-}
-int main (int argc, char *argv[], char **envp)
+
+int	main(int argc, char *argv[], char **envp)
 {
 	char		*line;
+	t_env		*envp_new;
 	t_status	*status;
-	t_cmd		*lst_cmd;
-	env_t		*envp_new;
+
 	(void)argv;
 	if (argc != 1)
 	{
 		ft_putstr_fd("Error\n", 2);
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	envp_new = get_env(envp);
 	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
-	if (argc != 1)
-	{
-		ft_putstr_fd("Error\n", 2);
-		exit(EXIT_FAILURE);
-	}
 	status = ft_calloc(1, sizeof(t_status));
-	if (!status)
-		return (0);
-	status->status = 0;
-	print_minishell();
-	while(1)
+	while (1)
 	{
-		line = readline("\033[1;32mmini-shell> \033[0m");
-		if(line == NULL)
-			break;
+		line = readline("\033[1;33mmini-shell> \033[0m");
+		if (line == NULL)
+			break ;
 		add_history(line);
-		lop(lst_cmd, &envp_new, &status, line);
+		lop(&envp_new, line, &status);
 		free(line);
 		line = NULL;
-		lstclear(&lst_cmd);
 	}
-}
-
-void print_list(t_cmd *lst_cmd)
-{
-	int i ;
-	
-	while(lst_cmd)
-		{	i = 0;
-			while(lst_cmd->option[i])
-			{
-				if(i == 0)
-					printf("command :%s\n",lst_cmd->option[i]);
-				else
-					printf("option :%s\n",lst_cmd->option[i]);
-				i++;;
-			}
-			i = 0;
-			while(lst_cmd->in[i])
-			{
-				printf("in :%s\n",lst_cmd->in[i]);
-				i++;
-			}
-			i = 0;
-			while(lst_cmd->out[i])
-			{
-				printf("out :%s\n",lst_cmd->out[i]);
-				i++;
-			}
-			while((*lst_cmd->extra_arg))
-			{
-				printf("extra_arg :%s\n",(*lst_cmd->extra_arg));
-				lst_cmd->extra_arg++;
-			}
-			while((*lst_cmd->fil_out))
-			{
-				printf("file_out:%s\n",(*lst_cmd->fil_out));
-				lst_cmd->fil_out++;
-			}
-			while((*lst_cmd->fil_in))
-			{
-				printf("file_in:%s\n",(*lst_cmd->fil_in));
-				lst_cmd->fil_in++;
-			}
-			printf("*****************************************************************************\n");
-			lst_cmd = lst_cmd->next;
-		}
+	free(status);
 }
