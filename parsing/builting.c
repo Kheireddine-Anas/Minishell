@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 09:45:11 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 10:15:06 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/23 20:56:55 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int	rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status)
 		{
 			(*status)->status = 3;
 			erro(lst_cmd->fil_out[i]);
+			
 			return (2);
 		}
 		dup2((*fd_in_out)->stdout, STDOUT_FILENO);

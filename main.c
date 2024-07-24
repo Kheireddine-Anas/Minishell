@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:40:06 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/22 21:25:41 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/23 20:54:25 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ static int	whillop(t_cmd	*lst_cmd, t_fd_	*fd_in_out,
 {
 	fd_in_out->retu_red = rediraction(lst_cmd, &fd_in_out, status);
 	if (fd_in_out->retu_red == 2)
+	{
+		close_file(fd_in_out, fd_in_out->fd);
 		return (1);
+	}
 	if (pipe(fd_in_out->fd) == -1)
 		hand_error(status, "pipe");
 	fd_in_out->pids[i] = fork();
@@ -89,7 +92,11 @@ static void	lop(t_env **env, char *line, t_status **status)
 	while (lst_cmd)
 	{
 		if (whillop(lst_cmd, fd_in_out, status, i) == 1)
+		{
+			printf("***\n");
+			lstclear(&lst_cmd);
 			return ;
+		}
 		lst_cmd = lst_cmd->next;
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 18:16:07 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/23 20:49:38 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,13 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 		{
 			if ((*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*')
 				(*tokens)[i].type = WHILCART;
+			else if (i != 0 && (*tokens)[i - 1].type == IN)
+				(*tokens)[i].type = FILE_IN;
+			else if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
+				(*tokens)[i].type = LIM;
+			else if (i != 0 && ((*tokens)[i - 1].type == OUT || (*tokens)[i
+					- 1].type == APPEND))
+				(*tokens)[i].type = FILE_OUT;
 		}
 		i++;
 	}
@@ -153,7 +160,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 // 	int num_tokens = 0;
 // 	int i = 0;
 
-// 	char *p = "ls *'ke'*";
+// 	char *p = "echo hi | echo bye >>./test_files/invalid_permission";
 // 	status = ft_calloc(1, sizeof(t_status));
 // 	tokens = tokenize(p, &num_tokens);
 // 	parse(&tokens, num_tokens, envp, &status);
