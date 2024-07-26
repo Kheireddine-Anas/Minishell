@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:45:29 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/20 10:46:09 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 12:19:01 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,8 @@ int	while_loop(t_cmd **cmd, t_fd_ **fd_in_out)
 	dup2((*fd_in_out)->fd_out, STDOUT_FILENO);
 	fd = open("/tmp/her_doc", O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd == -1)
-	{
-		erro("/tmp/her_doc");
-		return (-2);
-	}
-	strj = ft_strjoin((*(*cmd)->extra_arg), "\n");
+		return (erro("/tmp/her_doc"), -2);
+	strj = ft_strjoin((*(*cmd)->fil_name), "\n");
 	(*cmd)->extra_arg++;
 	while (1)
 	{
@@ -47,7 +44,7 @@ void	here_doc(t_cmd *cmd)
 	char	*str;
 	char	*strj;
 
-	strj = ft_strjoin(*(cmd->extra_arg), "\n");
+	strj = ft_strjoin(*(cmd->fil_name), "\n");
 	cmd->extra_arg++;
 	while (1)
 	{

@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   util4_parsin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 15:19:00 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/22 19:05:13 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/24 23:46:30 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-int cheke_dolar(char *str)
+
+int	cheke_dolar(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!str)
@@ -26,6 +27,7 @@ int cheke_dolar(char *str)
 	}
 	return (1);
 }
+
 char	*add_valu_variable(char *str, char **envp, t_status **status)
 {
 	char	**str1;
@@ -97,4 +99,3 @@ int	st_2derra(char **str, int k)
 		i++;
 	return (i);
 }
-

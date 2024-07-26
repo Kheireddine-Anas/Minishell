@@ -6,11 +6,31 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:57:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 18:15:52 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 12:02:03 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	free_string_array(char **array)
+{
+	if (!array)
+		return ;
+	while (*array)
+	{
+		free(*array);
+		array++;
+	}
+}
+
+void	free_cmd(t_cmd *cmd)
+{
+	if (cmd->option)
+		free_string_array(cmd->option);
+	if (cmd->extra_arg)
+		free_string_array(cmd->extra_arg);
+	free(cmd);
+}
 
 void	lstclear(t_cmd **lst)
 {
@@ -20,24 +40,10 @@ void	lstclear(t_cmd **lst)
 	if (!*lst)
 		return ;
 	help = *lst;
-	while (help != NULL)
+	while (help)
 	{
 		next = help->next;
-		if (help->in)
-		{
-			while (*(help->in))
-			{
-				free(*(help->in));
-				help->in++;
-			}
-		}
-		if (help->out)
-			free(help->out);
-		if (help->option && *(help->option))
-			free(help->option);
-		if (help->extra_arg && *(help->extra_arg))
-			free(help->extra_arg);
-		free(help);
+		free_cmd(help);
 		help = next;
 	}
 	*lst = NULL;
@@ -68,6 +74,7 @@ t_cmd	*lstlast(t_cmd *lst)
 	}
 	return (lst);
 }
+
 static void	add_back(t_cmd **lst, t_cmd *new)
 {
 	t_cmd	*last;
@@ -82,6 +89,7 @@ static void	add_back(t_cmd **lst, t_cmd *new)
 		last->next = new;
 	}
 }
+
 void	initialise_noud(t_cmd **new, int cp)
 {
 	*new = ft_calloc(1, sizeof(t_cmd));
@@ -95,50 +103,39 @@ void	initialise_noud(t_cmd **new, int cp)
 	(*new)->extra_arg = ft_calloc(cp, sizeof(char *));
 	if (!(*new)->extra_arg)
 		error_alocation();
-	(*new)->in = ft_calloc(cp, sizeof(char *));
-	if (!(*new)->in)
+	(*new)->rederaction = ft_calloc(cp, sizeof(char *));
+	if (!(*new)->rederaction)
 		error_alocation();
-	(*new)->fil_in = ft_calloc(cp, sizeof(char *));
-	if (!(*new)->fil_in)
-		error_alocation();
-	(*new)->fil_out = ft_calloc(cp, sizeof(char *));
-	if (!(*new)->fil_out)
-		error_alocation();
-	(*new)->out = ft_calloc(cp, sizeof(char *));
-	if (!(*new)->out)
+	(*new)->fil_name = ft_calloc(cp, sizeof(char *));
+	if (!(*new)->fil_name)
 		error_alocation();
 }
 
 int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 {
-	int	j;
-	int	k;
-	int	m;
-	int	l;
-	int	o;
-	int	out;
-	int	capacite;
-	char **whilcart;
-	int h =0;
+	int		j;
+	int		k;
+	int		m;
+	int		l;
+	int		capacite;
+	char	**whilcart;
+	int		h;
 
+	h = 0;
 	capacite = 3;
 	j = 0;
-	o = 0;
 	k = 0;
 	l = 0;
 	m = 0;
-	out = 0;
 	initialise_noud(new, capacite);
-	while (*i < num_tokens &&  tokens)
+	while (*i < num_tokens && tokens)
 	{
 		if (tokens[*i].type == PIP)
 		{
-			(*new)->out[o] = NULL;
 			(*new)->extra_arg[m] = NULL;
-			(*new)->in[l] = NULL;
+			(*new)->rederaction[l] = NULL;
 			(*new)->option[j] = NULL;
-			(*new)->fil_in[k] = NULL;
-			(*new)->fil_out[out] = NULL;
+			(*new)->fil_name[k] = NULL;
 			(*new)->next = NULL;
 			return (1);
 		}
@@ -146,29 +143,18 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 			(*new)->single = 1;
 		else if (tokens[*i].type == QUOTE_DOUBLE && tokens[*i].value[0] == '\"')
 			(*new)->double_q = 1;
-		else if (tokens[*i].type == IN || tokens[*i].type == HER_DOC)
+		else if (tokens[*i].type == IN || tokens[*i].type == HER_DOC
+			|| tokens[*i].type == OUT || tokens[*i].type == APPEND)
 		{
-			if (l == st_2derra((*new)->in, l))
+			if (l == st_2derra((*new)->rederaction, l))
 			{
-				(*new)->in = realloc_array(&((*new)->in), st_2derra((*new)->in,
-							l));
-				if (!(*new)->in)
+				(*new)->rederaction = realloc_array(&((*new)->rederaction),
+						st_2derra((*new)->rederaction, l));
+				if (!(*new)->rederaction)
 					error_alocation();
 			}
-			(*new)->in[l] = tokens[*i].value;
+			(*new)->rederaction[l] = tokens[*i].value;
 			l++;
-		}
-		else if (tokens[*i].type == OUT || tokens[*i].type == APPEND)
-		{
-			if (o == st_2derra((*new)->out, o))
-			{
-				(*new)->out = realloc_array(&((*new)->out),
-						st_2derra((*new)->out, o));
-				if (!(*new)->out)
-					error_alocation();
-			}
-			(*new)->out[o] = tokens[*i].value;
-			o++;
 		}
 		else if (tokens[*i].type == OPTION || tokens[*i].type == VARIABLE
 			|| tokens[*i].type == QUOTE_SINGLE
@@ -199,7 +185,7 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 					if (j >= st_2derra((*new)->option, j))
 					{
 						(*new)->option = realloc_array(&((*new)->option),
-							st_2derra((*new)->option, j));
+								st_2derra((*new)->option, j));
 						if (!(*new)->option)
 							error_alocation();
 					}
@@ -214,29 +200,18 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 				j++;
 			}
 		}
-		else if (tokens[*i].type == FILE_IN)
+		else if (tokens[*i].type == FILE_IN || tokens[*i].type == FILE_OUT
+			|| tokens[*i].type == LIM)
 		{
-			if (k >= st_2derra((*new)->fil_in, k))
+			if (k >= st_2derra((*new)->fil_name, k))
 			{
-				(*new)->fil_in = realloc_array(&((*new)->fil_in),
-						st_2derra((*new)->fil_in, k));
-				if (!(*new)->fil_in)
+				(*new)->fil_name = realloc_array(&((*new)->fil_name),
+						st_2derra((*new)->fil_name, k));
+				if (!(*new)->fil_name)
 					error_alocation();
 			}
-			(*new)->fil_in[k] = tokens[*i].value;
+			(*new)->fil_name[k] = tokens[*i].value;
 			k++;
-		}
-		else if (tokens[*i].type == FILE_OUT)
-		{
-			if (out >= st_2derra((*new)->fil_out, out))
-			{
-				(*new)->fil_out = realloc_array(&((*new)->fil_out),
-						st_2derra((*new)->fil_out, out));
-				if (!(*new)->fil_out)
-					error_alocation();
-			}
-			(*new)->fil_out[out] = tokens[*i].value;
-			out++;
 		}
 		else
 		{
@@ -253,11 +228,9 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 		*i += 1;
 	}
 	(*new)->extra_arg[m] = NULL;
-	(*new)->out[o] = NULL;
-	(*new)->in[l] = NULL;
+	(*new)->rederaction[l] = NULL;
 	(*new)->option[j] = NULL;
-	(*new)->fil_in[k] = NULL;
-	(*new)->fil_out[out] = NULL;
+	(*new)->fil_name[k] = NULL;
 	(*new)->next = NULL;
 	// if (!(*new)->out[0])
 	// {
@@ -294,13 +267,14 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 
 void	creat_cmd(t_cmd **lst, char *command, char **env, t_status **status)
 {
-	int i;
-	t_cmd *new;
-	t_Token *tokens;
-	int num_tokens = 0;
+	int		i;
+	t_cmd	*new;
+	t_Token	*tokens;
+	int		num_tokens;
 
 	i = 0;
-	if(!command || ft_strlen(command) == 0)
+	num_tokens = 0;
+	if (!command || ft_strlen(command) == 0)
 		return ;
 	tokens = tokenize(command, &num_tokens);
 	parse(&tokens, num_tokens, env, status);

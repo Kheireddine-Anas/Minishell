@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util5_parsin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 15:34:52 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 15:35:43 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/24 23:24:40 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	condition(char **p, t_Token **tokens, int *num_tokens, int *max_tokens)
 	else if ((**p == '\'' && *(*p + 1) == '\'' && *(*p + 2) != ' ')
 		|| (**p == '\"' && *(*p + 1) == '\"' && *(*p + 2) != ' '))
 		(*p) += 2;
-	else if (**p == '/' || **p == '.'|| **p == '$' || **p == '"'
+	else if (**p == '/' || **p == '.' || **p == '$' || **p == '"'
 		|| **p == '\'')
 		quot(p, tokens, num_tokens, max_tokens);
 	else if (**p == '<')
@@ -88,10 +88,10 @@ void	condition(char **p, t_Token **tokens, int *num_tokens, int *max_tokens)
 		(*tokens)[(*num_tokens)++].value = strndup(*p, 1);
 		(*p)++;
 	}
-	else if(**p == '*')
+	else if (**p == '*')
 	{
 		start = *p;
-		while(**p != ' ' && **p != '\0')
+		while (**p != ' ' && **p != '\0')
 			(*p)++;
 		len = *p - start;
 		(*tokens)[(*num_tokens)].type = WHILCART;

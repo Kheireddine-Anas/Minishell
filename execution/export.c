@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:43:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/20 15:01:21 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/24 23:05:38 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	add_exp(t_env *env, char *value, char *var)
 	}
 }
 
-void	export_add(t_env **env, char **value,  t_status **status)
+void	export_add(t_env **env, char **value, t_status **status)
 {
 	int		i;
 	char	*var;
@@ -140,7 +140,7 @@ void	export_add(t_env **env, char **value,  t_status **status)
 	(*status)->status = 0;
 }
 
-void	cmd_export(t_env **env, char **add,  t_status **status)
+void	cmd_export(t_env **env, char **add, t_status **status)
 {
 	if (!add[1])
 		show_exp(*env);

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:40:06 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 20:54:25 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 12:07:35 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void	lop(t_env **env, char *line, t_status **status)
 	t_fd_	*fd_in_out;
 	t_cmd	*lst_cmd;
 
-	if(!line || ft_strlen(line) == 0)
+	if (!line || ft_strlen(line) == 0)
 		return ;
 	lst_cmd = NULL;
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:52:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 20:49:45 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 11:51:15 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	filecommade(t_cmd *cmd, char **env)
 	else if (cmd->option[0] && !get_path(env, cmd->option[0], 0))
 		errer_cmd(cmd->option[0]);
 }
+
 void	hand_error(t_status **status, char	*str)
 {
 	ft_putstr_fd("minishell : ", 2);
@@ -82,19 +83,3 @@ void	hand_error(t_status **status, char	*str)
 	ft_putstr_fd(": error\n", 2);
 	(*status)->status = 1;
 }
-
-// void	print_minishell(void)
-// {
-// 	char	*shell_art;
-
-// 	shell_art = 
-// 		"  _____ _          _ _ \n"
-// 		" / ____| |        | | |\n"
-// 		"| (___ | |__   ___| | |\n"
-// 		" \\___ \\| '_ \\ / _ \\ | |\n"
-// 		" ____) | | | |  __/ | |\n"
-// 		"|_____/|_| |_|\\___|_|_|\n";
-// 	ft_putstr_fd("\033[34m", 2);
-// 	ft_putstr_fd(shell_art, 2);
-// 	ft_putstr_fd("\033[0m", 2);
-// }

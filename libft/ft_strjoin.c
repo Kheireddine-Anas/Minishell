@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 13:21:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/06/27 22:28:22 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/24 22:56:44 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!s2)
 		return (ft_strdup(s1));
 	size_total = ft_strlen(s1) + ft_strlen(s2);
-	res = ft_calloc(size_total + 1,1);
+	res = ft_calloc(size_total + 1, 1);
 	if (!res)
 		return (NULL);
 	while (s1[i] != '\0')

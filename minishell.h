@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:27:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 18:15:08 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 09:46:52 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,8 @@
 typedef struct s_cmd
 {
 	char			**option;
-	char			**in;
-	char			**out;
-	char			**fil_in;
-	char			**fil_out;
+	char			**rederaction;
+	char			**fil_name;
 	char			**extra_arg;
 	int				index;
 	int				single;
@@ -66,7 +64,6 @@ typedef enum s_TokenType
 	OUT,
 	APPEND,
 	HER_DOC,
-	FILE_NAME,
 	CMD,
 	VARIABLE,
 	OPTION,
