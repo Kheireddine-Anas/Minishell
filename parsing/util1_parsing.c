@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:36:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 18:12:40 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 16:22:11 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	*process_quotes(char *str, char *dst)
 
 	i = 0;
 	j = 0;
-	if (str[0] == '\'' && str[strlen(str) - 1] == '\'' && strlen(str) != 1)
+	if (str[0] == '\'' && str[strlen(str) - 1] == '\'' && strlen(str) > 1)
 	{
 		while (str[i])
 		{

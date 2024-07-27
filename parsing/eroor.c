@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:52:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 11:51:15 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 18:24:40 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	errer_cmd(char *str)
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\033[0m", 2);
 	ft_putstr_fd("\033[31m", 2); 
-	perror(" ");
+	ft_putstr_fd(": command not found\n", 2);
 	ft_putstr_fd("\033[0m", 2);
 	exit(127);
 }

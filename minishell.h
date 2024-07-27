@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:27:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 09:46:52 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 16:29:57 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
-// # include <readline/rltypedefs.h>
 #include <string.h>
 # include <signal.h>
 # include <stdlib.h>
@@ -89,8 +88,10 @@ typedef struct s_status
 {
 	int				status;
 }					t_status;
+int					cheke_dolar(char *str);
 char				*remouve_single_double_qout(char *str);
 char				*sqipt_whil_cart(char *str);
+int					cmd_exit(char **optin, t_status **status);
 void				condition(char **p, t_Token **tokens, int *num_tokens, int *max_tokens);
 char				**exe_wildcard(char *argv);
 char				**create_cmmmand(char **str);

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 11:51:18 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 18:24:31 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 					(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp,
 						status);
 				}
+				if (i - 1 != 0 && cheke_dolar((*tokens)[i].value) == 1)
+					(*tokens)[i].value = NULL;
 				if (i != 0 && (*tokens)[i - 1].type == CMD)
 					(*tokens)[i].type = OPTION;
 			}
@@ -144,6 +146,8 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 			else if (ft_strchr((*tokens)[i].value, '$'))
 				(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp,
 						status);
+			// if (i - 1 != 0 && cheke_dolar((*tokens)[i].value) == 1 && )
+			// 	(*tokens)[i].value = NULL;
 			if (i == 0)
 				(*tokens)[i].type = CMD;
 			else if (i != 0 && (*tokens)[i - 1].type == CMD)
@@ -171,7 +175,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 // 	int num_tokens = 0;
 // 	int i = 0;
 
-// 	char *p = "cat <<k >o < K< I <L <R <V >>U >>P";
+// 	char *p = "ls *";
 // 	status = ft_calloc(1, sizeof(t_status));
 // 	tokens = tokenize(p, &num_tokens);
 // 	parse(&tokens, num_tokens, envp, &status);

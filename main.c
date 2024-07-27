@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:40:06 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 12:07:35 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 15:53:45 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,20 +80,16 @@ static void	lop(t_env **env, char *line, t_status **status)
 	fd_in_out = init_and_create_cmd(&lst_cmd, env, line, status);
 	if (!fd_in_out)
 		return ;
-	if ((*lst_cmd->option) && 
-		builting(fd_in_out->last, env, status, &fd_in_out) == 1)
+	if (lst_cmd && fd_in_out->envp && builting(lst_cmd, env, status, &fd_in_out) == 1)
 	{
 		close_file(fd_in_out, fd_in_out->fd);
 		return ;
 	}
-	if (!lst_cmd || !fd_in_out->envp)
-		return ;
 	fd_in_out->pids = ft_calloc(lstsize(lst_cmd), sizeof(pid_t));
 	while (lst_cmd)
 	{
 		if (whillop(lst_cmd, fd_in_out, status, i) == 1)
 		{
-			printf("***\n");
 			lstclear(&lst_cmd);
 			return ;
 		}

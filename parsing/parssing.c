@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:57:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 12:02:03 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/26 18:21:49 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,36 +232,7 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 	(*new)->option[j] = NULL;
 	(*new)->fil_name[k] = NULL;
 	(*new)->next = NULL;
-	// if (!(*new)->out[0])
-	// {
-	// 	free((*new)->out);
-	// 	(*new)->out = NULL;
-	// }
-	// if (!(*new)->extra_arg[0])
-	// {
-	// 	free((*new)->extra_arg);
-	// 	(*new)->extra_arg = NULL;
-	// }
-	// if (!(*new)->in[0])
-	// {
-	// 	free((*new)->in);
-	// 	(*new)->in = NULL;
-	// }
-	// if (!(*new)->option[0])
-	// {
-	// 	free((*new)->option);
-	// 	(*new)->option = NULL;
-	// }
-	// if (!(*new)->fil_in[0])
-	// {
-	// 	free((*new)->fil_in);
-	// 	(*new)->fil_in = NULL;
-	// }
-	// if (!(*new)->fil_out[0])
-	// {
-	// 	free((*new)->fil_out);
-	// 	(*new)->fil_out = NULL;
-	// }
+
 	return (0);
 }
 
