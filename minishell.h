@@ -1,29 +1,48 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/27 07:11:54 by akheired          #+#    #+#             */
+/*   Updated: 2024/07/27 07:11:54 by akheired         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <string.h>
-#include <signal.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stddef.h>
+# include <string.h>
+# include <signal.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
-typedef enum				s_token
+typedef enum s_token
 {
-	D_QUOTE = '\"',
-	S_QUOTE = '\'',
-	BK_SL = '\\',
-	WSPACE = ' ',
-	PIPE = '|',
-	VAR = '$',
-	OUT = '>',
-	IN = '<',
+	D_QUOTE,
+	S_QUOTE,
+	BACK_SL,
+	WSPACE,
+	PIPE,
+	VAR,
+	RE_IN,
+	RE_OUT,
 	WORD,
 	HERE_DOC,
 	OUT_FILE,
-} e_token;
+}	t_token;
+
+typedef enum s_status
+{
+	GENERAL,
+	IN_DQUOTE,
+	IN_SQUOTE
+}	t_status;
 
 typedef struct s_env
 {
@@ -32,30 +51,28 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-typedef struct  s_red
+typedef struct s_red
 {
-	/* data */
-	e_token type;
-	char *file;
-	struct s_red *next;
+	t_token			type;
+	char			*file;
+	struct s_red	*next;
 
-} t_redir;
- 
+}	t_redir;
+
 typedef struct s_data
 {
-	char	**cmnd;
-	t_redir *red;
-	char **env;
-	struct s_data *next;
+	char			**cmnd;
+	t_redir			*red;
+	char			**env;
+	struct s_data	*next;
 
 }	t_data;
-
-
 
 typedef struct s_lexer
 {
 	char			*value;
-	e_token	type;
+	t_status		status;
+	t_token			type;
 	struct s_lexer	*next;
 }	t_lexer;
 

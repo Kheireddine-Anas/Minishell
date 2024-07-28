@@ -2,7 +2,7 @@
 
 char	*set_name(char *str)
 {
-	int	i;
+	int		i;
 	char	*name;
 
 	i = 0;
@@ -28,7 +28,7 @@ char	*set_value(char *str)
 		i++;
 	if (!str[i])
 		return (ft_strdup(""));
-	value = ft_calloc((ft_strlen(str) - i) , sizeof(char));
+	value = ft_calloc((ft_strlen(str) - i), sizeof(char));
 	i++;
 	while (str[i] && str[i] != '=' && str[i] != ' ')
 		value[j++] = str[i++];
@@ -42,9 +42,7 @@ t_env	*set_env(char *str)
 
 	head = ft_calloc(1, sizeof(t_env));
 	head->variable = set_name(str);
-	// printf(">>>>>>>>>>>>>>>>>%s\n", head->variable);
 	head->value = set_value(str);
-	// printf(">>>>>>>>>>>>>>>>>%s\n", head->value);
 	head->next = NULL;
 	return (head);
 }
@@ -98,7 +96,7 @@ char	**env_set(t_env *env)
 	return (envirs);
 }
 
-int main(int ac, char **av, char **envs)
+/*int main(int ac, char **av, char **envs)
 {
 	t_env	*env; //ENV struct
 	t_env	*tmp;
@@ -149,3 +147,4 @@ int main(int ac, char **av, char **envs)
 	// printf("******\n");
 	return 0;
 }
+*/

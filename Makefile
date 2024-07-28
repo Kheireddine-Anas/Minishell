@@ -1,5 +1,5 @@
-SRC  =   env.c ft_print.c utils.c cd.c export.c ft_split.c pwd.c unset.c 
-# SRC  =   min.c ft_print.c utils.c
+# SRC  =   env.c ft_print.c utils.c cd.c export.c ft_split.c pwd.c unset.c 
+SRC  =   min.c ft_print.c utils.c env.c cd.c export.c ft_split.c pwd.c unset.c 
 NAME = minishell
 # CFLAGS = -Wall -Wextra -Werror -I/Users/akheired/.brew/opt/readline/include -L/Users/akheired/.brew/opt/readline/lib -lreadline -lncurses
 CFLAGS = -I/Users/akheired/.brew/opt/readline/include -L/Users/akheired/.brew/opt/readline/lib -lreadline -lncurses

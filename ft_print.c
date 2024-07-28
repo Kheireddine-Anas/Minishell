@@ -1,25 +1,25 @@
 #include "minishell.h"
 
 
-// char	*get_state(enum e_state state)
-// {
-// 	if (state == IN_DQUOTE)
-// 		return ("IN_DQUOTE");
-// 	else if (state == IN_QUOTE)
-// 		return ("IN_QUOTE");
-// 	else
-// 		return ("GENERAL");
-// }
+char	*get_status(t_status status)
+{
+	if (status == IN_DQUOTE)
+		return ("IN_DQUOTE");
+	else if (status == IN_SQUOTE)
+		return ("IN_SQUOTE");
+	else
+		return ("GENERAL");
+}
 
-char	*get_type(e_token token)
+char	*get_type(t_token token)
 {
 	if (token == WSPACE)
 		return ("SPACE");
 	else if (token == S_QUOTE)
-		return ("QUOTE");
+		return ("S_QUOTE");
 	else if (token == D_QUOTE)
 		return ("DOUBLE_QUOTE");
-	else if (token == BK_SL)
+	else if (token == BACK_SL)
 		return ("ESCAPE");
 	else if (token == VAR)
 		return ("VAR");
@@ -29,8 +29,10 @@ char	*get_type(e_token token)
 		return ("WORD");
 	else if (token == HERE_DOC)
 		return ("HERE_DOC");
-	else if (token == OUT_FILE)
-		return ("DREDIR_OUT");
+	else if (token == RE_OUT)
+		return ("REDIR_OUT");
+	else if (token == RE_IN)
+		return ("REDIR_IN");
 	else
 		return ("ERROR");
 }
@@ -43,14 +45,16 @@ void	ft_print_lexer(t_lexer *lexer)
 	if (tmp)
 	{
 		printf("tmp->content\t");
-		printf("tmp->type\t\n");
-		printf("-------------------------------\n");
+		printf("tmp->type\t");
+		printf("tmp->status\t\n");
+		printf("------------------------------------------------\n");
 	}
 	while (tmp)
 	{
 		printf("%-10s\t", tmp->value);
-		printf("%-10s\t\n", get_type(tmp->type));
-		printf("--------------------------------\n");
+		printf("%-10s\t", get_type(tmp->type));
+		printf("%-10s\t\n", get_status(tmp->status));
+		printf("------------------------------------------------\n");
 		tmp = tmp->next;
 	}
 }
