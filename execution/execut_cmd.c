@@ -1,27 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rediraction.c                                      :+:      :+:    :+:   */
+/*   execut_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:46:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 18:24:31 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/27 16:08:41 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	handle_sigint(int sig)
-{
-	if (sig == SIGINT)
-	{
-		printf("\n");
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
-}
 
 void	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ **fd_in_out)
 {

@@ -6,11 +6,19 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:46:23 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 12:44:20 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/28 11:05:57 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	handle_sigint_herdoc(int sigt)
+{
+	if (sigt == SIGINT)
+	{
+		exit(1);
+	}
+}
 
 void	print_s(char **args, int *i)
 {
@@ -49,21 +57,21 @@ void	cmd_echo(char **args, t_status **status, t_cmd *cmd)
 
 int	cmd_exit(char **optin, t_status **status)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (optin[1])
 	{
-		while (optin[1][i])
+		while (optin[1][i++])
 		{
-			if (!ft_isdigit(optin[1][i]))
+			if (ft_isalpha(optin[1][i]))
 			{
+				printf("exit\n");
 				ft_putstr_fd("minishell: exit: ", 2);
 				ft_putstr_fd(optin[1], 2);
 				ft_putstr_fd(": numeric argument required\n", 2);
 				exit(255);
 			}
-			i++;
 		}
 		if (optin[2])
 		{
@@ -71,8 +79,10 @@ int	cmd_exit(char **optin, t_status **status)
 			(*status)->status = 1;
 			return (1);
 		}
+		printf("exit\n");
 		exit(ft_atoi(optin[1]));
 	}
+	printf("exit\n");
 	exit(0);
 	return (0);
 }

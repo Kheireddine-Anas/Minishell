@@ -6,12 +6,13 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:40:06 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 15:53:45 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/28 09:59:17 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+t_status **global_flag;
 void	fin_lop(t_fd_ *fd_in_out, int i, t_status **status)
 {
 	wit_process(i, &fd_in_out->pids, fd_in_out, status);
@@ -27,12 +28,11 @@ static t_fd_	*init_and_create_cmd(t_cmd **lst_cmd, t_env **env, char *line,
 	fd_in_out = ft_calloc(1, sizeof(t_fd_));
 	fd_in_out->stdin = 0;
 	fd_in_out->stdout = 0;
-	fd_in_out->her_doc = 0;
+	fd_in_out->her_doc = -2;
 	fd_in_out->envp = get_erray_env(*env);
 	creat_cmd(lst_cmd, line, fd_in_out->envp, status);
 	if (!lst_cmd)
 	{
-		printf("9999999\n");
 		(*status)->status = 1;
 		return (NULL);
 	}
@@ -43,28 +43,32 @@ static t_fd_	*init_and_create_cmd(t_cmd **lst_cmd, t_env **env, char *line,
 	return (fd_in_out);
 }
 
-static int	whillop(t_cmd	*lst_cmd, t_fd_	*fd_in_out, 
-		t_status **status, int i)
+void	loo_commande(t_cmd *lst_cmd, t_fd_ *fd_in_out, t_status **status, int i)
 {
-	fd_in_out->retu_red = rediraction(lst_cmd, &fd_in_out, status);
-	if (fd_in_out->retu_red == 2)
+	while (lst_cmd)
 	{
-		close_file(fd_in_out, fd_in_out->fd);
-		return (1);
+		if (whillop(lst_cmd, fd_in_out, status, i) == 1)
+		{
+			lstclear(&lst_cmd);
+			return ;
+		}
+		if (fd_in_out->her_doc != -2)
+			close(fd_in_out->her_doc);
+		lst_cmd = lst_cmd->next;
+		i++;
 	}
-	if (pipe(fd_in_out->fd) == -1)
-		hand_error(status, "pipe");
-	fd_in_out->pids[i] = fork();
-	if (fd_in_out->pids[i] == -1)
-		hand_error(status, "fork");
-	if (fd_in_out->pids[i] == 0 && lst_cmd != fd_in_out->last)
-		child_process(lst_cmd, fd_in_out->envp, fd_in_out->fd, &fd_in_out);
-	else if (fd_in_out->pids[i] == 0 && lst_cmd == fd_in_out->last)
-		fin_commande(lst_cmd, fd_in_out->envp);
-	else if (fd_in_out->pids[i] > 0)
-		parent_prossuce(fd_in_out->fd, &fd_in_out, i);
-	whilloop(fd_in_out->fd);
-	return (0);
+	fin_lop(fd_in_out, i, status);
+	lstclear(&lst_cmd);
+}
+void	handle_sigint(int sig)
+{
+	if (sig == SIGINT)
+	{
+		printf("\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }
 
 static void	lop(t_env **env, char *line, t_status **status)
@@ -80,24 +84,19 @@ static void	lop(t_env **env, char *line, t_status **status)
 	fd_in_out = init_and_create_cmd(&lst_cmd, env, line, status);
 	if (!fd_in_out)
 		return ;
-	if (lst_cmd && fd_in_out->envp && builting(lst_cmd, env, status, &fd_in_out) == 1)
+	if (lst_cmd && fd_in_out->envp && builting(lst_cmd, env, status,
+			&fd_in_out) == 1)
 	{
 		close_file(fd_in_out, fd_in_out->fd);
 		return ;
 	}
 	fd_in_out->pids = ft_calloc(lstsize(lst_cmd), sizeof(pid_t));
-	while (lst_cmd)
+	if (chek_her_doc(lst_cmd, &fd_in_out, status) == 2)
 	{
-		if (whillop(lst_cmd, fd_in_out, status, i) == 1)
-		{
-			lstclear(&lst_cmd);
-			return ;
-		}
-		lst_cmd = lst_cmd->next;
-		i++;
+		lstclear(&lst_cmd);
+		return ;
 	}
-	fin_lop(fd_in_out, i, status);
-	lstclear(&lst_cmd);
+	loo_commande(lst_cmd, fd_in_out, status, i);
 }
 
 int	main(int argc, char *argv[], char **envp)
@@ -115,6 +114,8 @@ int	main(int argc, char *argv[], char **envp)
 	envp_new = get_env(envp);
 	signal(SIGINT, handle_sigint);
 	status = ft_calloc(1, sizeof(t_status));
+	status->flag = 0;
+	global_flag = &status;
 	while (1)
 	{
 		line = readline("\033[1;33mmini-shell> \033[0m");

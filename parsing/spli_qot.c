@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 18:24:31 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/28 10:48:49 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 			else if (i != 0 && ((*tokens)[i - 1].type == OUT || (*tokens)[i
 				- 1].type == APPEND))
 				(*tokens)[i].type = FILE_OUT;
-			else if ((*tokens)[i].value[ft_strlen((*tokens)[i].value)
-				- 1] == '*')
+			else if ((*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*')
 				(*tokens)[i].type = WHILCART;
 		}
 		else if ((*tokens)[i].type == QUOTE_SINGLE)
@@ -82,8 +81,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 			if ((*tokens)[i].value[0] == '*'
 				|| (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'
 				|| ((*tokens)[i].value[0] == '*'
-				&& (*tokens)[i].value[ft_strlen((*tokens)[i].value)
-					- 1] == '*'))
+				&& (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'))
 				(*tokens)[i].type = WHILCART;
 			(*tokens)[i].value = remove_single_qoute((*tokens)[i].value);
 			free(tmp);

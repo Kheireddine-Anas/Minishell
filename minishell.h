@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:27:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 16:29:57 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/28 10:23:38 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 # include <sys/wait.h>
 # include <unistd.h>
 # include <dirent.h>
-
 typedef struct s_cmd
 {
 	char			**option;
@@ -51,6 +50,8 @@ typedef struct s_fd_last
 	char			**envp;
 	t_cmd			*last;
 	int				fd[2];
+	int				out;
+	int				in;
 }					t_fd_;
 
 typedef enum s_TokenType
@@ -87,7 +88,12 @@ typedef struct s_Token
 typedef struct s_status
 {
 	int				status;
+	int				flag;
 }					t_status;
+
+void				handle_sigint_herdoc(int sigt);	
+int					whillop(t_cmd *lst_cmd, t_fd_ *fd_in_out, t_status **status, int i);
+int					chek_her_doc(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status);
 int					cheke_dolar(char *str);
 char				*remouve_single_double_qout(char *str);
 char				*sqipt_whil_cart(char *str);
@@ -107,7 +113,7 @@ int					st_2derra(char **str, int k);
 int					strle_2derra(char **str);
 char				**realloc_array(char ***str, int capacity);
 void				clo(int fd);
-int					while_loop(t_cmd **cmd, t_fd_ **fd_in_out);
+int					while_loop(char *lim, t_fd_ **fd_in_out, t_status **status);
 int					rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out,
 						t_status **status);
 int					builting(t_cmd *lst_cmd, t_env **env, t_status **status,

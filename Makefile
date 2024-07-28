@@ -1,5 +1,5 @@
-src  =  parsing/parssing.c   parsing/eroor.c main.c execution/rediraction.c parsing/util1_parsing.c parsing/split_variable.c parsing/spli_qot.c execution/run_cmd.c execution/her_doc.c getNextLine/get_next_line_utils_bonus.c  getNextLine/get_next_line_bonus.c parsing/util2_parsing.c execution/utul_rederaction.c parsing/env_1.c execution/cd_cmd.c execution/export.c\
-		parsing/builting.c execution/fonction_mian.c execution/echo.c parsing/util3_parsin.c parsing/util4_parsin.c parsing/util5_parsin.c parsing/whilcard.c parsing/whil_card_util.c
+src  =  parsing/parssing.c   parsing/eroor.c main.c execution/execut_cmd.c parsing/util1_parsing.c parsing/split_variable.c parsing/spli_qot.c execution/run_cmd.c execution/her_doc.c getNextLine/get_next_line_utils_bonus.c  getNextLine/get_next_line_bonus.c parsing/util2_parsing.c execution/utul_cmd.c parsing/env_1.c execution/cd_cmd.c execution/export.c\
+		parsing/builting.c execution/fonction_mian.c execution/echo.c parsing/util3_parsin.c parsing/util4_parsin.c parsing/util5_parsin.c parsing/whilcard.c parsing/whil_card_util.c parsing/rederaction.c
 obj = $(src:.c=.o)  
 NAME = minishell
 LIBFT = libft/libft.a
