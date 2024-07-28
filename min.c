@@ -221,25 +221,74 @@ t_env	*obtain_env(char **envis)
 	return (env);
 }
 
-// var_extend(t_lexer **lexing, t_env *env)
-// {
-// 	t_lexer	*tmp;
+void	vars_value(t_lexer *tmp)
+{
+	free(tmp->value);
+	tmp->value = ft_strdup("$");
+	tmp->type = WORD;
+}
 
-// 	tmp = *lexing;
-// 	while (tmp)
-// 	{
-// 		if (tmp->type == VAR)
-// 		{
+char	*find_var(t_env *env, char *var_name)
+{
+	t_env	*tmp;
 
-// 		}
-// 	}
-	
-// }
+	tmp = env;
+	while (tmp)
+	{
+		if (!ft_strcmp(var_name, tmp->variable))
+		{
+			free(var_name);
+			return (tmp->value);
+		}
+		tmp = tmp->next;
+	}
+	free(var_name);
+	return ("");
+}
 
-// lex_scan(t_lexer **lexing, t_env *env)
-// {
-// 	var_extend(lexing, env);
-// }
+void	vars_status(t_env *env, t_lexer *tmp)
+{
+	char	*var_name;
+	char	*var_value;
+
+	var_name = ft_strdup(tmp->value + 1);
+	free(tmp->value);
+	var_value = ft_strdup(find_var(env, var_name));
+	tmp->value = var_value;
+	tmp->type = WORD;
+}
+
+var_extend(t_lexer **lexing, t_env *env)
+{
+	t_lexer	*tmp;
+
+	tmp = *lexing;
+	while (tmp)
+	{
+		if (tmp->type == VAR)
+		{
+			if (!ft_strcmp(tmp->value, "$"))
+				vars_value(tmp);
+			else if (!ft_strcmp(tmp->value, "$?"))
+			{
+				free(tmp->value);
+				tmp->value = ft_itoa(g_exit.exit_status);
+				tmp->type = WORD;
+			}
+			else if (tmp->value[0] == '\0')
+				tmp->type = WORD;
+			else if (tmp->status == IN_DQUOTE)
+				vars_status(env, *lexing);
+			else
+				another(env, tmp);
+		}
+	}
+}
+
+lex_scan(t_lexer **lexing, t_env *env)
+{
+	var_extend(lexing, env);
+}
 
 int main(int ac, char **av, char **environment)
 {

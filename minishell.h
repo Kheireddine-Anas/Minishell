@@ -51,6 +51,13 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_exit_status
+{
+	int	exit_status;
+}	t_exit_status;
+
+t_exit_status	g_exit;
+
 typedef struct s_red
 {
 	t_token			type;
@@ -82,6 +89,7 @@ char	*ft_strjoin(char *s1, char *s2, int val);
 int		ft_isdigit(int c);
 int		ft_isalpha(int c);
 int		ft_isalnum(int c);
+char	*ft_itoa(int n);
 int		ft_strlen(char *str);
 int		ft_strcmp(char *s1, char *s2);
 char	*ft_strchr(const char *s, int c);
