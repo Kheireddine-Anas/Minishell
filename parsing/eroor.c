@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:52:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 18:24:40 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 15:16:51 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,14 @@ void	error_alocation(void)
 	exit(1);
 }
 
-void	errer_cmd(char *str)
+void	errer_cmd(char *str, char *ms_err)
 {
 	ft_putstr_fd("\033[31mminishell: ", 2); 
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\033[0m", 2);
-	ft_putstr_fd("\033[31m", 2); 
-	ft_putstr_fd(": command not found\n", 2);
-	ft_putstr_fd("\033[0m", 2);
-	exit(127);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(ms_err, 2);
+	ft_putstr_fd("\n", 2);
 }
 
 void	error_ch(char *str)
@@ -34,9 +33,7 @@ void	error_ch(char *str)
 	ft_putstr_fd("\033[34mminishell: ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\033[0m", 2);
-	ft_putstr_fd("\033[34m", 2);
 	perror(" ");
-	ft_putstr_fd("\033[0m", 2);
 	exit (1);
 }
 
@@ -45,13 +42,12 @@ void	erro(char *str)
 	ft_putstr_fd("\033[33mminishell: ", 2); 
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\033[0m", 2);
-	ft_putstr_fd("\033[33m", 2);
 	perror(" ");
-	ft_putstr_fd("\033[0m", 2);
 }
 
 void	filecommade(t_cmd *cmd, char **env)
 {
+	struct stat file_info;
 	if (!cmd)
 		exit (1);
 	else if (cmd->single > 0 || cmd->double_q > 0)
@@ -60,20 +56,51 @@ void	filecommade(t_cmd *cmd, char **env)
 		exit(1);
 	}
 	else if (cmd->option && cmd->option[0] && cmd->option[0][0] == '\0')
-		errer_cmd(cmd->option[0]);
+		errer_cmd(cmd->option[0], "command not found");
 	else if (cmd->option[0] && cmd->option[0] && cmd->option[0][0] == '/')
 	{
-		if (access(cmd->option[0], X_OK) != 0)
-			errer_cmd(cmd->option[0]);
+		if (access(cmd->option[0], F_OK))
+		{
+			errer_cmd(cmd->option[0], "No such file or directory");
+			exit (127);
+		}
+		// if (access(cmd->option[0], X_OK) || access(cmd->option[0], R_OK) || access(cmd->option[0], W_OK))
+		// {
+		// 	errer_cmd(cmd->option[0], "Permission denied");
+		// 	exit (126);
+		// }
+		stat(cmd->option[0], &file_info);
+		if (S_ISDIR(file_info.st_mode))
+		{
+			errer_cmd(cmd->option[0], "is a directory");
+			exit (126);
+		}
 	}
 	else if (cmd->option[0] && cmd->option[0] 
 		&& cmd->option[0][0] == '.' && cmd->option[0][1] == '/')
 	{
-		if (access(cmd->option[0], X_OK))
-			errer_cmd(cmd->option[0]);
+		if (access(cmd->option[0], F_OK))
+		{
+			errer_cmd(cmd->option[0], "No such file or directory");
+			exit (127);
+		}
+		if (access(cmd->option[0], X_OK) || access(cmd->option[0], R_OK) || access(cmd->option[0], W_OK))
+		{
+			errer_cmd(cmd->option[0], "Permission denied");
+			exit (126);
+		}
+		stat(cmd->option[0], &file_info);
+		if (S_ISDIR(file_info.st_mode))
+		{
+			errer_cmd(cmd->option[0], "is a directory");
+			exit (126);
+		}
 	}
 	else if (cmd->option[0] && !get_path(env, cmd->option[0], 0))
-		errer_cmd(cmd->option[0]);
+	{
+		errer_cmd(cmd->option[0], "command not found");
+		exit (127);
+	}
 }
 
 void	hand_error(t_status **status, char	*str)

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 15:19:00 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 13:30:03 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 13:09:28 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,35 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 	int		j;
 	char	*variable;
 	char	*tmp;
-
+	char *pos;
+	char	*chek;
 	if (!str)
 		return (NULL);
 	str1 = NULL;
 	k = 0;
 	i = 0;
 	j = 0;
-	if (ft_strcmp("$?", str) == 0)
-		return (ft_itoa((*status)->status));
+	if ((pos = ft_strnstr(str, "$?", ft_strlen(str))) != NULL)
+    {
+        char *new_str = malloc(strlen(str) + 50); // allocate memory for new string
+        if (!new_str) return NULL;
+
+        int index = pos - str;
+
+        strncpy(new_str, str, index);
+        new_str[index] = '\0';
+        sprintf(new_str + index, "%d%s", (*status)->status, pos + 2);
+		if (!ft_strchr(new_str, '$'))
+			return (new_str);
+		free(str);
+        str = ft_strdup(new_str);
+    }
 	if (cheke_dolar(str))
 		return (str);
-	if (ft_strchr(str, '$'))
+	chek = ft_strchr(str, '$');
+	if (chek && (chek[1] == '\0' || chek[1] == ' '))
+		return (str);
+	else if (chek)
 		str1 = split_variable(str);
 	if (!str1)
 		return (NULL);

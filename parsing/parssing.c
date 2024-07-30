@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:57:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 18:21:49 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/29 16:06:37 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,9 +139,9 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 			(*new)->next = NULL;
 			return (1);
 		}
-		else if (tokens[*i].type == QUOTE_SINGLE && tokens[*i].value[0] == '\'')
+		else if (tokens[*i].type == QUOTE_SINGLE && ft_strchr(tokens[*i].value, '\'') != NULL)
 			(*new)->single = 1;
-		else if (tokens[*i].type == QUOTE_DOUBLE && tokens[*i].value[0] == '\"')
+		else if (tokens[*i].type == QUOTE_DOUBLE && ft_strchr(tokens[*i].value, '\"')!= NULL)
 			(*new)->double_q = 1;
 		else if (tokens[*i].type == IN || tokens[*i].type == HER_DOC
 			|| tokens[*i].type == OUT || tokens[*i].type == APPEND)

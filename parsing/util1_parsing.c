@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:36:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 16:22:11 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 12:44:46 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ static char	*process_quotes(char *str, char *dst)
 {
 	int	i;
 	int	j;
-
+	int k = 0;
+	
 	i = 0;
 	j = 0;
 	if (str[0] == '\'' && str[strlen(str) - 1] == '\'' && strlen(str) > 1)
@@ -30,12 +31,19 @@ static char	*process_quotes(char *str, char *dst)
 	}
 	else
 	{
-		if (str[1] && str[1] == '*')
+		while (str[i])
+		{
+			if (str[i] == '\'')
+				k++;
+			i++;
+		}
+		i = 0;
+		if (k && k % 2 == 0)
 		{
 			while (str[i])
 			{
-				if (str[i] != '\'')
-					dst[j++] = str[i];
+				if(str[i] != '\'')
+				dst[j++] = str[i];
 				i++;
 			}
 		}
@@ -69,61 +77,51 @@ char	*remove_single_qoute(char *str)
 	return (process_quotes(str, dst));
 }
 
-static char	*process_double_quotes(char *str, char *dst)
-{
-	int	i;
-	int	j;
 
-	i = 0;
-	j = 0;
-	if (str[0] == '"' && str[strlen(str) - 1] == '"' && strlen(str) != 1)
+
+char	*remove_doubl_qoute(char *str, char **envp, t_status **status)
+{
+	int		flag = 0;
+	char	**split;
+	char	*result = ft_strdup("");
+	char	*temp;
+	
+	int		i = 0;
+	if (!str)
+		return (NULL);
+	while (str[i])
 	{
-		while (str[i])
+		if (str[i] == '\"')
+			flag++;;
+		i++;
+	}
+	if (flag && flag % 2 != 0)
+		return (str);
+	else 
+	{
+		split = ft_split(str, '\"');
+		if (!split)
+			return (NULL);
+		i = 0;
+		while (split[i])
 		{
-			if (str[i] != '\"')
-				dst[j++] = str[i];
+			if (ft_strchr(split[i], '$'))
+				split[i] = add_valu_variable(split[i],
+							envp, status);
+				if(!split[i])
+					split[i] = ft_strdup("");
+			i++;
+		}
+		i = 0;
+		while (split[i])
+		{
+			temp = result;
+			result = ft_strjoin(result, split[i]);
+			free(temp);
 			i++;
 		}
 	}
-	else
-	{
-		if (str[1] && str[1] == '*')
-		{
-			while (str[i])
-			{
-				if (str[i] != '\"')
-					dst[j++] = str[i];
-				i++;
-			}
-		}
-		else
-		{
-			while (str[i])
-			{
-				dst[j++] = str[i];
-				i++;
-			}
-		}
-	}
-	dst[j] = '\0';
-	return (dst);
-}
-
-char	*remove_doubl_qoute(char *str)
-{
-	char	*dst;
-	int		len;
-
-	if (!str)
-		return (NULL);
-	len = strlen(str);
-	dst = ft_calloc(len + 1, 1);
-	if (!dst)
-	{
-		perror("Allocation error");
-		exit(EXIT_FAILURE);
-	}
-	return (process_double_quotes(str, dst));
+	return (result);
 }
 
 char	*chercher_variable(char *str, char **envp)

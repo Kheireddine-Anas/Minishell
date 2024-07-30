@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:27:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/28 10:23:38 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 15:17:56 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,20 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 #include <string.h>
+#include <sys/stat.h>
 # include <signal.h>
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <unistd.h>
 # include <dirent.h>
+
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}					t_env;
+
 typedef struct s_cmd
 {
 	char			**option;
@@ -38,6 +47,7 @@ typedef struct s_cmd
 
 typedef struct s_fd_last
 {
+	t_env			*env;
 	int				fd_in;
 	int				fd_out;
 	int				stdin;
@@ -71,14 +81,9 @@ typedef enum s_TokenType
 	FILE_IN,
 	LIM,
 	FILE_OUT,
-	WHILCART
+	WHILCART,
+	ERRRO
 }					t_TokenType;
-typedef struct s_env
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next;
-}					t_env;
 
 typedef struct s_Token
 {
@@ -88,11 +93,12 @@ typedef struct s_Token
 typedef struct s_status
 {
 	int				status;
-	int				flag;
 }					t_status;
 
+int					lstsize(t_cmd *lst);
+int					cmd_pwd(void);
 void				handle_sigint_herdoc(int sigt);	
-int					whillop(t_cmd *lst_cmd, t_fd_ *fd_in_out, t_status **status, int i);
+int					whillop(t_cmd **lst_cmd, t_fd_ *fd_in_out, t_status **status, int *i);
 int					chek_her_doc(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status);
 int					cheke_dolar(char *str);
 char				*remouve_single_double_qout(char *str);
@@ -101,13 +107,13 @@ int					cmd_exit(char **optin, t_status **status);
 void				condition(char **p, t_Token **tokens, int *num_tokens, int *max_tokens);
 char				**exe_wildcard(char *argv);
 char				**create_cmmmand(char **str);
-void				parent_prossuce(int *fd, t_fd_ **fd_in_out, int i);
+void				parent_prossuce(int *fd, t_fd_ **fd_in_out, int i, int ret_buil);
 void				hand_error(t_status **status, char	*str);
 void				update_env(t_env **env, char *var, char *value);
 void				whilloop(int *fd);
 void				wit_process(int nb_prossuce, pid_t **pids, t_fd_ *fd_in_out,
 						t_status **status);
-void				errer_cmd(char *str);
+void				errer_cmd(char *str, char *ms_err);
 void				print_minishell(void);
 int					st_2derra(char **str, int k);
 int					strle_2derra(char **str);
@@ -116,14 +122,16 @@ void				clo(int fd);
 int					while_loop(char *lim, t_fd_ **fd_in_out, t_status **status);
 int					rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out,
 						t_status **status);
-int					builting(t_cmd *lst_cmd, t_env **env, t_status **status,
-						t_fd_ **fd_in_out);
+int					builting(t_cmd *lst_cmd, t_env **env, t_status **status, t_fd_ **fd_in_out);
+void				builting_fork(t_cmd *lst_cmd, t_env **env, t_status **status, 
+						t_fd_ *fd_in_out);
+int					chke_builting(char *str);
 void				cmd_unset(t_env **env, char *var);
-void				cmd_echo(char **args, t_status **status, t_cmd *lst_cmd);
-void				print_env(t_env *env);
-void				cmd_export(t_env **env, char **add, t_status **status);
+int					cmd_echo(char **args, t_status **status, t_cmd *lst_cmd);
+int					print_env(t_env *env);
+int					cmd_export(t_env **env, char **add, t_status **status);
 t_env				*get_env(char **envp);
-void				cmd_cd(char **path, t_env **env, t_status **status);
+int					cmd_cd(char **path, t_env **env, t_status **status);
 char				**get_erray_env(t_env *env);
 t_Token				*tokenize(char *p, int *num_tokens);
 void				parse(t_Token **tokens, int num_tokens, char **envp,
@@ -141,15 +149,14 @@ void				error_alocation(void);
 char				*add_valu_variable(char *str, char **envp,
 						t_status **status);
 char				*remove_single_qoute(char *str);
-char				*remove_doubl_qoute(char *str);
+char				*remove_doubl_qoute(char *str, char **envp, t_status **status);
 char				*chercher_variable(char *str, char **envp);
 void				here_doc(t_cmd *cmd);
 void				erro(char *str);
 void				exe_cmd(t_cmd *cmd, char **envp);
 void				handle_sigint(int sig);
-void				child_process(t_cmd *cmd, char **envp, int *fd,
-						t_fd_ **fd_in_out);
-void				fin_commande(t_cmd *cmd, char **envp);
+void				child_process(t_cmd *cmd, char **envp, t_fd_ **fd_in_out, t_status **status);
+void				fin_commande(t_cmd *cmd, char **envp, t_status **status, t_fd_ **fd_in_out);
 void				close_file(t_fd_ *fd_in_out, int *fd);
 void				lstclear(t_cmd **lst);
 void				execute(t_cmd *cmd, char **envp);

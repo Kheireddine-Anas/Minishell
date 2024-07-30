@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:41:45 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/20 11:29:44 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 17:05:23 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,16 @@ static char	*get_valus(t_env *envs, char *srch)
 	return (NULL);
 }
 
-char	*cmd_pwd(void)
+int	cmd_pwd(void)
+{
+	char	*pwd;
+
+	pwd = getcwd(NULL, 0);
+	ft_putstr_fd(pwd, 1);
+	ft_putstr_fd("\n", 1);
+	return (0);
+}
+static char	*cmd_pwd_cd(void)
 {
 	char	*pwd;
 
@@ -53,7 +62,7 @@ void	error_option(char *str, t_status	**status)
 	(*status)->status = 1;
 }
 
-void	cmd_cd(char **path, t_env **env, t_status	**status)
+int	cmd_cd(char **path, t_env **env, t_status	**status)
 {
 	char	*pth;
 	char	*crnt;
@@ -64,7 +73,10 @@ void	cmd_cd(char **path, t_env **env, t_status	**status)
 		if (path[1][0] == '-' && path[1][0] != 'L' && path[1][0] != 'P')
 			error_option(path[1], status);
 		else if (chdir(path[1]) == -1)
+		{
 			error_cd(path[1], status);
+			return (1);
+		}
 	}
 	else
 	{
@@ -75,8 +87,12 @@ void	cmd_cd(char **path, t_env **env, t_status	**status)
 			(*status)->status = 1;
 		}
 		else if (chdir(pth) == -1)
+		{
 			error_cd(pth, status);
+			return (1);
+		}
 	}
-	update_env(env, "PWD", cmd_pwd());
+	update_env(env, "PWD", cmd_pwd_cd());
 	update_env(env, "OLDPWD", crnt);
+	return (0);
 }

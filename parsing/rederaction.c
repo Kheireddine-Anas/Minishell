@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 12:47:47 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/27 17:06:44 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 17:58:47 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,11 @@ int	chek_out(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status, int i)
 		}
 		if (fd == -1)
 		{
-			(*status)->status = 3;
+			(*status)->status = 1;
 			erro(lst_cmd->fil_name[i]);
 			return (2);
 		}
+		close(fd);
 		(*fd_in_out)->out = i;
 	}
 	return (0);
@@ -58,7 +59,7 @@ static int	cheke_rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out,
 		}
 		if ((*fd_in_out)->stdin == -1)
 		{
-			(*status)->status = 3;
+			(*status)->status = 1;
 			erro(lst_cmd->fil_name[i]);
 			return (2);
 		}
@@ -84,7 +85,7 @@ static int	out_rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out,
 					O_CREAT | O_RDWR | O_APPEND, 0777);
 		if ((*fd_in_out)->stdout == -1)
 		{
-			(*status)->status = 3;
+			(*status)->status = 1;
 			erro(lst_cmd->fil_name[(*fd_in_out)->out]);
 			return (2);
 		}
@@ -101,7 +102,7 @@ static int	in_rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status)
 		(*fd_in_out)->her_doc = open("/tmp/her_doc", O_RDWR);
 		if ((*fd_in_out)->her_doc == -1)
 		{
-			(*status)->status = 3;
+			(*status)->status = 1;
 			erro("/tmp/her_doc");
 			return (2);
 		}
@@ -113,7 +114,7 @@ static int	in_rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status)
 				O_RDONLY);
 		if ((*fd_in_out)->stdin == -1)
 		{
-			(*status)->status = 3;
+			(*status)->status = 1;
 			erro(lst_cmd->fil_name[(*fd_in_out)->in]);
 			return (2);
 		}
@@ -128,6 +129,8 @@ int	rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status)
 	int	retu;
 
 	i = 0;
+	if (!lst_cmd || !fd_in_out)
+		return (2);
 	(*fd_in_out)->out = 0;
 	(*fd_in_out)->in = 0;
 	if (lst_cmd->rederaction[i])

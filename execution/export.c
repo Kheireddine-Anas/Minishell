@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:43:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/24 23:05:38 by akheired         ###   ########.fr       */
+/*   Updated: 2024/07/29 14:10:47 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,13 @@ int	check_exp(char *name)
 		return (1);
 	while (name[i] && name[i] != '=')
 	{
-		if (!ft_isalpha(name[i]) && !ft_isdigit(name[i]) && name[i] != ' ')
+		if (!ft_isalpha(name[i]) && !ft_isdigit(name[i]))
 			return (1);
 		i++;
 	}
 	return (0);
 }
+
 
 void	add_exp(t_env *env, char *value, char *var)
 {
@@ -114,7 +115,7 @@ void	add_exp(t_env *env, char *value, char *var)
 	}
 }
 
-void	export_add(t_env **env, char **value, t_status **status)
+int	export_add(t_env **env, char **value, t_status **status)
 {
 	int		i;
 	char	*var;
@@ -133,17 +134,22 @@ void	export_add(t_env **env, char **value, t_status **status)
 			ft_putstr_fd(value[i], 2);
 			ft_putendl_fd(": not a valid identifier", 2);
 			(*status)->status = 1;
-			return ;
+			return (1);
 		}
 		i++;
 	}
 	(*status)->status = 0;
+	return (0);
 }
 
-void	cmd_export(t_env **env, char **add, t_status **status)
+int	cmd_export(t_env **env, char **add, t_status **status)
 {
 	if (!add[1])
 		show_exp(*env);
 	else
-		export_add(env, add, status);
+	{
+		if (export_add(env, add, status) == 1)
+			return (1);
+	}
+	return (0);
 }

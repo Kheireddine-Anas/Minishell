@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/28 10:48:49 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 15:20:54 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,38 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 	{
 		if ((*tokens)[i].type == WORD)
 		{
-			if (i != 0 && (*tokens)[i - 1].type == IN)
+			if (ft_strchr((*tokens)[i].value, '$')
+				&& (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] != '$')
+			{
+				if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
+					(*tokens)[i].type = LIM;
+				else
+				{
+					(*tokens)[i].type = VARIABLE;
+					(*tokens)[i].value = add_valu_variable((*tokens)[i].value,
+							envp, status);
+				}
+				if ((*tokens)[i].value == NULL)
+					(*tokens)[i].type = ERRRO;
+				else if (i - 1 != 0 && (*tokens)[i].value != NULL
+					&& cheke_dolar((*tokens)[i].value) == 1)
+					(*tokens)[i].value = NULL;
+				else if (i != 0 && (*tokens)[i - 1].type == CMD)
+					(*tokens)[i].type = OPTION;
+				else if (i != 0 && ((*tokens)[i - 1].type == OUT || (*tokens)[i - 1].type == APPEND))
+					(*tokens)[i].type = FILE_OUT;
+				else if (i != 0 && ((*tokens)[i - 1].type == IN || (*tokens)[i - 1].type == HER_DOC))
+					(*tokens)[i].type = FILE_OUT;
+			}
+			else if (i != 0 && (*tokens)[i - 1].type == IN)
 				(*tokens)[i].type = FILE_IN;
 			else if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
 				(*tokens)[i].type = LIM;
 			else if (i != 0 && ((*tokens)[i - 1].type == OUT || (*tokens)[i
-				- 1].type == APPEND))
+					- 1].type == APPEND))
 				(*tokens)[i].type = FILE_OUT;
-			else if ((*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*')
+			else if ((*tokens)[i].value[ft_strlen((*tokens)[i].value)
+				- 1] == '*')
 				(*tokens)[i].type = WHILCART;
 		}
 		else if ((*tokens)[i].type == QUOTE_SINGLE)
@@ -81,7 +105,8 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 			if ((*tokens)[i].value[0] == '*'
 				|| (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'
 				|| ((*tokens)[i].value[0] == '*'
-				&& (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'))
+					&& (*tokens)[i].value[ft_strlen((*tokens)[i].value)
+					- 1] == '*'))
 				(*tokens)[i].type = WHILCART;
 			(*tokens)[i].value = remove_single_qoute((*tokens)[i].value);
 			free(tmp);
@@ -95,7 +120,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 			else if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
 				(*tokens)[i].type = LIM;
 			else if (i != 0 && ((*tokens)[i - 1].type == OUT || (*tokens)[i
-				- 1].type == APPEND))
+					- 1].type == APPEND))
 				(*tokens)[i].type = FILE_OUT;
 		}
 		else if ((*tokens)[i].type == QUOTE_DOUBLE)
@@ -104,26 +129,11 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 				|| (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'
 				|| ((*tokens)[i].value[0] == '*'
 					&& (*tokens)[i].value[ft_strlen((*tokens)[i].value)
-						- 1] == '*'))
+					- 1] == '*'))
 				(*tokens)[i].type = WHILCART;
 			tmp = (*tokens)[i].value;
-			(*tokens)[i].value = remove_doubl_qoute((*tokens)[i].value);
+			(*tokens)[i].value = remove_doubl_qoute((*tokens)[i].value, envp, status);
 			free(tmp);
-			if (ft_strchr((*tokens)[i].value, '$'))
-			{
-				if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
-					(*tokens)[i].type = LIM;
-				else 
-				{
-					(*tokens)[i].type = VARIABLE;
-					(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp,
-						status);
-				}
-				if (i - 1 != 0 && cheke_dolar((*tokens)[i].value) == 1)
-					(*tokens)[i].value = NULL;
-				if (i != 0 && (*tokens)[i - 1].type == CMD)
-					(*tokens)[i].type = OPTION;
-			}
 			if (i == 0)
 				(*tokens)[i].type = CMD;
 			if ((i != 0 && (*tokens)[i - 1].type == CMD)
@@ -134,22 +144,8 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 			else if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
 				(*tokens)[i].type = LIM;
 			else if (i != 0 && ((*tokens)[i - 1].type == OUT || (*tokens)[i
-				- 1].type == APPEND))
+					- 1].type == APPEND))
 				(*tokens)[i].type = FILE_OUT;
-		}
-		else if ((*tokens)[i].type == VARIABLE)
-		{
-			if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
-				(*tokens)[i].type = LIM;
-			else if (ft_strchr((*tokens)[i].value, '$'))
-				(*tokens)[i].value = add_valu_variable((*tokens)[i].value, envp,
-						status);
-			// if (i - 1 != 0 && cheke_dolar((*tokens)[i].value) == 1 && )
-			// 	(*tokens)[i].value = NULL;
-			if (i == 0)
-				(*tokens)[i].type = CMD;
-			else if (i != 0 && (*tokens)[i - 1].type == CMD)
-				(*tokens)[i].type = OPTION;
 		}
 		else if ((*tokens)[i].type == CMD)
 		{
@@ -160,7 +156,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 			else if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
 				(*tokens)[i].type = LIM;
 			else if (i != 0 && ((*tokens)[i - 1].type == OUT || (*tokens)[i
-				- 1].type == APPEND))
+					- 1].type == APPEND))
 				(*tokens)[i].type = FILE_OUT;
 		}
 		i++;
@@ -173,7 +169,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 // 	int num_tokens = 0;
 // 	int i = 0;
 
-// 	char *p = "ls *";
+// 	char *p = "$hscjdsdjkshcdjksc";
 // 	status = ft_calloc(1, sizeof(t_status));
 // 	tokens = tokenize(p, &num_tokens);
 // 	parse(&tokens, num_tokens, envp, &status);

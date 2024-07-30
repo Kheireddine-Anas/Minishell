@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_cmd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:51:57 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/24 22:56:07 by akheired         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:41:05 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ void	commad_path(t_cmd *cmd, char **envp)
 	char	*path;
 
 	i = 0;
+	if (!cmd || !cmd->option)
+		return ;
 	path = cmd->option[0];
 	if (execve(path, cmd->option, envp) == -1)
 		error_ch(cmd->option[0]);
@@ -75,6 +77,8 @@ void	execute(t_cmd	*cmd, char **envp)
 	char	*path;
 
 	i = 0;
+	if (!cmd || !cmd->option)
+		return ;
 	path = get_path(envp, cmd->option[0], 0);
 	if (execve(path, cmd->option, envp) == -1)
 		error_ch(cmd->option[0]);

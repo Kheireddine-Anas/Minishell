@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:37:54 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/20 13:18:54 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 12:10:12 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,23 @@ void	in(char **p, t_Token **tokens, int *num_tokens)
 		(*tokens)[(*num_tokens)++].value = strndup(start, len);
 	}
 }
+int	chke_sigl_double_quote(char *str)
+{
+	int	i;
 
+	if (!str)
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'')
+			return (1);
+		if (str[i] == '\"')
+			return (2);
+		i++;
+	}
+	return (0);
+}
 void	word(char **p, t_Token **tokens, int *num_tokens)
 {
 	char	*start;
@@ -66,17 +82,33 @@ void	word(char **p, t_Token **tokens, int *num_tokens)
 	char	c;
 	char	h;
 
+	int in_single_quotes = 0;
+	int in_double_quotes = 0;
 	if (*num_tokens != 0)
 		c = *(*p - 1);
 	h = **p;
 	start = *p;
-	while (**p != '\0' && **p != '$' && **p != '\"' && **p != '\''
-		&& !is_space(**p) && **p != '|' && **p != '<' && **p != '>')
+	while (**p != '\0' && (in_single_quotes || in_double_quotes
+			|| (!is_space(**p) && **p != '|' && **p != '<' && **p != '>')))
+	{
+		if (**p == '\'')
+			in_single_quotes = !in_single_quotes;
+		else if (**p == '\"')
+			in_double_quotes = !in_double_quotes;
 		(*p)++;
+	}
 	len = (*p) - start;
-	if (h == '-')
+	(*tokens)[*num_tokens].value = strndup(start, len);
+	if (h == '-' && (*tokens)[*num_tokens].value[1] != '\'' && (*tokens)[*num_tokens].value[1] != '\"')
 		(*tokens)[(*num_tokens)].type = OPTION;
 	else
-		(*tokens)[(*num_tokens)].type = WORD;
-	(*tokens)[(*num_tokens)++].value = strndup(start, len);
+	{
+		if (chke_sigl_double_quote((*tokens)[*num_tokens].value) == 1)
+			(*tokens)[(*num_tokens)].type = QUOTE_SINGLE;
+		else if (chke_sigl_double_quote((*tokens)[*num_tokens].value) == 2)
+			(*tokens)[(*num_tokens)].type = QUOTE_DOUBLE;
+		else
+			(*tokens)[(*num_tokens)].type = WORD;
+	}
+	(*num_tokens)++;
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utul_rederaction.c                                 :+:      :+:    :+:   */
+/*   utul_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:51:21 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/20 10:49:31 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 18:12:17 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 void	exe_cmd(t_cmd *cmd, char **envp)
 {
-	if (cmd->option[0][0] == '/')
+	if (!cmd || !envp)
+		return ;
+	if (cmd && cmd->option && cmd->option[0][0] == '/')
 		commad_path(cmd, envp);
-	else if (cmd->option[0][0] == '.' && cmd->option[0][1] == '/')
+	else if (cmd && cmd->option && cmd->option[0][0] == '.' && cmd->option[0][1] == '/')
 	{
 		if (execve(cmd->option[0], cmd->option, envp) == -1)
 			error_ch(cmd->option[0]);

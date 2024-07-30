@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 13:17:59 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 17:06:15 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/29 14:52:29 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,23 +64,20 @@ void	quot(char **p, t_Token **tokens, int *num_tokens, int *max_tokens)
 	int		len;
 	char	c;
 
-	process_quotes(p, tokens, num_tokens);
 	if (*num_tokens >= *max_tokens)
 	{
 		*tokens = realloc_cmd(tokens, max_tokens);
 		if (!tokens)
 			error_alocation();
 	}
-	if (**p == '/' || **p == '.' || **p == '$')
+	if (**p == '/' || **p == '.')
 	{
 		c = **p;
 		start = (*p)++;
 		while (**p != ' ' && **p && **p != '\"' && **p != '\'')
 			(*p)++;
 		len = *p - start;
-		if (c == '$')
-			(*tokens)[(*num_tokens)].type = VARIABLE;
-		else if (c == '/' || c == '.')
+		if (c == '/' || c == '.')
 			(*tokens)[(*num_tokens)].type = CMD;
 		else
 			(*tokens)[(*num_tokens)].type = WORD;

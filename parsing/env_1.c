@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:49:47 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/20 11:33:32 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/29 10:50:46 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,12 @@ char	**get_erray_env(t_env *env)
 	return (env_arr);
 }
 
-void	print_env(t_env *env)
+int		print_env(t_env *env)
 {
 	t_env	*tmp;
 
+	if (!env)
+		return (1);
 	tmp = env;
 	while (tmp)
 	{
@@ -122,4 +124,5 @@ void	print_env(t_env *env)
 			printf("%s=%s\n", tmp->key, tmp->value);
 		tmp = tmp->next;
 	}
+	return (0);
 }

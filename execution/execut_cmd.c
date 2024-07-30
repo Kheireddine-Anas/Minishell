@@ -6,14 +6,14 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:46:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/27 16:08:41 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 11:43:33 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 
-void	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ **fd_in_out)
+void	child_process(t_cmd *cmd, char **envp, t_fd_ **fd_in_out, t_status **status)
 {
 	if (!cmd || !envp)
 		error_ch(cmd->option[0]);
@@ -23,21 +23,31 @@ void	child_process(t_cmd *cmd, char **envp, int *fd, t_fd_ **fd_in_out)
 		ft_putstr_fd("syntax error : error in quot\033[0m\n", 2);
 		exit(1);
 	}
+	(*fd_in_out)->retu_red = rediraction(cmd, fd_in_out, status);
+	if ((*fd_in_out)->retu_red == 2)
+		exit(1);
+	if (cmd->option && chke_builting(cmd->option[0]) == 1)
+		builting_fork(cmd, &(*fd_in_out)->env, status, *fd_in_out);
 	if ((*fd_in_out)->retu_red != 3)
 	{
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
+		dup2((*fd_in_out)->fd[1], STDOUT_FILENO);
+		close((*fd_in_out)->fd[0]);
 	}
 	exe_cmd(cmd, envp);
 }
 
-void	fin_commande(t_cmd *cmd, char **envp)
+void	fin_commande(t_cmd *cmd, char **envp, t_status **status, t_fd_ **fd_in_out)
 {
 	if (!cmd || !envp)
 	{
-		errer_cmd(cmd->option[0]);
-		return ;
+		errer_cmd(cmd->option[0], "command not found");
+		exit (127);
 	}
+	(*fd_in_out)->retu_red = rediraction(cmd, fd_in_out, status);
+	if ((*fd_in_out)->retu_red == 2)
+		exit(1);
+	if (cmd->option && chke_builting(cmd->option[0]) == 1)
+		builting_fork(cmd, &(*fd_in_out)->env, status, *fd_in_out);
 	filecommade(cmd, envp);
 	exe_cmd(cmd, envp);
 }

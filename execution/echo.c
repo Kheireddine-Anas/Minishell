@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:46:23 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/28 11:05:57 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 12:08:11 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	print_s(char **args, int *i)
 	}
 }
 
-void	cmd_echo(char **args, t_status **status, t_cmd *cmd)
+int	cmd_echo(char **args, t_status **status, t_cmd *cmd)
 {
 	int	i;
 	int	newline;
@@ -40,7 +40,7 @@ void	cmd_echo(char **args, t_status **status, t_cmd *cmd)
 	{
 		ft_putstr_fd("\033[34minishell: syntax error : error in quot\033[0m\n", 2);
 		(*status)->status = 1;
-		return ;
+		return (1);
 	}
 	i = 1;
 	newline = 1;
@@ -53,6 +53,7 @@ void	cmd_echo(char **args, t_status **status, t_cmd *cmd)
 	if (newline)
 		printf("\n");
 	(*status)->status = 0;
+	return (0);
 }
 
 int	cmd_exit(char **optin, t_status **status)

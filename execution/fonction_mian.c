@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:39:55 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/27 10:10:46 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/28 15:04:20 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	wit_process(int nb_prossuce, pid_t **pids, t_fd_ *fd_in_out,
 	int	j;
 
 	j = 0;
-	while (j < nb_prossuce)
+	while (j < nb_prossuce && *pids)
 	{
 		if (waitpid((*pids)[j], &(*status)->status, 0) == -1)
 		{
@@ -58,9 +58,9 @@ void	close_file(t_fd_ *fd_in_out, int *fd)
 	clo(fd_in_out->fd_in);
 }
 
-void	parent_prossuce(int *fd, t_fd_ **fd_in_out, int i)
+void	parent_prossuce(int *fd, t_fd_ **fd_in_out, int i, int ret_buil)
 {
-	if (i > 0)
+	if (i > 0 || ret_buil == 1)
 	{
 		whilloop(fd);
 		close((*fd_in_out)->fd0);

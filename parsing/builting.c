@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 09:45:11 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/27 13:10:52 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 10:14:48 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,11 @@ int	strle_2derra(char **str)
 	return (i);
 }
 
-int	condition_builting(t_cmd *lst_cmd, t_env **env, t_status **status,
-		t_fd_ **fd_in_out)
+static int	condition_builting(t_cmd *lst_cmd, t_env **env, t_status **status)
 {
 	if (lst_cmd->option && ft_strcmp("echo", lst_cmd->option[0]) == 0)
 	{
-		rediraction(lst_cmd, fd_in_out, status);
 		cmd_echo(lst_cmd->option, status, lst_cmd);
-		dup2((*fd_in_out)->fd_out, STDOUT_FILENO);
-		dup2((*fd_in_out)->fd_in, STDIN_FILENO);
 		return (1);
 	}
 	if (lst_cmd->option && ft_strcmp("export", lst_cmd->option[0]) == 0)
@@ -43,15 +39,24 @@ int	condition_builting(t_cmd *lst_cmd, t_env **env, t_status **status,
 		cmd_exit(lst_cmd->option, status);
 		return (1);
 	}
+	else if (lst_cmd->option && ft_strcmp("pwd", lst_cmd->option[0]) == 0)
+	{
+		cmd_pwd();
+		return (1);
+	}
 	return (0);
 }
 
 int	builting(t_cmd *lst_cmd, t_env **env, t_status **status, t_fd_ **fd_in_out)
 {
+	(*fd_in_out)->retu_red = rediraction(lst_cmd, fd_in_out, status);
+	if ((*fd_in_out)->retu_red == 2)
+	{
+		close_file((*fd_in_out), (*fd_in_out)->fd);
+		return (1);
+	}
 	if (lst_cmd->option && ft_strcmp("cd", lst_cmd->option[0]) == 0)
 	{
-		if (rediraction(lst_cmd, fd_in_out, status) == 2)
-			return (1);
 		(*status)->status = 0;
 		cmd_cd(lst_cmd->option, env, status);
 		return (1);
@@ -70,7 +75,7 @@ int	builting(t_cmd *lst_cmd, t_env **env, t_status **status, t_fd_ **fd_in_out)
 		cmd_unset(env, lst_cmd->option[1]);
 		return (1);
 	}
-	if (condition_builting(lst_cmd, env, status, fd_in_out) == 1)
+	if (condition_builting(lst_cmd, env, status) == 1)
 		return (1);
 	return (0);
 }
