@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:45:29 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 18:23:24 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 19:31:31 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,14 @@ int	chek_her_doc(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status)
 	}
 	return (0);
 }
-
+void	handle(int sig)
+{
+	if (sig == SIGQUIT)
+	{
+		signal(SIGQUIT, SIG_DFL);
+		printf ("Quit: 3\n");
+	}
+}
 int	whillop(t_cmd **lst_cmd, t_fd_ *fd_in_out, t_status **status, int *i)
 {
 	int	ret;
@@ -115,10 +122,14 @@ int	whillop(t_cmd **lst_cmd, t_fd_ *fd_in_out, t_status **status, int *i)
 	fd_in_out->pids[*i] = fork();
 	if (fd_in_out->pids[*i] == -1)
 		hand_error(status, "fork");
-	if (fd_in_out->pids[*i] == 0 && *lst_cmd != fd_in_out->last)
-		child_process(*lst_cmd, fd_in_out->envp, &fd_in_out, status);
-	else if (fd_in_out->pids[*i] == 0 && *lst_cmd == fd_in_out->last)
-		fin_commande(*lst_cmd, fd_in_out->envp, status, &fd_in_out);
+	if (fd_in_out->pids[*i] == 0)
+	{
+		signal(SIGQUIT, handle);
+		if (*lst_cmd != fd_in_out->last)
+			child_process(*lst_cmd, fd_in_out->envp, &fd_in_out, status);
+		else if (*lst_cmd == fd_in_out->last)
+			fin_commande(*lst_cmd, fd_in_out->envp, status, &fd_in_out);
+	}
 	else if (fd_in_out->pids[*i] > 0)
 		parent_prossuce(fd_in_out->fd, &fd_in_out, *i, ret);
 	whilloop(fd_in_out->fd);

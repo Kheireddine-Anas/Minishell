@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:40:06 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 18:30:21 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 19:28:19 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ int	main(int argc, char *argv[], char **envp)
 	status = NULL;
 	envp_new = get_env(envp);
 	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 	status = ft_calloc(1, sizeof(t_status));
 	while (1)
 	{
