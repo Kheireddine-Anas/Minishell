@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:27:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 15:17:56 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 16:28:09 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,5 +168,6 @@ char				*get_path(char **envp, char *cmd, int i);
 void				creat_cmd(t_cmd **lst, char *command, char **env,
 						t_status **status);
 char				*strjoi(char *s1, char *s2, char *s3);
-char				**split_variable(const char *str);
+char				**split_variable(char *str);
+void				error_syntax(char *msg, char *caracter);
 #endif

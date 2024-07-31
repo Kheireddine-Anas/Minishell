@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   whilcard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 09:18:04 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/26 09:10:41 by akheired         ###   ########.fr       */
+/*   Updated: 2024/07/31 15:42:49 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,16 @@ char	**list_directory(char *path, int *count)
 	capacity = 10;
 	size = 0;
 	entries = ft_calloc(capacity, sizeof(char *));
-	while (1)
+	if (!entries)
+		return (NULL);
+	entry = readdir(dir);
+	while (entry)
 	{
+		if (size >= capacity)
+			entries = resizer(entries, &capacity, size);
+		entries[size] = ft_strdup(entry->d_name);
+		size++;
 		entry = readdir(dir);
-		if (entry != NULL)
-		{
-			if (size >= capacity)
-				entries = resizer(entries, &capacity, size);
-			entries[size] = ft_strdup(entry->d_name);
-			size++;
-		}
 	}
 	closedir(dir);
 	*count = size;
@@ -147,18 +147,65 @@ char	*remove_cardt(char *str)
 	result[j] = '\0';
 	return (result);
 }
+char	*splite(char *str)
+{
+	int		i;
+	char	*res;
 
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '*')
+		{
+			i++;
+			break ;
+		}
+		i++;
+	}
+	res = ft_calloc(i + 1, 1);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '*')
+		{
+			res[i] = str[i];
+			i++;
+			break ;
+		}
+		res[i] = str[i];
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
+}
 int	search_match(char *filename, char *pattern)
 {
 	int		pattern_len;
 	char	*result;
+	char	*strch;
+	char	*strrch;
+	int		l;
 
+	l = 0;
 	pattern_len = ft_strlen(pattern);
 	if (pattern_len == 1 && pattern[0] == '*')
 	{
 		if (!chek_point(filename))
 			return (1);
 		return (0);
+	}
+	if (ft_strchr(pattern, '*') && pattern[0] != '*' && pattern[pattern_len
+		- 1] != '*')
+	{
+		strch = ft_strchr(pattern, '*');
+		if (strnrcmp(filename, strch, ft_strlen(strch) - 1) == 0)
+			l++;
+		strrch = splite(pattern);
+		strrch[ft_strlen(strrch) - 1] = '\0';
+		if (ft_strncmp(filename, strrch, ft_strlen(strrch)) == 0)
+			l++;
+		if (l == 2)
+			return (1);
 	}
 	if (pattern[0] == '*' && pattern[pattern_len - 1] == '*'
 		&& !chek_point(filename))
@@ -169,7 +216,7 @@ int	search_match(char *filename, char *pattern)
 		if (result)
 			return (1);
 	}
-	else if (pattern[0] != '*' && pattern[pattern_len - 1] == '*')
+	if (pattern[0] != '*' && pattern[pattern_len - 1] == '*')
 	{
 		pattern[pattern_len - 1] = '\0';
 		if (ft_strncmp(filename, pattern, pattern_len - 1) == 0)
@@ -220,6 +267,7 @@ char	**exe_wildcard(char *argv)
 	char	**entries;
 	char	**matched_entries;
 
+	count = 0;
 	entries = list_directory(".", &count);
 	matched_entries = store_matches(entries, argv, count);
 	while (count--)

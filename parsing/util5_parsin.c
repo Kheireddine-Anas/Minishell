@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 15:34:52 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/29 14:55:20 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 15:17:39 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,6 @@ void	condition(char **p, t_Token **tokens, int *num_tokens, int *max_tokens)
 	}
 	if (is_space(**p))
 		(*p)++;
-	// else if ((**p == '\'' && *(*p + 1) == '\'' && *(*p + 2) != ' ')
-	// 	|| (**p == '\"' && *(*p + 1) == '\"' && *(*p + 2) != ' '))
-	// 	(*p) += 2;
 	else if (**p == '/' || **p == '.')
 		quot(p, tokens, num_tokens, max_tokens);
 	else if (**p == '<')

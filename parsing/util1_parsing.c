@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:36:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 12:44:46 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 18:16:27 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@ static char	*process_quotes(char *str, char *dst)
 {
 	int	i;
 	int	j;
-	int k = 0;
-	
+	int	k;
+
+	k = 0;
 	i = 0;
 	j = 0;
 	if (str[0] == '\'' && str[strlen(str) - 1] == '\'' && strlen(str) > 1)
@@ -42,8 +43,8 @@ static char	*process_quotes(char *str, char *dst)
 		{
 			while (str[i])
 			{
-				if(str[i] != '\'')
-				dst[j++] = str[i];
+				if (str[i] != '\'')
+					dst[j++] = str[i];
 				i++;
 			}
 		}
@@ -77,27 +78,29 @@ char	*remove_single_qoute(char *str)
 	return (process_quotes(str, dst));
 }
 
-
-
 char	*remove_doubl_qoute(char *str, char **envp, t_status **status)
 {
-	int		flag = 0;
+	int		flag;
 	char	**split;
-	char	*result = ft_strdup("");
+	char	*result;
 	char	*temp;
-	
-	int		i = 0;
+	int		i;
+
+	flag = 0;
+	result = ft_strdup("");
+	i = 0;
 	if (!str)
 		return (NULL);
 	while (str[i])
 	{
 		if (str[i] == '\"')
-			flag++;;
+			flag++;
+		;
 		i++;
 	}
 	if (flag && flag % 2 != 0)
 		return (str);
-	else 
+	else
 	{
 		split = ft_split(str, '\"');
 		if (!split)
@@ -106,10 +109,9 @@ char	*remove_doubl_qoute(char *str, char **envp, t_status **status)
 		while (split[i])
 		{
 			if (ft_strchr(split[i], '$'))
-				split[i] = add_valu_variable(split[i],
-							envp, status);
-				if(!split[i])
-					split[i] = ft_strdup("");
+				split[i] = add_valu_variable(split[i], envp, status);
+			if (!split[i])
+				split[i] = ft_strdup("");
 			i++;
 		}
 		i = 0;
@@ -121,6 +123,13 @@ char	*remove_doubl_qoute(char *str, char **envp, t_status **status)
 			i++;
 		}
 	}
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
 	return (result);
 }
 

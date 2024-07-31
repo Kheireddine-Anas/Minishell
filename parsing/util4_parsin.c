@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 15:19:00 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 13:09:28 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 18:18:25 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 	int		j;
 	char	*variable;
 	char	*tmp;
-	char *pos;
+	char	*pos;
 	char	*chek;
 	if (!str)
 		return (NULL);
@@ -55,19 +55,25 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
         new_str[index] = '\0';
         sprintf(new_str + index, "%d%s", (*status)->status, pos + 2);
 		if (!ft_strchr(new_str, '$'))
+		{
 			return (new_str);
+		}
 		free(str);
         str = ft_strdup(new_str);
     }
 	if (cheke_dolar(str))
+	{
+		free(str1);
 		return (str);
+	}
 	chek = ft_strchr(str, '$');
 	if (chek && (chek[1] == '\0' || chek[1] == ' '))
+	{
+		free(str1);
 		return (str);
+	}
 	else if (chek)
 		str1 = split_variable(str);
-	if (!str1)
-		return (NULL);
 	while (str1[j])
 	{
 		variable = ft_strchr(str1[j], '$');
@@ -81,10 +87,19 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 		}
 		j++;
 	}
+	if (!str1)
+	{
+		free(str);
+		return (NULL);
+	}
 	if (k == 1)
 		str1 = create_cmmmand(str1);
-	free(str);
-	str = NULL;
+	if(k != 1)
+	{
+		free(str);
+		str = NULL;
+	}
+	i = 0;
 	while (str1 && str1[i])
 	{
 		if (str == NULL)
@@ -95,11 +110,7 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 			str = ft_strjoin(str, str1[i]);
 			free(tmp);
 		}
-		i++;
-	}
-	while (str1[i])
-	{
-		free(str1[i]);
+		// free(str1[i]);
 		i++;
 	}
 	free(str1);

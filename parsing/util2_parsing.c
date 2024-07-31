@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:37:54 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 12:10:12 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 15:24:39 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	word(char **p, t_Token **tokens, int *num_tokens)
 			(*tokens)[(*num_tokens)].type = QUOTE_SINGLE;
 		else if (chke_sigl_double_quote((*tokens)[*num_tokens].value) == 2)
 			(*tokens)[(*num_tokens)].type = QUOTE_DOUBLE;
-		else
+		else 
 			(*tokens)[(*num_tokens)].type = WORD;
 	}
 	(*num_tokens)++;

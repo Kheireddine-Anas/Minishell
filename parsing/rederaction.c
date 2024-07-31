@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 12:47:47 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 17:58:47 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 14:11:16 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	chek_out(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status, int i)
 {
 	int	fd;
 
+	fd = 0;
 	if (ft_strcmp(">", lst_cmd->rederaction[i]) == 0 || ft_strcmp(">>",
 			lst_cmd->rederaction[i]) == 0)
 	{
@@ -23,13 +24,6 @@ int	chek_out(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status, int i)
 			fd = open(lst_cmd->fil_name[i], O_CREAT | O_WRONLY | O_TRUNC, 0777);
 		else if (ft_strcmp(">>", lst_cmd->rederaction[i]) == 0)
 			fd = open(lst_cmd->fil_name[i], O_CREAT | O_RDWR | O_APPEND, 0777);
-		if (!lst_cmd->fil_name[i])
-		{
-			(*status)->status = 258;
-			ft_putstr_fd("minishell: syntax error near unexpected token `>'\n",
-				2);
-			return (2);
-		}
 		if (fd == -1)
 		{
 			(*status)->status = 1;
@@ -50,13 +44,6 @@ static int	cheke_rediraction(t_cmd *lst_cmd, t_fd_ **fd_in_out,
 	if (ft_strcmp("<", lst_cmd->rederaction[i]) == 0)
 	{
 		(*fd_in_out)->stdin = open(lst_cmd->fil_name[i], O_RDONLY);
-		if (!lst_cmd->fil_name[i])
-		{
-			(*status)->status = 258;
-			ft_putstr_fd("minishell: syntax error near unexpected token `<'\n",
-				2);
-			return (2);
-		}
 		if ((*fd_in_out)->stdin == -1)
 		{
 			(*status)->status = 1;

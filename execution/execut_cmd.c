@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:46:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 19:27:11 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 09:51:35 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	child_process(t_cmd *cmd, char **envp, t_fd_ **fd_in_out, t_status **status
 	(*fd_in_out)->retu_red = rediraction(cmd, fd_in_out, status);
 	if ((*fd_in_out)->retu_red == 2)
 		exit(1);
+	if (!(*cmd->option))
+		exit(0);
 	if (cmd->option && chke_builting(cmd->option[0]) == 1)
 		builting_fork(cmd, &(*fd_in_out)->env, status, *fd_in_out);
 	if ((*fd_in_out)->retu_red != 3)
@@ -46,6 +48,8 @@ void	fin_commande(t_cmd *cmd, char **envp, t_status **status, t_fd_ **fd_in_out)
 	(*fd_in_out)->retu_red = rediraction(cmd, fd_in_out, status);
 	if ((*fd_in_out)->retu_red == 2)
 		exit(1);
+	if (!(*cmd->option))
+		exit(0);
 	if (cmd->option && chke_builting(cmd->option[0]) == 1)
 		builting_fork(cmd, &(*fd_in_out)->env, status, *fd_in_out);
 	filecommade(cmd, envp);

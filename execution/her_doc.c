@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:45:29 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 19:31:31 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 14:08:55 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,6 @@ static int	chek_her_rediraction(t_cmd *temp, t_fd_ **fd_in_out,
 {
 	if (ft_strcmp("<<", temp->rederaction[i]) == 0)
 	{
-		if (!temp->fil_name[i])
-		{
-			(*status)->status = 258;
-			ft_putstr_fd("minishell: syntax error near unexpected token `<<'\n",
-				2);
-			return (2);
-		}
 		(*fd_in_out)->her_doc = while_loop(temp->fil_name[i], fd_in_out,
 				status);
 		if ((*fd_in_out)->her_doc == -2)

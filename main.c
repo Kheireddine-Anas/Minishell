@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:40:06 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 19:28:19 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 09:53:30 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,10 @@ static void	lop(t_env **env, char *line, t_status **status)
 	t_cmd	*lst_cmd;
 
 	lst_cmd = NULL;
-	fd_in_out = NULL;
-	if (!line || ft_strlen(line) == 0)
+	if (!line || !line || ft_strlen(line) == 0)
 		return ;
 	fd_in_out = init_and_create_cmd(&lst_cmd, env, line, status);
-	if (!fd_in_out)
+	if (!fd_in_out || !lst_cmd)
 		return ;
 	if (fd_in_out && lst_cmd && chek_her_doc(lst_cmd, &fd_in_out, status) == 2)
 	{

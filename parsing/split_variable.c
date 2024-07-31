@@ -6,13 +6,13 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:34:14 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 12:50:54 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 16:28:30 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	**split_variable(const char *str)
+char	**split_variable(char *str)
 {
 	int		i;
 	int		j;
@@ -32,12 +32,12 @@ char	**split_variable(const char *str)
 			if (k > 0)
 			{
 				temp[k] = '\0';
-				result[j++] = strdup(temp);
+				result[j++] =  ft_strdup(temp);
 				k = 0;
 			}
 			temp[k++] = str[i++];
 			temp[k] = '\0';
-			result[j++] = strdup(temp);
+			result[j++] =  ft_strdup(temp);
 			k = 0;
 		}
 		else if (str[i] == '$')
@@ -45,7 +45,7 @@ char	**split_variable(const char *str)
 			if (k > 0)
 			{
 				temp[k] = '\0';
-				result[j++] = strdup(temp);
+				result[j++] = ft_strdup(temp);
 				k = 0;
 			}
 			temp[k++] = str[i++];
@@ -56,7 +56,7 @@ char	**split_variable(const char *str)
 	if (k > 0)
 	{
 		temp[k] = '\0';
-		result[j++] = strdup(temp);
+		result[j++] =  ft_strdup(temp);
 	}
 	result[j] = NULL;
 	free(temp);

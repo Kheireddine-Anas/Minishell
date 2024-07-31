@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 15:20:54 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/31 18:17:58 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,17 @@ char	*sqipt_whil_cart(char *str)
 
 	i = 0;
 	len = 0;
+	if (str == NULL)
+    	return (NULL);
 	while (str[i])
 	{
-		if (((str[i] == '*' && str[i + 1] != '*')) || str[i] != '*')
+		if ((str[i] == '*' && str[i + 1] != '*') || str[i] != '*')
 			len++;
 		i++;
 	}
 	result = ft_calloc(len + 1, 1);
+	if (!result)
+		return (NULL);
 	i = 0;
 	len = 0;
 	while (str[i])
@@ -65,6 +69,8 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 	{
 		if ((*tokens)[i].type == WORD)
 		{
+			if (ft_strchr((*tokens)[i].value, '*'))
+				(*tokens)[i].type = WHILCART;
 			if (ft_strchr((*tokens)[i].value, '$')
 				&& (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] != '$')
 			{
@@ -151,7 +157,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 		{
 			if ((*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*')
 				(*tokens)[i].type = WHILCART;
-			else if (i != 0 && (*tokens)[i - 1].type == IN)
+			if (i != 0 && (*tokens)[i - 1].type == IN)
 				(*tokens)[i].type = FILE_IN;
 			else if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
 				(*tokens)[i].type = LIM;
@@ -162,21 +168,34 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 		i++;
 	}
 }
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	t_Token *tokens;
-// 	t_status *status;
-// 	int num_tokens = 0;
-// 	int i = 0;
+void leaks(void)
+{
+	system("leaks a.out");
+}
+int	main(int argc, char **argv, char **envp)
+{
+	t_Token *tokens;
+	t_status *status;
+	int num_tokens = 0;
+	int i = 0;
 
-// 	char *p = "$hscjdsdjkshcdjksc";
-// 	status = ft_calloc(1, sizeof(t_status));
-// 	tokens = tokenize(p, &num_tokens);
-// 	parse(&tokens, num_tokens, envp, &status);
-// 	while (i < num_tokens)
-// 	{
-// 		printf("type: %d ", tokens[i].type);
-// 		printf("value: %s\n", tokens[i].value);
-// 		i++;
-// 	}
-// }
+	atexit(leaks);
+	char *p = "echo hamdi$PATH";
+	status = ft_calloc(1, sizeof(t_status));
+	tokens = tokenize(p, &num_tokens);
+	parse(&tokens, num_tokens, envp, &status);
+	while (i < num_tokens)
+	{
+		printf("type: %d ", tokens[i].type);
+		printf("value: %s\n", tokens[i].value);
+		i++;
+	}
+	i = 0;
+	while (i < num_tokens)
+	{
+		free(tokens[i].value);
+		i++;
+	}
+	free(tokens);
+	free(status);
+}
