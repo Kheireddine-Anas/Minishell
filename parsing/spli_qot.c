@@ -180,8 +180,7 @@ int	main(int argc, char **argv, char **envp)
 	int num_tokens = 0;
 	int i = 0;
 
-	atexit(leaks);
-	char *p = "echo hamdi$PATH";
+	char *p = "echo hamdi$PAT";
 	status = ft_calloc(1, sizeof(t_status));
 	tokens = tokenize(p, &num_tokens);
 	parse(&tokens, num_tokens, envp, &status);

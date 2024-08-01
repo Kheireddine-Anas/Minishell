@@ -23,7 +23,7 @@ char	**split_variable(char *str)
 	i = 0;
 	j = 0;
 	k = 0;
-	result = ft_calloc((strlen(str) + 1), sizeof(char *));
+	result = ft_calloc((ft_strlen(str) + 1), sizeof(char *));
 	temp = ft_calloc(strlen(str) + 1, 1);
 	while (str[i] != '\0')
 	{

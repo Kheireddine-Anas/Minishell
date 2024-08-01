@@ -49,7 +49,7 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 	j = 0;
 	if ((pos = ft_strnstr(str, "$?", ft_strlen(str))) != NULL)
 	{
-		new_str = malloc(strlen(str) + 50);
+		new_str = ft_calloc(strlen(str) + 50, 1);
 			// allocate memory for new string
 		if (!new_str)
 			return (NULL);
@@ -93,10 +93,7 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 		j++;
 	}
 	if (!str1)
-	{
-		free(str);
 		return (NULL);
-	}
 	if (k == 1)
 		str1 = create_cmmmand(str1);
 	free(str);
@@ -104,11 +101,14 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 	i = 0;
 	while (str1 && str1[i])
 	{
+		if(str == NULL)
+			str = ft_strdup("");
 		tmp = str;
 		str = ft_strjoin(str, str1[i]);
 		free(tmp);
 		i++;
 	}
+	free(str1);
 	i = 0;
 	return (str);
 }
