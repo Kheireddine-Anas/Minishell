@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:34:14 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/01 10:11:35 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/01 10:40:41 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ char	**split_variable(char *str)
 	i = 0;
 	j = 0;
 	k = 0;
-	result = ft_calloc((strlen(str) + 1), sizeof(char *));
-	temp = ft_calloc(strlen(str) + 1, 1);
+	result = ft_calloc((ft_strlen(str) + 1), sizeof(char *));
+	temp = ft_calloc(ft_strlen(str) + 1, 1);
 	while (str[i] != '\0')
 	{
 		if (str[i] == ' ' || str[i] == '\'')
