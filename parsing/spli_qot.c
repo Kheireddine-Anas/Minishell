@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 18:17:58 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/01 10:32:46 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 		i++;
 	}
 }
+
 void leaks(void)
 {
 	system("leaks a.out");

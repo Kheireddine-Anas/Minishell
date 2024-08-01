@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:27:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 16:28:09 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/01 10:13:39 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ typedef struct s_status
 {
 	int				status;
 }					t_status;
-
+void leaks(void);
 int					lstsize(t_cmd *lst);
 int					cmd_pwd(void);
 void				handle_sigint_herdoc(int sigt);	

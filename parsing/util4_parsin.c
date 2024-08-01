@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 15:19:00 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 18:18:25 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/01 10:32:32 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 	char	*tmp;
 	char	*pos;
 	char	*chek;
+	int		index;
+	char	*new_str;
+	char	**typ;
 	if (!str)
 		return (NULL);
 	str1 = NULL;
@@ -45,22 +48,24 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 	i = 0;
 	j = 0;
 	if ((pos = ft_strnstr(str, "$?", ft_strlen(str))) != NULL)
-    {
-        char *new_str = malloc(strlen(str) + 50); // allocate memory for new string
-        if (!new_str) return NULL;
-
-        int index = pos - str;
-
-        strncpy(new_str, str, index);
-        new_str[index] = '\0';
-        sprintf(new_str + index, "%d%s", (*status)->status, pos + 2);
+	{
+		new_str = malloc(strlen(str) + 50);
+			// allocate memory for new string
+		if (!new_str)
+			return (NULL);
+		index = pos - str;
+		strncpy(new_str, str, index);
+		new_str[index] = '\0';
+		sprintf(new_str + index, "%d%s", (*status)->status, pos + 2);
 		if (!ft_strchr(new_str, '$'))
 		{
+			free(str);
 			return (new_str);
 		}
 		free(str);
-        str = ft_strdup(new_str);
-    }
+		str = ft_strdup(new_str);
+		free(new_str);
+	}
 	if (cheke_dolar(str))
 	{
 		free(str1);
@@ -72,7 +77,7 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 		free(str1);
 		return (str);
 	}
-	else if (chek)
+	if (chek)
 		str1 = split_variable(str);
 	while (str1[j])
 	{
@@ -94,26 +99,17 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 	}
 	if (k == 1)
 		str1 = create_cmmmand(str1);
-	if(k != 1)
-	{
-		free(str);
-		str = NULL;
-	}
+	free(str);
+	str = NULL;
 	i = 0;
 	while (str1 && str1[i])
 	{
-		if (str == NULL)
-			str = ft_strdup(str1[i]);
-		else
-		{
-			tmp = str;
-			str = ft_strjoin(str, str1[i]);
-			free(tmp);
-		}
-		// free(str1[i]);
+		tmp = str;
+		str = ft_strjoin(str, str1[i]);
+		free(tmp);
 		i++;
 	}
-	free(str1);
+	i = 0;
 	return (str);
 }
 
