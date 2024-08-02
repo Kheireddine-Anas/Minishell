@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:36:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/01 10:07:50 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/01 17:34:31 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,8 +137,8 @@ char	*chercher_variable(char *str, char **envp)
 {
 	int		i;
 	char	*variable;
-
 	i = 0;
+
 	variable = "\0";
 	if (!str)
 		return (variable);

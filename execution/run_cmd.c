@@ -60,10 +60,8 @@ char	*get_path(char **envp, char *cmd, int i)
 
 void	commad_path(t_cmd *cmd, char **envp)
 {
-	int		i;
 	char	*path;
 
-	i = 0;
 	if (!cmd || !cmd->option)
 		return ;
 	path = cmd->option[0];
@@ -73,10 +71,8 @@ void	commad_path(t_cmd *cmd, char **envp)
 
 void	execute(t_cmd	*cmd, char **envp)
 {
-	int		i;
 	char	*path;
 
-	i = 0;
 	if (!cmd || !cmd->option)
 		return ;
 	path = get_path(envp, cmd->option[0], 0);

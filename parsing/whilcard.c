@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 09:18:04 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 15:42:49 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/01 16:18:25 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,11 @@ int	search_match(char *filename, char *pattern)
 		if (ft_strncmp(filename, strrch, ft_strlen(strrch)) == 0)
 			l++;
 		if (l == 2)
+		{
+			free(strrch);	
 			return (1);
+		}
+		free(strrch);
 	}
 	if (pattern[0] == '*' && pattern[pattern_len - 1] == '*'
 		&& !chek_point(filename))
@@ -270,8 +274,6 @@ char	**exe_wildcard(char *argv)
 	count = 0;
 	entries = list_directory(".", &count);
 	matched_entries = store_matches(entries, argv, count);
-	while (count--)
-		free(entries[count]);
-	free(entries);
+	free_string_array(entries);
 	return (matched_entries);
 }

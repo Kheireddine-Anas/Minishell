@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 09:45:11 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 10:14:48 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 13:07:38 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,7 @@ int	builting(t_cmd *lst_cmd, t_env **env, t_status **status, t_fd_ **fd_in_out)
 {
 	(*fd_in_out)->retu_red = rediraction(lst_cmd, fd_in_out, status);
 	if ((*fd_in_out)->retu_red == 2)
-	{
-		close_file((*fd_in_out), (*fd_in_out)->fd);
 		return (1);
-	}
 	if (lst_cmd->option && ft_strcmp("cd", lst_cmd->option[0]) == 0)
 	{
 		(*status)->status = 0;
@@ -64,6 +61,12 @@ int	builting(t_cmd *lst_cmd, t_env **env, t_status **status, t_fd_ **fd_in_out)
 	if (lst_cmd->option && ft_strcmp("env", lst_cmd->option[0]) == 0)
 	{
 		(*status)->status = 0;
+		if (lst_cmd->option[1])
+		{
+			errer_cmd(lst_cmd->option[1], "No such file or directory");
+			(*status)->status = 127;
+			return (1);
+		}
 		print_env(*env);
 		return (1);
 	}

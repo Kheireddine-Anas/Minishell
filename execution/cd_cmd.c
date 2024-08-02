@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:41:45 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 17:05:23 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 10:37:39 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ int	cmd_cd(char **path, t_env **env, t_status	**status)
 	char	*crnt;
 
 	crnt = getcwd(NULL, 0);
-	if (path[1])
+	if (path[1]&& ft_strcmp(path[1], "-L") != 0 && ft_strcmp(path[1], "-P") != 0 && ft_strcmp(path[1], "~") != 0)
 	{
-		if (path[1][0] == '-' && path[1][0] != 'L' && path[1][0] != 'P')
+		if (path[1][0] == '-' )
 			error_option(path[1], status);
 		else if (chdir(path[1]) == -1)
 		{

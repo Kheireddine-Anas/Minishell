@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:46:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 09:51:35 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 10:59:34 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@ void	child_process(t_cmd *cmd, char **envp, t_fd_ **fd_in_out, t_status **status
 {
 	if (!cmd || !envp)
 		error_ch(cmd->option[0]);
-	if (cmd->single > 0 || cmd->double_q > 0)
-	{
-		ft_putstr_fd("\033[34minishell: ", 2);
-		ft_putstr_fd("syntax error : error in quot\033[0m\n", 2);
-		exit(1);
-	}
 	(*fd_in_out)->retu_red = rediraction(cmd, fd_in_out, status);
 	if ((*fd_in_out)->retu_red == 2)
 		exit(1);

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 10:32:49 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 17:14:40 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 12:23:27 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	condition_builting(t_cmd *lst_cmd, t_env **env, t_status **status)
 void	builting_fork(t_cmd *lst_cmd, t_env **env, t_status **status,
 		t_fd_ *fd_in_out)
 {
-	if (lst_cmd != fd_in_out->last)
+	if (lst_cmd != fd_in_out->last && fd_in_out->retu_red != 3)
 	{
 		dup2(fd_in_out->fd[1], STDOUT_FILENO);
 		close(fd_in_out->fd[0]);

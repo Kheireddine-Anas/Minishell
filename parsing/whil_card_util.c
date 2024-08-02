@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 16:28:34 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 10:08:22 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 14:32:57 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,6 @@ char	*remouve_single_double_qout(char *str)
 		i++;
 	}
 	resu[len] = '\0';
+	free(str);
 	return (resu);
 }

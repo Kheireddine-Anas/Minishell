@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/01 10:32:46 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 14:31:52 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ char	*sqipt_whil_cart(char *str)
 		i++;
 	}
 	result[len] = '\0';
+	free(str);
 	return (result);
 }
 
@@ -82,6 +83,8 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 					(*tokens)[i].value = add_valu_variable((*tokens)[i].value,
 							envp, status);
 				}
+				if ((*tokens)[i].value == NULL && i > 0 && ((*tokens)[i - 1].type == IN ||(*tokens)[i - 1].type == OUT || (*tokens)[i - 1].type == APPEND ))
+					(*tokens)[i].value = ft_strdup("");
 				if ((*tokens)[i].value == NULL)
 					(*tokens)[i].type = ERRRO;
 				else if (i - 1 != 0 && (*tokens)[i].value != NULL
@@ -169,34 +172,30 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 	}
 }
 
-void leaks(void)
-{
-	system("leaks a.out");
-}
-int	main(int argc, char **argv, char **envp)
-{
-	t_Token *tokens;
-	t_status *status;
-	int num_tokens = 0;
-	int i = 0;
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	t_Token *tokens;
+// 	t_status *status;
+// 	int num_tokens = 0;
+// 	int i = 0;
 
-	atexit(leaks);
-	char *p = "echo hamdi$PATH";
-	status = ft_calloc(1, sizeof(t_status));
-	tokens = tokenize(p, &num_tokens);
-	parse(&tokens, num_tokens, envp, &status);
-	while (i < num_tokens)
-	{
-		printf("type: %d ", tokens[i].type);
-		printf("value: %s\n", tokens[i].value);
-		i++;
-	}
-	i = 0;
-	while (i < num_tokens)
-	{
-		free(tokens[i].value);
-		i++;
-	}
-	free(tokens);
-	free(status);
-}
+// 	atexit (leaks);
+// 	char *p = "ls *";
+// 	status = ft_calloc(1, sizeof(t_status));
+// 	tokens = tokenize(p, &num_tokens);
+// 	parse(&tokens, num_tokens, envp, &status);
+// 	while (i < num_tokens)
+// 	{
+// 		printf("type: %d ", tokens[i].type);
+// 		printf("value: %s\n", tokens[i].value);
+// 		i++;
+// 	}
+// 	i = 0;
+// 	while (i < num_tokens)
+// 	{
+// 		free(tokens[i].value);
+// 		i++;
+// 	}
+// 	free(tokens);
+// 	free(status);
+// }

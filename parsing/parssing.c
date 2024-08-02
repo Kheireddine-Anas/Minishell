@@ -6,30 +6,32 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:57:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 15:23:21 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 14:41:22 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	free_string_array(char **array)
-{
-	if (!array)
-		return ;
-	while (*array)
-	{
-		free(*array);
-		array++;
-	}
-}
 
-void	free_cmd(t_cmd *cmd)
+
+void	free_cmd(t_cmd **cmd)
 {
-	if (cmd->option)
-		free_string_array(cmd->option);
-	if (cmd->extra_arg)
-		free_string_array(cmd->extra_arg);
-	free(cmd);
+	if ((*cmd)->option[0])
+		free_string_array((*cmd)->option);
+	else
+		free((*cmd)->option);
+	if ((*cmd)->extra_arg[0])
+		free_string_array((*cmd)->extra_arg);
+	else
+		free((*cmd)->extra_arg);
+	if ((*cmd)->fil_name[0])
+		free_string_array((*cmd)->fil_name);
+	else
+		free((*cmd)->fil_name);
+	if ((*cmd)->rederaction[0])
+		free_string_array((*cmd)->rederaction);
+	else
+		free((*cmd)->rederaction);
 }
 
 void	lstclear(t_cmd **lst)
@@ -43,10 +45,10 @@ void	lstclear(t_cmd **lst)
 	while (help)
 	{
 		next = help->next;
-		free_cmd(help);
+		free_cmd(&help);
 		help = next;
 	}
-	*lst = NULL;
+	free(help);
 }
 
 int	lstsize(t_cmd *lst)
@@ -127,11 +129,13 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 	k = 0;
 	l = 0;
 	m = 0;
+	whilcart = NULL;
 	initialise_noud(new, capacite);
 	while (*i < num_tokens && tokens)
 	{
 		if (tokens[*i].type == PIP)
 		{
+			free_string_array(whilcart);
 			(*new)->extra_arg[m] = NULL;
 			(*new)->rederaction[l] = NULL;
 			(*new)->option[j] = NULL;
@@ -155,7 +159,7 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 				if (!(*new)->rederaction)
 					error_alocation();
 			}
-			(*new)->rederaction[l] = tokens[*i].value;
+			(*new)->rederaction[l] = ft_strdup(tokens[*i].value);
 			l++;
 		}
 		else if (tokens[*i].type == OPTION || tokens[*i].type == VARIABLE
@@ -177,6 +181,7 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 				whilcart = exe_wildcard(tokens[*i].value);
 				if (!whilcart[0])
 				{
+					free(whilcart);
 					whilcart = ft_calloc(2, sizeof(char *));
 					whilcart[0] = ft_strdup(tokens[*i].value);
 					whilcart[1] = NULL;
@@ -191,14 +196,14 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 						if (!(*new)->option)
 							error_alocation();
 					}
-					(*new)->option[j] = whilcart[h];
+					(*new)->option[j] = ft_strdup(whilcart[h]);
 					h++;
 					j++;
 				}
 			}
 			else
 			{
-				(*new)->option[j] = tokens[*i].value;
+				(*new)->option[j] = ft_strdup(tokens[*i].value);
 				j++;
 			}
 		}
@@ -212,7 +217,7 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 				if (!(*new)->fil_name)
 					error_alocation();
 			}
-			(*new)->fil_name[k] = tokens[*i].value;
+			(*new)->fil_name[k] = ft_strdup(tokens[*i].value);
 			k++;
 		}
 		else
@@ -224,11 +229,12 @@ int	add_to_noud(t_Token *tokens, int *i, t_cmd **new, int num_tokens)
 				if (!(*new)->extra_arg)
 					error_alocation();
 			}
-			(*new)->extra_arg[m] = tokens[*i].value;
+			(*new)->extra_arg[m] = ft_strdup(tokens[*i].value);
 			m++;
 		}
 		*i += 1;
 	}
+	free_string_array(whilcart);
 	(*new)->extra_arg[m] = NULL;
 	(*new)->rederaction[l] = NULL;
 	(*new)->option[j] = NULL;
@@ -243,6 +249,26 @@ int	chek_syntax_error(t_Token *tokens, t_status **status, int num_tokens)
 	i = 0;
 	while (i < num_tokens)
 	{
+		if (tokens[i].type == QUOTE_SINGLE && ft_strchr(tokens[i].value, '\'') != NULL)
+		{
+			(*status)->status = 2;
+			ft_putstr_fd("\033[34minishell: ", 2);
+			ft_putstr_fd("syntax error : error in quot\033[0m\n", 2);
+			return (1);
+		}
+		if (tokens[i].type == QUOTE_DOUBLE && ft_strchr(tokens[i].value,'\"') != NULL)
+		{
+			(*status)->status = 2;
+			ft_putstr_fd("\033[34minishell: ", 2);
+			ft_putstr_fd("syntax error : error in quot\033[0m\n", 2);
+			return (1);
+		}
+		if ( i == (num_tokens - 1) && tokens[i].type == PIP)
+		{
+			(*status)->status = 2;
+			error_syntax("syntax error near unexpected token ", "`|'");
+			return (1);
+		}
 		if ((i == 0 && tokens[i].type == PIP) || (i != 0
 				&& tokens[i].type == PIP && (tokens[i - 1].type == IN
 					|| tokens[i - 1].type == OUT || tokens[i - 1].type == APPEND
@@ -266,12 +292,12 @@ int	chek_syntax_error(t_Token *tokens, t_status **status, int num_tokens)
 		if ((tokens[i].type == IN || tokens[i].type == OUT
 				|| tokens[i].type == APPEND || tokens[i].type == HER_DOC)
 			&& i + 1 == num_tokens)
-			{
-				(*status)->status = 2;
-				error_syntax("syntax error near unexpected token ", "`newline'");
-				return (1);
-			}
-			i++;
+		{
+			(*status)->status = 2;
+			error_syntax("syntax error near unexpected token ", "`newline'");
+			return (1);
+		}
+		i++;
 	}
 	return (0);
 }
@@ -291,7 +317,16 @@ void	creat_cmd(t_cmd **lst, char *command, char **env, t_status **status)
 	if (!tokens)
 		return ;
 	if (chek_syntax_error(tokens, status, num_tokens) == 1)
+	{
+		i = 0;
+		while (i < num_tokens)
+		{
+			free(tokens[i].value);
+			i++;
+		}
+		free(tokens);
 		return ;
+	}
 	while (i < num_tokens)
 	{
 		if (add_to_noud(tokens, &i, &new, num_tokens) == 1 && i < num_tokens)
@@ -306,4 +341,11 @@ void	creat_cmd(t_cmd **lst, char *command, char **env, t_status **status)
 		else
 			add_back(lst, new);
 	}
+	i = 0;
+	while (i < num_tokens)
+	{
+		free(tokens[i].value);
+		i++;
+	}
+	free(tokens);
 }

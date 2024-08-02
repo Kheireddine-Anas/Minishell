@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 13:17:59 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/01 11:39:37 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 09:25:20 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,12 +152,12 @@ char	**create_cmmmand(char **str)
 	{
 		if (ft_strlen(str[i]) > 0)
 		{
-			result[j] = str[i];
+			result[j] = ft_strdup(str[i]);
 			j++;
 		}
 		i++;
 	}
-	free(str);
 	result[j] = NULL;
+	free_string_array(str);
 	return (result);
 }
