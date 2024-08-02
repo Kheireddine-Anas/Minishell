@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:51:57 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 17:41:05 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 18:59:54 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,20 @@ char	*find_executable_path(char **path_split, char *cmd)
 {
 	char	*path_new;
 	int		i;
+	char	*tmp;
 
 	i = 0;
 	path_new = NULL;
 	while (path_split[i])
 	{
+		tmp = path_split[i];
 		path_split[i] = strjoi(path_split[i], "/", cmd);
 		if (access(path_split[i], X_OK) == 0)
 		{
-			path_new = path_split[i];
+			path_new = ft_strdup(path_split[i]);
 			break ;
 		}
+		free(tmp);
 		i++;
 	}
 	return (path_new);
@@ -55,6 +58,7 @@ char	*get_path(char **envp, char *cmd, int i)
 	if (!path_split)
 		return (NULL);
 	path_new = find_executable_path(path_split, cmd);
+	free_string_array(path_split);
 	return (path_new);
 }
 
@@ -77,5 +81,8 @@ void	execute(t_cmd	*cmd, char **envp)
 		return ;
 	path = get_path(envp, cmd->option[0], 0);
 	if (execve(path, cmd->option, envp) == -1)
+	{
+		free(path);
 		error_ch(cmd->option[0]);
+	}
 }

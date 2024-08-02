@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:57:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 14:41:22 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 19:53:08 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,24 @@
 
 void	free_cmd(t_cmd **cmd)
 {
-	if ((*cmd)->option[0])
-		free_string_array((*cmd)->option);
-	else
-		free((*cmd)->option);
-	if ((*cmd)->extra_arg[0])
-		free_string_array((*cmd)->extra_arg);
-	else
-		free((*cmd)->extra_arg);
-	if ((*cmd)->fil_name[0])
-		free_string_array((*cmd)->fil_name);
-	else
-		free((*cmd)->fil_name);
-	if ((*cmd)->rederaction[0])
-		free_string_array((*cmd)->rederaction);
-	else
-		free((*cmd)->rederaction);
+    if (cmd == NULL || *cmd == NULL)
+        return;
+    if ((*cmd)->option != NULL && (*cmd)->option[0] != NULL)
+        free_string_array((*cmd)->option);
+    else if ((*cmd)->option != NULL)
+        free((*cmd)->option);
+    if ((*cmd)->extra_arg != NULL && (*cmd)->extra_arg[0] != NULL)
+        free_string_array((*cmd)->extra_arg);
+    else if ((*cmd)->extra_arg != NULL)
+        free((*cmd)->extra_arg);
+    if ((*cmd)->fil_name != NULL && (*cmd)->fil_name[0] != NULL)
+        free_string_array((*cmd)->fil_name);
+    else if ((*cmd)->fil_name != NULL)
+        free((*cmd)->fil_name);
+    if ((*cmd)->rederaction != NULL && (*cmd)->rederaction[0] != NULL)
+        free_string_array((*cmd)->rederaction);
+    else if ((*cmd)->rederaction != NULL)
+        free((*cmd)->rederaction);
 }
 
 void	lstclear(t_cmd **lst)
@@ -49,6 +51,7 @@ void	lstclear(t_cmd **lst)
 		help = next;
 	}
 	free(help);
+	*lst = NULL;
 }
 
 int	lstsize(t_cmd *lst)

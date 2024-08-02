@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:37:54 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 15:24:39 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/02 18:52:55 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,9 @@ void	word(char **p, t_Token **tokens, int *num_tokens)
 {
 	char	*start;
 	int		len;
-	char	c;
 	char	h;
-
 	int in_single_quotes = 0;
 	int in_double_quotes = 0;
-	if (*num_tokens != 0)
-		c = *(*p - 1);
 	h = **p;
 	start = *p;
 	while (**p != '\0' && (in_single_quotes || in_double_quotes

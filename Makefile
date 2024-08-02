@@ -3,7 +3,7 @@ src  =  parsing/parssing.c   parsing/eroor.c main.c execution/execut_cmd.c parsi
 obj = $(src:.c=.o)  
 NAME = minishell
 LIBFT = libft/libft.a
-CFLAG = -Wall -Wextra -Werror     -I/Users/ahamdi/.brew/opt/readline/include 
+CFLAG = -Wall -Wextra -Werror -g   -I/Users/ahamdi/.brew/opt/readline/include 
 # -fsanitize=address 
 LFLAG = -L/Users/ahamdi/.brew/opt/readline/lib   -lreadline -lncurses 
 
@@ -11,7 +11,7 @@ all:  $(NAME)
 
 $(NAME): $(obj)
 	make -C libft
-	gcc   $(CFLAG) -o $(NAME) $(obj) $(LIBFT) $(LFLAG)
+	cc   $(CFLAG) -o $(NAME) $(obj) $(LIBFT) $(LFLAG)
 
 %.o: %.c
 	cc $(CFLAG)  -c $< -o $@
