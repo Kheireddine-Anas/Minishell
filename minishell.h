@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:27:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/01 16:12:25 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 11:43:12 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ typedef struct s_status
 void leaks(void);
 void				free_string_array(char **array);
 int					lstsize(t_cmd *lst);
-int					cmd_pwd(void);
+int					cmd_pwd(char **str, t_status **status);
 void				handle_sigint_herdoc(int sigt);	
 int					whillop(t_cmd **lst_cmd, t_fd_ *fd_in_out, t_status **status, int *i);
 int					chek_her_doc(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status);

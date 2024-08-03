@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 09:45:11 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 13:07:38 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 11:45:29 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ static int	condition_builting(t_cmd *lst_cmd, t_env **env, t_status **status)
 	}
 	else if (lst_cmd->option && ft_strcmp("pwd", lst_cmd->option[0]) == 0)
 	{
-		cmd_pwd();
+		(*status)->status = 0;
+		cmd_pwd(lst_cmd->option, status);
 		return (1);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:36:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/01 17:34:31 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 13:30:14 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,14 @@ static char	*process_quotes(char *str, char *dst)
 	k = 0;
 	i = 0;
 	j = 0;
-	if (str[0] == '\'' && str[strlen(str) - 1] == '\'' && strlen(str) > 1)
+	while (str[i])
+	{
+		if (str[i] == '\'')
+			k++;
+		i++;
+	}
+	i = 0;
+	if (str[0] == '\'' && str[strlen(str) - 1] == '\'' && strlen(str) > 1 && k != 0 && k % 2 == 0)
 	{
 		while (str[i])
 		{
@@ -32,14 +39,8 @@ static char	*process_quotes(char *str, char *dst)
 	}
 	else
 	{
-		while (str[i])
-		{
-			if (str[i] == '\'')
-				k++;
-			i++;
-		}
 		i = 0;
-		if (k && k % 2 == 0)
+		if (k != 0 && k % 2 == 0)
 		{
 			while (str[i])
 			{
@@ -99,7 +100,7 @@ char	*remove_doubl_qoute(char *str, char **envp, t_status **status)
 		i++;
 	}
 	if (flag && flag % 2 != 0)
-		return (str);
+		return (ft_strdup(str));
 	else
 	{
 		split = ft_split(str, '\"');

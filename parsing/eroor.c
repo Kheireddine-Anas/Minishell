@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:52:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 19:05:23 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 13:27:23 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,6 @@ void	filecommade(t_cmd *cmd, char **env)
 
 	if (!cmd)
 		exit(1);
-	else if (cmd->single > 0 || cmd->double_q > 0)
-	{
-		ft_putstr_fd("\033[1;31msyntax error : error in quot\033[0m\n", 2);
-		exit(1);
-	}
 	else if (cmd->option && cmd->option[0] && cmd->option[0][0] == '\0')
 		errer_cmd(cmd->option[0], "command not found");
 	else if (cmd->option[0] && cmd->option[0] && cmd->option[0][0] == '/')
@@ -84,11 +79,9 @@ void	filecommade(t_cmd *cmd, char **env)
 		stat(cmd->option[0], &file_info);
 		if (S_ISDIR(file_info.st_mode))
 		{
-			free(&file_info);
 			errer_cmd(cmd->option[0], "is a directory");
 			exit(126);
 		}
-		free(&file_info);
 	}
 	else if (cmd->option[0] && cmd->option[0] && cmd->option[0][0] == '.'
 		&& cmd->option[0][1] == '/')
@@ -111,14 +104,16 @@ void	filecommade(t_cmd *cmd, char **env)
 			exit(126);
 		}
 	}
-	path = get_path(env, cmd->option[0], 0);
-	if (cmd->option[0] && !path)
+	else if (cmd->option[0])
 	{
+		path = get_path(env, cmd->option[0], 0);
+		if (!path)
+		{
+			errer_cmd(cmd->option[0], "command not found");
+			exit(127);
+		}
 		free(path);
-		errer_cmd(cmd->option[0], "command not found");
-		exit(127);
 	}
-	free(path);
 }
 
 void	hand_error(t_status **status, char *str)

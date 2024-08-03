@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 14:31:52 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 13:27:18 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,8 +179,7 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 // 	int num_tokens = 0;
 // 	int i = 0;
 
-// 	atexit (leaks);
-// 	char *p = "ls *";
+// 	char *p = "ls \"hamdi\"";
 // 	status = ft_calloc(1, sizeof(t_status));
 // 	tokens = tokenize(p, &num_tokens);
 // 	parse(&tokens, num_tokens, envp, &status);
@@ -190,12 +189,4 @@ void	parse(t_Token **tokens, int num_tokens, char **envp, t_status **status)
 // 		printf("value: %s\n", tokens[i].value);
 // 		i++;
 // 	}
-// 	i = 0;
-// 	while (i < num_tokens)
-// 	{
-// 		free(tokens[i].value);
-// 		i++;
-// 	}
-// 	free(tokens);
-// 	free(status);
 // }

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:43:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/29 14:10:47 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 11:48:48 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,9 +127,13 @@ int	export_add(t_env **env, char **value, t_status **status)
 	{
 		var = set_name(value[i]);
 		if (!check_exp(value[i]))
-			add_exp(tmp, value[i], var);
+		{
+    	    add_exp(tmp, value[i], var);
+            free(var);
+		}
 		else
 		{
+			free(var);
 			ft_putstr_fd("mini-shell: ", 2);
 			ft_putstr_fd(value[i], 2);
 			ft_putendl_fd(": not a valid identifier", 2);

@@ -6,34 +6,32 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:57:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 19:53:08 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 13:06:43 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-
-
 void	free_cmd(t_cmd **cmd)
 {
-    if (cmd == NULL || *cmd == NULL)
-        return;
-    if ((*cmd)->option != NULL && (*cmd)->option[0] != NULL)
-        free_string_array((*cmd)->option);
-    else if ((*cmd)->option != NULL)
-        free((*cmd)->option);
-    if ((*cmd)->extra_arg != NULL && (*cmd)->extra_arg[0] != NULL)
-        free_string_array((*cmd)->extra_arg);
-    else if ((*cmd)->extra_arg != NULL)
-        free((*cmd)->extra_arg);
-    if ((*cmd)->fil_name != NULL && (*cmd)->fil_name[0] != NULL)
-        free_string_array((*cmd)->fil_name);
-    else if ((*cmd)->fil_name != NULL)
-        free((*cmd)->fil_name);
-    if ((*cmd)->rederaction != NULL && (*cmd)->rederaction[0] != NULL)
-        free_string_array((*cmd)->rederaction);
-    else if ((*cmd)->rederaction != NULL)
-        free((*cmd)->rederaction);
+	if (cmd == NULL || *cmd == NULL)
+		return ;
+	if ((*cmd)->option && (*cmd)->option[0])
+		free_string_array((*cmd)->option);
+	else if (!(*cmd)->option[0])
+		free((*cmd)->option);
+	if ((*cmd)->extra_arg && (*cmd)->extra_arg[0])
+		free_string_array((*cmd)->extra_arg);
+	else if (!(*cmd)->extra_arg[0])
+		free((*cmd)->extra_arg);
+	if ((*cmd)->fil_name && (*cmd)->fil_name[0])
+		free_string_array((*cmd)->fil_name);
+	else if (!(*cmd)->fil_name[0])
+		free((*cmd)->fil_name);
+	if ((*cmd)->rederaction  && (*cmd)->rederaction[0])
+		free_string_array((*cmd)->rederaction);
+	else if (!(*cmd)->rederaction[0])
+		free((*cmd)->rederaction);
 }
 
 void	lstclear(t_cmd **lst)
@@ -48,6 +46,7 @@ void	lstclear(t_cmd **lst)
 	{
 		next = help->next;
 		free_cmd(&help);
+		free(help);
 		help = next;
 	}
 	free(help);
@@ -252,27 +251,29 @@ int	chek_syntax_error(t_Token *tokens, t_status **status, int num_tokens)
 	i = 0;
 	while (i < num_tokens)
 	{
-		if (tokens[i].type == QUOTE_SINGLE && ft_strchr(tokens[i].value, '\'') != NULL)
+		if (tokens[i].type == QUOTE_SINGLE && ft_strchr(tokens[i].value,
+				'\'') != NULL)
 		{
 			(*status)->status = 2;
 			ft_putstr_fd("\033[34minishell: ", 2);
 			ft_putstr_fd("syntax error : error in quot\033[0m\n", 2);
 			return (1);
 		}
-		if (tokens[i].type == QUOTE_DOUBLE && ft_strchr(tokens[i].value,'\"') != NULL)
+		else if (tokens[i].type == QUOTE_DOUBLE && ft_strchr(tokens[i].value,
+				'\"') != NULL)
 		{
 			(*status)->status = 2;
 			ft_putstr_fd("\033[34minishell: ", 2);
 			ft_putstr_fd("syntax error : error in quot\033[0m\n", 2);
 			return (1);
 		}
-		if ( i == (num_tokens - 1) && tokens[i].type == PIP)
+		else if (i == (num_tokens - 1) && tokens[i].type == PIP)
 		{
 			(*status)->status = 2;
 			error_syntax("syntax error near unexpected token ", "`|'");
 			return (1);
 		}
-		if ((i == 0 && tokens[i].type == PIP) || (i != 0
+		else if ((i == 0 && tokens[i].type == PIP) || (i != 0
 				&& tokens[i].type == PIP && (tokens[i - 1].type == IN
 					|| tokens[i - 1].type == OUT || tokens[i - 1].type == APPEND
 					|| tokens[i - 1].type == HER_DOC)) || (tokens[i].type == PIP
@@ -282,19 +283,20 @@ int	chek_syntax_error(t_Token *tokens, t_status **status, int num_tokens)
 			error_syntax("syntax error near unexpected token ", "`|'");
 			return (1);
 		}
-		if ((tokens[i].type == IN || tokens[i].type == OUT
+		else if ((tokens[i].type == IN || tokens[i].type == OUT
 				|| tokens[i].type == APPEND || tokens[i].type == HER_DOC)
-			&& (i < num_tokens  && (tokens[i + 1].type == IN || tokens[i + 1].type == OUT
-				|| tokens[i + 1].type == APPEND || tokens[i
-				+ 1].type == HER_DOC)))
+			&& (i < num_tokens && (tokens[i + 1].type == IN || tokens[i
+					+ 1].type == OUT || tokens[i + 1].type == APPEND || tokens[i
+					+ 1].type == HER_DOC)))
 		{
 			(*status)->status = 2;
-			error_syntax("syntax error near unexpected token ",tokens[i + 1].value );
+			error_syntax("syntax error near unexpected token ", tokens[i
+				+ 1].value);
 			return (1);
 		}
-		if ((tokens[i].type == IN || tokens[i].type == OUT
-				|| tokens[i].type == APPEND || tokens[i].type == HER_DOC)
-			&& i + 1 == num_tokens)
+		else if ((tokens[i].type == IN || tokens[i].type == OUT
+				|| tokens[i].type == APPEND || tokens[i].type == HER_DOC) && i
+			+ 1 == num_tokens)
 		{
 			(*status)->status = 2;
 			error_syntax("syntax error near unexpected token ", "`newline'");

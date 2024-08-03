@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:41:45 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 10:37:39 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 12:54:06 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,20 @@ static char	*get_valus(t_env *envs, char *srch)
 	return (NULL);
 }
 
-int	cmd_pwd(void)
+int	cmd_pwd(char **str, t_status **status)
 {
 	char	*pwd;
 
+	if (str[1] && ft_strcmp(str[1], "oi") != 0)
+	{
+		ft_putstr_fd("pwd: too many arguments\n", 2);
+		(*status)->status = 1;
+		return (1);
+	}
 	pwd = getcwd(NULL, 0);
 	ft_putstr_fd(pwd, 1);
 	ft_putstr_fd("\n", 1);
+	free(pwd);
 	return (0);
 }
 static char	*cmd_pwd_cd(void)
@@ -66,7 +73,8 @@ int	cmd_cd(char **path, t_env **env, t_status	**status)
 {
 	char	*pth;
 	char	*crnt;
-
+	char	*new_pwd;
+	
 	crnt = getcwd(NULL, 0);
 	if (path[1]&& ft_strcmp(path[1], "-L") != 0 && ft_strcmp(path[1], "-P") != 0 && ft_strcmp(path[1], "~") != 0)
 	{
@@ -92,7 +100,10 @@ int	cmd_cd(char **path, t_env **env, t_status	**status)
 			return (1);
 		}
 	}
-	update_env(env, "PWD", cmd_pwd_cd());
+	new_pwd = cmd_pwd_cd();
+	update_env(env, "PWD",new_pwd);
 	update_env(env, "OLDPWD", crnt);
+	free(crnt);
+	free(new_pwd);
 	return (0);
 }

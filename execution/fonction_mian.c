@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:39:55 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/28 15:04:20 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 10:05:19 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void	wit_process(int nb_prossuce, pid_t **pids, t_fd_ *fd_in_out,
 		j++;
 	}
 	(*status)->status = WEXITSTATUS((*status)->status);
-	free(*pids);
 	dup2(fd_in_out->fd_in, STDIN_FILENO);
 	dup2(fd_in_out->fd_out, STDOUT_FILENO);
 }
