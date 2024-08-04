@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 12:47:47 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 13:31:10 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 15:54:58 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,7 @@ int	chek_out(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status, int i)
 	{
 		if (ft_strlen(lst_cmd->fil_name[i]) == 0)
 		{
-			(*status)->status = 1;
-			ft_putstr_fd("\033[33mminishell: ", 2);
-			ft_putstr_fd("ambiguous redirect", 2);
-			ft_putstr_fd("\033[0m", 2);
-			ft_putstr_fd("\n", 2);
+			print_err(status);
 			return (2);
 		}
 		if (ft_strcmp(">", lst_cmd->rederaction[i]) == 0)

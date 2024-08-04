@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 09:45:11 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/03 11:45:29 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 15:04:16 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,8 @@ static int	condition_builting(t_cmd *lst_cmd, t_env **env, t_status **status)
 	return (0);
 }
 
-int	builting(t_cmd *lst_cmd, t_env **env, t_status **status, t_fd_ **fd_in_out)
+static int	condition_2_buitling(t_cmd *lst_cmd, t_env **env, t_status **status)
 {
-	(*fd_in_out)->retu_red = rediraction(lst_cmd, fd_in_out, status);
-	if ((*fd_in_out)->retu_red == 2)
-		return (1);
 	if (lst_cmd->option && ft_strcmp("cd", lst_cmd->option[0]) == 0)
 	{
 		(*status)->status = 0;
@@ -71,6 +68,16 @@ int	builting(t_cmd *lst_cmd, t_env **env, t_status **status, t_fd_ **fd_in_out)
 		print_env(*env);
 		return (1);
 	}
+	return (0);
+}
+
+int	builting(t_cmd *lst_cmd, t_env **env, t_status **status, t_fd_ **fd_in_out)
+{
+	(*fd_in_out)->retu_red = rediraction(lst_cmd, fd_in_out, status);
+	if ((*fd_in_out)->retu_red == 2)
+		return (1);
+	if (condition_2_buitling(lst_cmd, env, status) == 1)
+		return (1);
 	if (lst_cmd->option && ft_strcmp("unset", lst_cmd->option[0]) == 0)
 	{
 		if (!lst_cmd->option[1])

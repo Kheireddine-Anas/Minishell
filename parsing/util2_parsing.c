@@ -6,16 +6,11 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:37:54 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 18:52:55 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:13:32 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	is_space(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n');
-}
 
 void	out(char **p, t_Token **tokens, int *num_tokens)
 {
@@ -27,14 +22,14 @@ void	out(char **p, t_Token **tokens, int *num_tokens)
 	{
 		len = 2;
 		(*tokens)[(*num_tokens)].type = APPEND;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+		(*tokens)[(*num_tokens)++].value = ft_strndup(start, len);
 		(*p)++;
 	}
 	else
 	{
 		len = 1;
 		(*tokens)[(*num_tokens)].type = OUT;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+		(*tokens)[(*num_tokens)++].value = ft_strndup(start, len);
 	}
 }
 
@@ -48,16 +43,17 @@ void	in(char **p, t_Token **tokens, int *num_tokens)
 	{
 		len = 2;
 		(*tokens)[(*num_tokens)].type = HER_DOC;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+		(*tokens)[(*num_tokens)++].value = ft_strndup(start, len);
 		(*p)++;
 	}
 	else
 	{
 		len = 1;
 		(*tokens)[(*num_tokens)].type = IN;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+		(*tokens)[(*num_tokens)++].value = ft_strndup(start, len);
 	}
 }
+
 int	chke_sigl_double_quote(char *str)
 {
 	int	i;
@@ -75,14 +71,34 @@ int	chke_sigl_double_quote(char *str)
 	}
 	return (0);
 }
+
+static void	condition_word(char h, t_Token **tokens, int *num_tokens)
+{
+	if (h == '-' && (*tokens)[*num_tokens].value[1] != '\''
+		&& (*tokens)[*num_tokens].value[1] != '\"')
+		(*tokens)[(*num_tokens)].type = OPTION;
+	else
+	{
+		if (chke_sigl_double_quote((*tokens)[*num_tokens].value) == 1)
+			(*tokens)[(*num_tokens)].type = QUOTE_SINGLE;
+		else if (chke_sigl_double_quote((*tokens)[*num_tokens].value) == 2)
+			(*tokens)[(*num_tokens)].type = QUOTE_DOUBLE;
+		else
+			(*tokens)[(*num_tokens)].type = WORD;
+	}
+}
+
 void	word(char **p, t_Token **tokens, int *num_tokens)
 {
 	char	*start;
 	int		len;
 	char	h;
-	int in_single_quotes = 0;
-	int in_double_quotes = 0;
+	int		in_single_quotes;
+	int		in_double_quotes;
+
 	h = **p;
+	in_single_quotes = 0;
+	in_double_quotes = 0;
 	start = *p;
 	while (**p != '\0' && (in_single_quotes || in_double_quotes
 			|| (!is_space(**p) && **p != '|' && **p != '<' && **p != '>')))
@@ -94,17 +110,7 @@ void	word(char **p, t_Token **tokens, int *num_tokens)
 		(*p)++;
 	}
 	len = (*p) - start;
-	(*tokens)[*num_tokens].value = strndup(start, len);
-	if (h == '-' && (*tokens)[*num_tokens].value[1] != '\'' && (*tokens)[*num_tokens].value[1] != '\"')
-		(*tokens)[(*num_tokens)].type = OPTION;
-	else
-	{
-		if (chke_sigl_double_quote((*tokens)[*num_tokens].value) == 1)
-			(*tokens)[(*num_tokens)].type = QUOTE_SINGLE;
-		else if (chke_sigl_double_quote((*tokens)[*num_tokens].value) == 2)
-			(*tokens)[(*num_tokens)].type = QUOTE_DOUBLE;
-		else 
-			(*tokens)[(*num_tokens)].type = WORD;
-	}
+	(*tokens)[*num_tokens].value = ft_strndup(start, len);
+	condition_word(h, tokens, num_tokens);
 	(*num_tokens)++;
 }

@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 22:08:20 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/06/27 22:28:27 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:12:05 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ typedef struct s_list
 	int				index;
 	struct s_list	*next;
 }	t_list;
+char	*ft_strndup(const char *s, size_t n);
+int		strnrcmp(const char *s1, const char *s2, size_t n);
+char	*ft_strstr(char *str, char *to_find);
 int		ft_strcmp(const char *s1, const char *s2);
 void	ft_bzero(void *m, size_t n);
 int		ft_isalpha(int c);

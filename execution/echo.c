@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:46:23 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/30 12:08:11 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 14:29:10 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,24 +56,30 @@ int	cmd_echo(char **args, t_status **status, t_cmd *cmd)
 	return (0);
 }
 
-int	cmd_exit(char **optin, t_status **status)
+static void	chek_error(char **optin)
 {
 	int	i;
 
 	i = 0;
+	while (optin[1][i])
+	{
+		if (ft_isalpha(optin[1][i]))
+		{
+			printf("exit\n");
+			ft_putstr_fd("minishell: exit: ", 2);
+			ft_putstr_fd(optin[1], 2);
+			ft_putstr_fd(": numeric argument required\n", 2);
+			exit(255);
+		}
+		i++;
+	}
+}
+
+int	cmd_exit(char **optin, t_status **status)
+{
 	if (optin[1])
 	{
-		while (optin[1][i++])
-		{
-			if (ft_isalpha(optin[1][i]))
-			{
-				printf("exit\n");
-				ft_putstr_fd("minishell: exit: ", 2);
-				ft_putstr_fd(optin[1], 2);
-				ft_putstr_fd(": numeric argument required\n", 2);
-				exit(255);
-			}
-		}
+		chek_error(optin);
 		if (optin[2])
 		{
 			ft_putstr_fd("minishell: exit: too many arguments\n", 2);

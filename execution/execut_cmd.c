@@ -6,14 +6,14 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:46:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 10:59:34 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 14:31:25 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-
-void	child_process(t_cmd *cmd, char **envp, t_fd_ **fd_in_out, t_status **status)
+void	child_process(t_cmd *cmd, char **envp, t_fd_ **fd_in_out,
+		t_status **status)
 {
 	if (!cmd || !envp)
 		error_ch(cmd->option[0]);
@@ -32,12 +32,13 @@ void	child_process(t_cmd *cmd, char **envp, t_fd_ **fd_in_out, t_status **status
 	exe_cmd(cmd, envp);
 }
 
-void	fin_commande(t_cmd *cmd, char **envp, t_status **status, t_fd_ **fd_in_out)
+void	fin_commande(t_cmd *cmd, char **envp, t_status **status,
+		t_fd_ **fd_in_out)
 {
 	if (!cmd || !envp)
 	{
 		errer_cmd(cmd->option[0], "command not found");
-		exit (127);
+		exit(127);
 	}
 	(*fd_in_out)->retu_red = rediraction(cmd, fd_in_out, status);
 	if ((*fd_in_out)->retu_red == 2)
@@ -59,8 +60,8 @@ int	chek_herdoc(char *str)
 		return (0);
 	while (str[i] && str[i + 1])
 	{
-		if ((str[i] == '<' && str[i +1] == '<') 
-			|| (str[i] == '>' && str[i +1] == '>'))
+		if ((str[i] == '<' && str[i + 1] == '<') || (str[i] == '>' && 
+				str[i + 1] == '>'))
 			return (1);
 		i++;
 	}

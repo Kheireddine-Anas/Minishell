@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:49:47 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/29 10:50:46 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 15:09:31 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static t_env	*last_f(t_env *lst)
 	return (lst);
 }
 
-static int	size_(t_env *lst)
+int	size_(t_env *lst)
 {
 	t_env	*help;
 	int		len;
@@ -86,43 +86,4 @@ t_env	*get_env(char **envp)
 		i++;
 	}
 	return (env);
-}
-
-char	**get_erray_env(t_env *env)
-{
-	int		i;
-	char	**env_arr;
-	int		len;
-
-	if (!env)
-		return (NULL);
-	i = 0;
-	len = size_(env);
-	env_arr = malloc(sizeof(char *) * (len + 1));
-	if (!env_arr)
-		return (NULL);
-	env_arr[len] = NULL;
-	while (env)
-	{
-		env_arr[i] = strjoi(env->key, "=", env->value);
-		env = env->next;
-		i++;
-	}
-	return (env_arr);
-}
-
-int		print_env(t_env *env)
-{
-	t_env	*tmp;
-
-	if (!env)
-		return (1);
-	tmp = env;
-	while (tmp)
-	{
-		if (ft_strlen(tmp->value) != 0)
-			printf("%s=%s\n", tmp->key, tmp->value);
-		tmp = tmp->next;
-	}
-	return (0);
 }

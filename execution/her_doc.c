@@ -6,34 +6,11 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:45:29 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/31 14:08:55 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 14:40:56 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	chek_child_processus(char *lim, int fd)
-{
-	char	*str;
-	char	*strj;
-
-	strj = ft_strjoin(lim, "\n");
-	while (1)
-	{
-		signal(SIGINT, handle_sigint_herdoc);
-		ft_putstr_fd("here_doc> ", 0);
-		str = get_next_line(STDIN_FILENO);
-		if (!str || !ft_strncmp(strj, str, ft_strlen(str)))
-		{
-			free(str);
-			break ;
-		}
-		ft_putstr_fd(str, fd);
-		free(str);
-	}
-	free(strj);
-	exit(0);
-}
 
 int	while_loop(char *lim, t_fd_ **fd_in_out, t_status **status)
 {
@@ -97,6 +74,7 @@ int	chek_her_doc(t_cmd *lst_cmd, t_fd_ **fd_in_out, t_status **status)
 	}
 	return (0);
 }
+
 void	handle(int sig)
 {
 	if (sig == SIGQUIT)
@@ -105,6 +83,7 @@ void	handle(int sig)
 		printf ("Quit: 3\n");
 	}
 }
+
 int	whillop(t_cmd **lst_cmd, t_fd_ *fd_in_out, t_status **status, int *i)
 {
 	int	ret;

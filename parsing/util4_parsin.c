@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 15:19:00 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/02 09:29:16 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:07:19 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,35 +28,16 @@ int	cheke_dolar(char *str)
 	return (1);
 }
 
-char	*add_valu_variable(char *str, char **envp, t_status **status)
+char	*condition_variable(char *str, t_status **status, int index)
 {
-	char	**str1;
-	int		k;
-	int		i;
-	int		j;
-	char	*variable;
-	char	*tmp;
 	char	*pos;
-	char	*chek;
-	int		index;
 	char	*new_str;
 
-
-	if (!str)
-		return (NULL);
-	str1 = NULL;
-	k = 0;
-	i = 0;
-	j = 0;
-	if ((pos = ft_strnstr(str, "$?", ft_strlen(str))) != NULL)
+	(void)index;
+	pos = ft_strnstr(str, "$?", ft_strlen(str));
+	if (pos)
 	{
-		new_str = ft_calloc(strlen(str) + 50, 1);
-		if (!new_str)
-			return (NULL);
-		index = pos - str;
-		strncpy(new_str, str, index);
-		new_str[index] = '\0';
-		sprintf(new_str + index, "%d%s", (*status)->status, pos + 2);
+		new_str = replace_dollar_question_with_num(str, (*status)->status);
 		if (!ft_strchr(new_str, '$'))
 		{
 			free(str);
@@ -65,16 +46,17 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 		free(str);
 		str = NULL;
 		str = ft_strdup(new_str);
-		if (new_str)
-			free(new_str);
+		free(new_str);
 	}
-	if (cheke_dolar(str))
-		return (str);
-	chek = ft_strchr(str, '$');
-	if (chek && (chek[1] == '\0' || chek[1] == ' '))
-		return (str);
-	if (chek)
-		str1 = split_variable(str);
+	return (str);
+}
+
+void	loop_de_loop_variable(char **str1, char **envp, int *k, char *variable)
+{
+	int		j;
+	char	*tmp;
+
+	j = 0;
 	while (str1[j])
 	{
 		variable = ft_strchr(str1[j], '$');
@@ -83,11 +65,22 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 			tmp = str1[j];
 			str1[j] = ft_strdup(chercher_variable(variable, envp));
 			if (!str1[j] || ft_strlen(str1[j]) == 0)
-				k = 1;
+				*k = 1;
 			free(tmp);
 		}
 		j++;
 	}
+}
+
+char	*loop_variable(char **str1, int i, char *str, char **envp)
+{
+	char	*variable;
+	char	*tmp;
+	int		k;
+
+	k = 0;
+	variable = NULL;
+	loop_de_loop_variable(str1, envp, &k, variable);
 	if (k == 1)
 		str1 = create_cmmmand(str1);
 	free(str);
@@ -102,18 +95,32 @@ char	*add_valu_variable(char *str, char **envp, t_status **status)
 		free(tmp);
 		i++;
 	}
-	i = 0;
 	free_string_array(str1);
 	return (str);
 }
 
-int	st_2derra(char **str, int k)
+char	*add_valu_variable(char *str, char **envp, t_status **status)
 {
-	int	i;
+	char	**str1;
+	int		i;
+	char	*chek;
+	int		index;
 
-	str[k] = NULL;
+	if (!str)
+		return (NULL);
+	str1 = NULL;
+	index = 0;
 	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	str = condition_variable(str, status, index);
+	if (!ft_strchr(str, '$'))
+		return (str);
+	if (cheke_dolar(str))
+		return (str);
+	chek = ft_strchr(str, '$');
+	if (chek && (chek[1] == '\0' || chek[1] == ' '))
+		return (str);
+	if (chek)
+		str1 = split_variable(str);
+	str = loop_variable(str1, i, str, envp);
+	return (str);
 }
