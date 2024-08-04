@@ -90,7 +90,7 @@ char	*ft_strdup(char *s)
 	return (dst);
 }
 
-char	*ft_strjoin(char *s1, char *s2, int val)
+char	*ft_join(char *s1, char *s2, int val)
 {
 	size_t	i;
 	char	*str;
@@ -189,4 +189,75 @@ char	*ft_itoa(int n)
 	if (n < 0)
 		*(str) = '-';
 	return (str);
+}
+
+char	*allocator(char *str, char cc, int start, int lenght)
+{
+	char	*all;
+	int		i;
+
+	all = (char *)malloc(lenght + 1);
+	i = start;
+	lenght = 0;
+	while (str[i])
+	{
+		if ((str[i] == cc && str[i + 1] == cc)
+			|| (str[i] == cc && str[i + 1] == '\0'))
+			i++;
+		else
+			all[lenght++] = str[i++];
+	}
+	all[lenght] = '\0';
+	if (str)
+	{
+		free(str);
+		str = NULL;
+	}
+	return (all);
+}
+
+char	*strtrim_mine(char *str, char cc)
+{
+	int		i;
+	int		lenght;
+	int		start;
+	char	*all;
+
+	i = 0;
+	lenght = 0;
+	while (str[i] == cc)
+		i++;
+	start = i;
+	while (str[i])
+	{
+		if ((str[i] == cc && str[i + 1] == cc)
+			|| (str[i] == cc && str[i + 1] == '\0'))
+			i++;
+		else
+		{
+			lenght++;
+			i++;
+		}
+	}
+	all = allocator(str, cc, start, lenght);
+	return (all);
+}
+
+char	*ft_strjoin(char *str, char *str1)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+
+	i = -1;
+	j = 0;
+	tmp = ft_calloc(ft_strlen(str) + ft_strlen(str1) + 1, sizeof(char));
+	while (str && str[++i])
+		tmp[i] = str[i];
+	if (str)
+		free(str);
+	while (str1 && str1[j])
+		tmp[i++] = str1[j++];
+	tmp[i] = '\0';
+	return (tmp);
 }

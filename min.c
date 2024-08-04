@@ -249,16 +249,25 @@ char	*find_var(t_env *env, char *var_name)
 void	vars_status(t_env *env, t_lexer *tmp)
 {
 	char	*var_name;
-	char	*var_value;
 
 	var_name = ft_strdup(tmp->value + 1);
 	free(tmp->value);
-	var_value = ft_strdup(find_var(env, var_name));
-	tmp->value = var_value;
+	tmp->value = ft_strdup(find_var(env, var_name));
 	tmp->type = WORD;
 }
 
-var_extend(t_lexer **lexing, t_env *env)
+void	anothers(t_env *env, t_lexer *lex)
+{
+	char	*var_name;
+
+	var_name = ft_strdup(lex->value + 1);
+	free(lex->value);
+	lex->value = ft_strdup(find_var(env, var_name));
+	lex->value = strtrim_mine(lex->value, '\t');
+	lex->value = strtrim_mine(lex->value, ' ');
+	lex->type = WORD;
+}
+void	var_extend(t_lexer **lexing, t_env *env)
 {
 	t_lexer	*tmp;
 
@@ -269,25 +278,217 @@ var_extend(t_lexer **lexing, t_env *env)
 		{
 			if (!ft_strcmp(tmp->value, "$"))
 				vars_value(tmp);
+			else if (tmp->value[0] == '\0')
+				tmp->type = WORD;
 			else if (!ft_strcmp(tmp->value, "$?"))
 			{
 				free(tmp->value);
 				tmp->value = ft_itoa(g_exit.exit_status);
 				tmp->type = WORD;
 			}
-			else if (tmp->value[0] == '\0')
-				tmp->type = WORD;
 			else if (tmp->status == IN_DQUOTE)
 				vars_status(env, *lexing);
 			else
-				another(env, tmp);
+				anothers(env, tmp);
 		}
+		tmp = tmp->next;
 	}
 }
 
-lex_scan(t_lexer **lexing, t_env *env)
+t_lexer	*del_nd(t_lexer *lexer, t_lexer *node)
 {
+	t_lexer	*next_node;
+	t_lexer	*tmp;
+
+	if (lexer == node)
+	{
+		next_node = lexer->next;
+		free(lexer->value);
+		free(lexer);
+		lexer = NULL;
+		return (next_node);
+	}
+	tmp = lexer;
+	while (tmp && tmp->next != node)
+		tmp = tmp->next;
+	next_node = NULL;
+	if (tmp)
+	{
+		if (tmp->next->next)
+			next_node = tmp->next->next;
+		free(tmp->next->value);
+		free(tmp->next);
+		tmp->next = next_node;
+	}
+	return (lexer);
+}
+
+t_lexer	*interm(t_lexer *lexer)
+{
+	t_lexer	*tmp;
+
+	tmp = lexer;
+	while (tmp && tmp->next)
+	{
+		if ((tmp->type == WORD && tmp->status == GENERAL)
+			&& (tmp->next->type == WORD && tmp->next->status == GENERAL))
+		{
+			tmp->value = ft_strjoin(tmp->value, tmp->next->value);
+			lexer = del_nd(lexer, tmp->next);
+			tmp = lexer;
+		}
+		else if ((tmp->type == WORD && tmp->status == IN_DQUOTE)
+			&& (tmp->next->type == WORD && tmp->next->status == IN_DQUOTE))
+		{
+			tmp->value = ft_strjoin(tmp->value, tmp->next->value);
+			lexer = del_nd(lexer, tmp->next);
+			tmp = lexer;
+		}
+		tmp = tmp->next;
+	}
+	return (lexer);
+}
+
+void	quotes_rm(t_lexer **lexer)
+{
+	t_lexer	*tmp;
+	t_lexer	*tmps;
+
+	tmp = *lexer;
+	while (tmp)
+	{
+		tmps = tmp->next;
+		if (tmp->type == S_QUOTE || tmp->type == D_QUOTE)
+			*lexer = del_nd(*lexer, tmp);
+		tmp = tmps;
+	}
+	interm(*lexer);
+}
+
+t_lexer	*rm_space(t_lexer *lexer)
+{
+	t_lexer	*tmp;
+	t_lexer	*prvs;
+	t_lexer	*elem_rm;
+
+	tmp = lexer;
+	prvs = NULL;
+	while (tmp)
+	{
+		if (tmp->type == WSPACE)
+		{
+			elem_rm = tmp;
+			tmp = tmp->next;
+			if (prvs)
+				prvs->next = tmp;
+			else
+				lexer = tmp;
+			free(elem_rm->value);
+			free(elem_rm);
+		}
+		else
+			tmp = ((prvs = tmp), tmp->next);
+	}
+	return (lexer);
+}
+
+void	lexer_free(t_lexer *lexer)
+{
+	t_lexer	*tmp;
+
+	while (lexer)
+	{
+		tmp = lexer;
+		lexer = lexer->next;
+		free(tmp->value);
+		free(tmp);
+	}
+}
+
+int	check_redir(t_lexer *lexing)
+{
+	t_lexer	*tmp;
+
+	tmp = lexing;
+	if (tmp->type == RE_OUT || tmp->type == RE_IN
+		|| tmp->type == HERE_DOC || tmp->type == OUT_FILE)
+		return (0);
+	return (1);
+}
+
+t_lexer	*org_pipe(t_lexer *lexing)
+{
+	t_lexer	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = lexing;
+	while (tmp)
+	{
+		if (tmp->type == PIPE)
+		{
+			if (!tmp->next || i == 0 || (tmp->next->type != WORD
+					&& check_redir(tmp->next)))
+			{
+				printf("syntax error PIPE\n");
+				lexer_free(lexing);
+				return (NULL);
+			}
+		}
+		i++;
+		tmp = tmp->next;
+	}
+	return (lexing);
+}
+
+void	org_cmd(t_lexer **lexing)
+{
+	t_lexer	*tmp;
+
+	*lexing = org_pipe(*lexing);
+	tmp = *lexing;
+	while (tmp)
+	{
+		if (tmp->type == RE_OUT || tmp->type == RE_IN
+			|| tmp->type == HERE_DOC || tmp->type == OUT_FILE)
+		{
+			if (!tmp->next || (tmp->next->type != VAR
+					&& tmp->next->type != WORD))
+			{
+				printf("parse error REdir\n");
+				lexer_free(*lexing);
+				*lexing = NULL;
+			}
+		}
+		tmp = tmp->next;
+	}
+	if (!(*lexing))
+		g_exit.exit_status = 2;
+}
+
+void	lex_scan(t_lexer **lexing, t_env *env)
+{
+	t_lexer	*tmp;
+
 	var_extend(lexing, env);
+	quotes_rm(lexing);
+	tmp = *lexing;
+	while (tmp && tmp->next)
+	{
+		if ((tmp->type == VAR && tmp->next->type == WORD)
+			|| (tmp->status == IN_SQUOTE && tmp->next->status == IN_SQUOTE)
+			|| (tmp->status == IN_DQUOTE && tmp->type != VAR
+				&& tmp->next->type != VAR && tmp->next->status == IN_DQUOTE)
+			|| (tmp->type == WORD && tmp->next->type == WORD))
+		{
+			tmp->value = ft_strjoin(tmp->value, tmp->next->value);
+			*lexing = del_nd(*lexing, tmp->next);
+		}
+		else
+			tmp = tmp->next;
+	}
+	*lexing = rm_space(*lexing);
+	org_cmd(lexing);
 }
 
 int main(int ac, char **av, char **environment)
@@ -313,13 +514,14 @@ int main(int ac, char **av, char **environment)
 		add_history(input);
 		// printf("CMD: %s\n", input);
 		lexing = lex(lexing, input);
-		// lex_scan(lexing, env);
+		lex_scan(&lexing, env);
 		ft_print_lexer(lexing);
 		// printf("..........................................................\n");
 		// pause();
 		free(input);
 		break;
 	}
+	printf("Exit: %d\n", g_exit.exit_status);
 	// while (env) //Uncomment this loop to see ENV struct
 	// {
 	// 	printf("%s=%s\n", env->variable, env->value);

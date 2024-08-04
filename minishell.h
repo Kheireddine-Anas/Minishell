@@ -85,11 +85,13 @@ typedef struct s_lexer
 
 void	*ft_calloc(int count, int size);
 char	*ft_strdup(char *s);
-char	*ft_strjoin(char *s1, char *s2, int val);
+char	*ft_strjoin(char *str, char *str1);
+char	*ft_join(char *s1, char *s2, int val);
 int		ft_isdigit(int c);
 int		ft_isalpha(int c);
 int		ft_isalnum(int c);
 char	*ft_itoa(int n);
+char	*strtrim_mine(char *str, char cc);
 int		ft_strlen(char *str);
 int		ft_strcmp(char *s1, char *s2);
 char	*ft_strchr(const char *s, int c);

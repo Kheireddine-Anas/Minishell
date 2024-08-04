@@ -57,7 +57,7 @@ int	check_cmd(char *cmd)
 	paths = ft_split(getenv("PATH"), ':');
 	while (paths[i])
 	{
-		check = ft_strjoin(paths[i], cmd, 0);
+		check = ft_join(paths[i], cmd, 0);
 		if (!access(check, F_OK))
 		{
 			if (!access(check, X_OK))
@@ -90,7 +90,7 @@ char	**env_set(t_env *env)
 	tmp = env;
 	while (tmp)
 	{
-		envirs[i++] = ft_strjoin(tmp->variable, tmp->value, 1);
+		envirs[i++] = ft_join(tmp->variable, tmp->value, 1);
 		tmp = tmp->next;
 	}
 	return (envirs);
