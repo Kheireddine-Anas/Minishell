@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:39:55 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/20 13:02:07 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 10:05:19 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	wit_process(int nb_prossuce, pid_t **pids, t_fd_ *fd_in_out,
 	int	j;
 
 	j = 0;
-	while (j < nb_prossuce)
+	while (j < nb_prossuce && *pids)
 	{
 		if (waitpid((*pids)[j], &(*status)->status, 0) == -1)
 		{
@@ -35,7 +35,6 @@ void	wit_process(int nb_prossuce, pid_t **pids, t_fd_ *fd_in_out,
 		j++;
 	}
 	(*status)->status = WEXITSTATUS((*status)->status);
-	free(*pids);
 	dup2(fd_in_out->fd_in, STDIN_FILENO);
 	dup2(fd_in_out->fd_out, STDOUT_FILENO);
 }
@@ -58,9 +57,9 @@ void	close_file(t_fd_ *fd_in_out, int *fd)
 	clo(fd_in_out->fd_in);
 }
 
-void	parent_prossuce(int *fd, t_fd_ **fd_in_out, int i)
+void	parent_prossuce(int *fd, t_fd_ **fd_in_out, int i, int ret_buil)
 {
-	if (i > 0)
+	if (i > 0 || ret_buil == 1)
 	{
 		whilloop(fd);
 		close((*fd_in_out)->fd0);

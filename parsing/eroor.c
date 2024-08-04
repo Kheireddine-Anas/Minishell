@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 10:52:46 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 20:49:45 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/03 15:18:54 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,14 @@ void	error_alocation(void)
 	exit(1);
 }
 
-void	errer_cmd(char *str)
+void	errer_cmd(char *str, char *ms_err)
 {
-	ft_putstr_fd("\033[31mminishell: ", 2); 
+	ft_putstr_fd("\033[31mminishell: ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\033[0m", 2);
-	ft_putstr_fd("\033[31m", 2); 
-	perror(" ");
-	ft_putstr_fd("\033[0m", 2);
-	exit(127);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(ms_err, 2);
+	ft_putstr_fd("\n", 2);
 }
 
 void	error_ch(char *str)
@@ -34,67 +33,30 @@ void	error_ch(char *str)
 	ft_putstr_fd("\033[34mminishell: ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\033[0m", 2);
-	ft_putstr_fd("\033[34m", 2);
 	perror(" ");
-	ft_putstr_fd("\033[0m", 2);
-	exit (1);
+	exit(1);
+}
+
+void	error_syntax(char *msg, char *caracter)
+{
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(msg, 2);
+	if (ft_strcmp(caracter, ">") == 0 || ft_strcmp(caracter, ">>") == 0
+		|| ft_strcmp(caracter, "<") == 0 || ft_strcmp(caracter, "<<") == 0)
+	{
+		ft_putstr_fd("`", 2);
+		ft_putstr_fd(caracter, 2);
+		ft_putstr_fd("'", 2);
+	}
+	else
+		ft_putstr_fd(caracter, 2);
+	ft_putstr_fd("\n", 2);
 }
 
 void	erro(char *str)
 {
-	ft_putstr_fd("\033[33mminishell: ", 2); 
+	ft_putstr_fd("\033[33mminishell: ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("\033[0m", 2);
-	ft_putstr_fd("\033[33m", 2);
 	perror(" ");
-	ft_putstr_fd("\033[0m", 2);
 }
-
-void	filecommade(t_cmd *cmd, char **env)
-{
-	if (!cmd)
-		exit (1);
-	else if (cmd->single > 0 || cmd->double_q > 0)
-	{
-		ft_putstr_fd("\033[1;31msyntax error : error in quot\033[0m\n", 2);
-		exit(1);
-	}
-	else if (cmd->option && cmd->option[0] && cmd->option[0][0] == '\0')
-		errer_cmd(cmd->option[0]);
-	else if (cmd->option[0] && cmd->option[0] && cmd->option[0][0] == '/')
-	{
-		if (access(cmd->option[0], X_OK) != 0)
-			errer_cmd(cmd->option[0]);
-	}
-	else if (cmd->option[0] && cmd->option[0] 
-		&& cmd->option[0][0] == '.' && cmd->option[0][1] == '/')
-	{
-		if (access(cmd->option[0], X_OK))
-			errer_cmd(cmd->option[0]);
-	}
-	else if (cmd->option[0] && !get_path(env, cmd->option[0], 0))
-		errer_cmd(cmd->option[0]);
-}
-void	hand_error(t_status **status, char	*str)
-{
-	ft_putstr_fd("minishell : ", 2);
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd(": error\n", 2);
-	(*status)->status = 1;
-}
-
-// void	print_minishell(void)
-// {
-// 	char	*shell_art;
-
-// 	shell_art = 
-// 		"  _____ _          _ _ \n"
-// 		" / ____| |        | | |\n"
-// 		"| (___ | |__   ___| | |\n"
-// 		" \\___ \\| '_ \\ / _ \\ | |\n"
-// 		" ____) | | | |  __/ | |\n"
-// 		"|_____/|_| |_|\\___|_|_|\n";
-// 	ft_putstr_fd("\033[34m", 2);
-// 	ft_putstr_fd(shell_art, 2);
-// 	ft_putstr_fd("\033[0m", 2);
-// }

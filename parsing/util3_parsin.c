@@ -6,57 +6,11 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 13:17:59 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 17:06:15 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:14:03 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	process_quotes(char **p, t_Token **tokens, int *num_tokens)
-{
-	char	*start;
-	int		len;
-
-	if (**p == '\'')
-	{
-		start = (*p)++;
-		if (**p == '*')
-		{
-			while (**p && **p != ' ')
-				(*p)++;
-		}
-		else
-		{
-			while (**p && **p != '\'')
-				(*p)++;
-			if (**p == '\'')
-				(*p)++;
-			if (**p == '*')
-				(*p)++;
-		}
-		len = *p - start;
-		(*tokens)[(*num_tokens)].type = QUOTE_SINGLE;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
-	}
-	else if (**p == '"')
-	{
-		start = (*p)++;
-		if (**p == '*')
-		{
-			while (**p && **p != ' ')
-				(*p)++;
-		}
-		while (**p && **p != '"')
-			(*p)++;
-		if (**p == '"')
-			(*p)++;
-		if (**p == '*')
-			(*p)++;
-		len = *p - start;
-		(*tokens)[(*num_tokens)].type = QUOTE_DOUBLE;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
-	}
-}
 
 void	quot(char **p, t_Token **tokens, int *num_tokens, int *max_tokens)
 {
@@ -64,27 +18,24 @@ void	quot(char **p, t_Token **tokens, int *num_tokens, int *max_tokens)
 	int		len;
 	char	c;
 
-	process_quotes(p, tokens, num_tokens);
 	if (*num_tokens >= *max_tokens)
 	{
 		*tokens = realloc_cmd(tokens, max_tokens);
 		if (!tokens)
 			error_alocation();
 	}
-	if (**p == '/' || **p == '.' || **p == '$')
+	if (**p == '/' || **p == '.')
 	{
 		c = **p;
 		start = (*p)++;
 		while (**p != ' ' && **p && **p != '\"' && **p != '\'')
 			(*p)++;
 		len = *p - start;
-		if (c == '$')
-			(*tokens)[(*num_tokens)].type = VARIABLE;
-		else if (c == '/' || c == '.')
+		if (c == '/' || c == '.')
 			(*tokens)[(*num_tokens)].type = CMD;
 		else
 			(*tokens)[(*num_tokens)].type = WORD;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+		(*tokens)[(*num_tokens)++].value = ft_strndup(start, len);
 	}
 }
 
@@ -143,8 +94,6 @@ char	**create_cmmmand(char **str)
 
 	j = 0;
 	i = 0;
-	if (!str || !*str)
-		return (NULL);
 	while (str[i])
 		i++;
 	result = ft_calloc(i, sizeof(char *));
@@ -155,11 +104,17 @@ char	**create_cmmmand(char **str)
 	{
 		if (ft_strlen(str[i]) > 0)
 		{
-			result[j] = str[i];
+			result[j] = ft_strdup(str[i]);
 			j++;
 		}
 		i++;
 	}
 	result[j] = NULL;
+	free_string_array(str);
 	return (result);
+}
+
+int	is_space(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n');
 }

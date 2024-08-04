@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:11:30 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/05/16 19:16:26 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/07/30 12:39:25 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,14 @@ static char	**ft_alloc_mem(char *s, char **result, int start, char c)
 	int	len;
 
 	i = 0;
-	while (i < ft_count_words(s,c))
+	while (i < ft_count_words(s, c))
 	{
 		while (s[start] == c)
 			start++;
 		len = 0;
 		while (s[start + len] && s[start + len] != c)
 			len++;
-		result[i] = ft_calloc((len + 1) , sizeof(char));
+		result[i] = ft_calloc((len + 1), sizeof(char));
 		if (!result[i])
 		{
 			ft_free(result, i);
@@ -76,7 +76,7 @@ char	**ft_split(char *s, char c)
 	if (!s)
 		return (NULL);
 	start = 0;
-	result = ft_calloc((ft_count_words(s,c) + 1) , sizeof(char *));
+	result = ft_calloc((ft_count_words(s, c) + 1), sizeof(char *));
 	if (result == NULL)
 		return (NULL);
 	result = ft_alloc_mem(s, result, start, c);

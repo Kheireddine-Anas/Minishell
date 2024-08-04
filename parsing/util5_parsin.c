@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 15:34:52 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/07/23 15:35:43 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:05:12 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,50 +54,59 @@ char	*strjoi(char *s1, char *s2, char *s3)
 	return (join_strings(s1, s2, s3, res));
 }
 
-void	condition(char **p, t_Token **tokens, int *num_tokens, int *max_tokens)
+static int	len_string(char *str)
 {
-	char	*start;
-	int		len;
+	int	i;
+	int	k;
 
-	if (*num_tokens >= *max_tokens)
+	k = 0;
+	i = 0;
+	while (str[i])
 	{
-		(*tokens) = realloc_cmd(tokens, max_tokens);
-		if (!tokens)
-			error_alocation();
+		if (str[i] == '$' && str[i + 1] == '?')
+			k++;
+		i++;
 	}
-	if (is_space(**p))
-		(*p)++;
-	else if ((**p == '\'' && *(*p + 1) == '\'' && *(*p + 2) != ' ')
-		|| (**p == '\"' && *(*p + 1) == '\"' && *(*p + 2) != ' '))
-		(*p) += 2;
-	else if (**p == '/' || **p == '.'|| **p == '$' || **p == '"'
-		|| **p == '\'')
-		quot(p, tokens, num_tokens, max_tokens);
-	else if (**p == '<')
-		in(p, tokens, num_tokens);
-	else if (**p == '>')
-		out(p, tokens, num_tokens);
-	else if (is_space(**p))
+	return (k);
+}
+
+void	condition_re(int *i, int *j, char *nb_str, char *bufer)
+{
+	int	k;
+
+	k = 0;
+	while (nb_str[k])
 	{
-		while (**p && is_space(**p))
-			(*p)++;
+		bufer[*j] = nb_str[k];
+		k++;
+		(*j)++;
 	}
-	else if (**p == '|')
+	*i += 2;
+}
+
+char	*replace_dollar_question_with_num(char *str, int num)
+{
+	char	*nb_str;
+	char	*bufer;
+	int		i;
+	int		k;
+	int		j;
+
+	j = 0;
+	i = 0;
+	nb_str = ft_itoa(num);
+	k = len_string(str);
+	bufer = ft_calloc((ft_strlen(str) - k * 2) + (ft_strlen(nb_str) * k) + 1,
+			1);
+	i = 0;
+	while (str[i])
 	{
-		(*tokens)[(*num_tokens)].type = PIP;
-		(*tokens)[(*num_tokens)++].value = strndup(*p, 1);
-		(*p)++;
+		if (str[i] == '$' && str[i + 1] == '?')
+			condition_re(&i, &j, nb_str, bufer);
+		else
+			bufer[j++] = str[i++];
 	}
-	else if(**p == '*')
-	{
-		start = *p;
-		while(**p != ' ' && **p != '\0')
-			(*p)++;
-		len = *p - start;
-		(*tokens)[(*num_tokens)].type = WHILCART;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
-	}
-	else if (**p != '\0' && **p != '$' && **p != '\"' && **p != '\''
-		&& !is_space(**p) && **p != '<' && **p != '>')
-		word(p, tokens, num_tokens);
+	bufer[j] = '\0';
+	free(nb_str);
+	return (bufer);
 }
