@@ -6,7 +6,7 @@
 /*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:40:06 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/04 19:24:32 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:37:41 by ahamdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ static void	lop(t_env **env, char *line, t_status **status)
 	}
 	loo_commande(&lst_cmd, &fd_in_out, status);
 }
-
 
 int	main(int argc, char *argv[], char **envp)
 {
