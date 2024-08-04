@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utul_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:51:21 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/03 14:40:22 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:51:00 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	cmd_unset(t_env **env, char *var)
 	prev = NULL;
 	while (tmp)
 	{
-		if (strcmp(tmp->key, var) == 0)
+		if (ft_strcmp(tmp->key, var) == 0)
 		{
 			if (prev)
 				prev->next = tmp->next;
@@ -60,7 +60,7 @@ void	update_env(t_env **env, char *var, char *value)
 	tmp = *env;
 	while (tmp)
 	{
-		if (strcmp(tmp->key, var) == 0)
+		if (ft_strcmp(tmp->key, var) == 0)
 		{
 			free(tmp->value);
 			tmp->value = ft_strdup(value);

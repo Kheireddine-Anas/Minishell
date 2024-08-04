@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 18:27:31 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/04 18:55:22 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:46:21 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ typedef enum s_TokenType
 	FILE_IN,
 	LIM,
 	FILE_OUT,
-	WHILCART,
+	WILDCARD,
 	ERRRO
 }					t_TokenType;
 

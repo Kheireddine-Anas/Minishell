@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   spli_qot.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:27:17 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/04 16:46:39 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:47:03 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	hand_word(t_Token **tokens, int i, char **envp, t_status **status)
 		&& (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] != '$')
 		hand_dolar_inword(tokens, i, envp, status);
 	else if (ft_strchr((*tokens)[i].value, '*'))
-		(*tokens)[i].type = WHILCART;
+		(*tokens)[i].type = WILDCARD;
 	else if (i != 0 && (*tokens)[i - 1].type == IN)
 		(*tokens)[i].type = FILE_IN;
 	else if (i != 0 && (*tokens)[i - 1].type == HER_DOC)
@@ -62,7 +62,7 @@ void	hand_word(t_Token **tokens, int i, char **envp, t_status **status)
 		- 1].type == APPEND))
 		(*tokens)[i].type = FILE_OUT;
 	else if ((*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*')
-		(*tokens)[i].type = WHILCART;
+		(*tokens)[i].type = WILDCARD;
 }
 
 void	hand_sigle_qot(t_Token **tokens, int i)
@@ -74,7 +74,7 @@ void	hand_sigle_qot(t_Token **tokens, int i)
 		|| (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'
 		|| ((*tokens)[i].value[0] == '*'
 			&& (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'))
-		(*tokens)[i].type = WHILCART;
+		(*tokens)[i].type = WILDCARD;
 	(*tokens)[i].value = remove_single_qoute((*tokens)[i].value);
 	free(tmp);
 	if (i == 0)

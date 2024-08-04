@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util2_add_to_neoud.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 16:01:22 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/04 19:07:06 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:47:11 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	hand_type(int *i, t_Token *tokens, t_cmd **new)
 	if (tokens[*i].type == OPTION || tokens[*i].type == VARIABLE
 		|| tokens[*i].type == QUOTE_SINGLE || tokens[*i].type == QUOTE_DOUBLE
 		|| tokens[*i].type == WORD || tokens[*i].type == CMD
-		|| tokens[*i].type == WHILCART)
+		|| tokens[*i].type == WILDCARD)
 		handl_option(i, tokens, new);
 	else if (tokens[*i].type == IN || tokens[*i].type == HER_DOC
 		|| tokens[*i].type == OUT || tokens[*i].type == APPEND)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util_cd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 14:10:57 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/03 14:42:50 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:51:08 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*get_valus(t_env *envs, char *srch)
 	tmp = envs;
 	while (tmp)
 	{
-		if (!(strcmp(tmp->key, srch)))
+		if (!(ft_strcmp(tmp->key, srch)))
 		{
 			return (tmp->value);
 		}

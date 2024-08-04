@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   util1_parsing.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 11:36:15 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/03 19:44:11 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:50:33 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static char	*process_quotes(char *str, char *dst)
 	j = 0;
 	k = cke_nbquot(str);
 	i = 0;
-	if (str[0] == '\'' && str[strlen(str) - 1] == '\'' && strlen(str) > 1
+	if (str[0] == '\'' && str[ft_strlen(str) - 1] == '\'' && ft_strlen(str) > 1
 		&& k != 0 && k % 2 == 0)
 	{
 		while (str[i])
@@ -90,7 +90,7 @@ char	*remove_single_qoute(char *str)
 
 	if (!str)
 		return (NULL);
-	len = strlen(str);
+	len = ft_strlen(str);
 	dst = ft_calloc(len + 1, 1);
 	if (!dst)
 	{

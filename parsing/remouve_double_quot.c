@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   remouve_double_quot.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 17:24:16 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/04 16:46:53 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:46:55 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	hand_double_qot(t_Token **tokens, int i, char **envp, t_status **status)
 		|| (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'
 		|| ((*tokens)[i].value[0] == '*'
 			&& (*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*'))
-		(*tokens)[i].type = WHILCART;
+		(*tokens)[i].type = WILDCARD;
 	tmp = (*tokens)[i].value;
 	(*tokens)[i].value = remove_doubl_qoute((*tokens)[i].value, envp, status);
 	free(tmp);
@@ -106,7 +106,7 @@ void	hand_double_qot(t_Token **tokens, int i, char **envp, t_status **status)
 void	handl_cmd(t_Token **tokens, int i)
 {
 	if ((*tokens)[i].value[ft_strlen((*tokens)[i].value) - 1] == '*')
-		(*tokens)[i].type = WHILCART;
+		(*tokens)[i].type = WILDCARD;
 	if (i != 0 && (*tokens)[i - 1].type == IN)
 		(*tokens)[i].type = FILE_IN;
 	else if (i != 0 && (*tokens)[i - 1].type == HER_DOC)

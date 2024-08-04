@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   leakser.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahamdi <ahamdi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: akheired <akheired@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:56:55 by ahamdi            #+#    #+#             */
-/*   Updated: 2024/08/04 11:07:56 by ahamdi           ###   ########.fr       */
+/*   Updated: 2024/08/04 19:51:44 by akheired         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	process_special_characters(char **p, t_Token **tokens, int *num_tokens,
 	if (**p == '|')
 	{
 		(*tokens)[(*num_tokens)].type = PIP;
-		(*tokens)[(*num_tokens)++].value = strndup(*p, 1);
+		(*tokens)[(*num_tokens)++].value = ft_strndup(*p, 1);
 		(*p)++;
 	}
 	else if (**p == '*')
@@ -34,8 +34,8 @@ void	process_special_characters(char **p, t_Token **tokens, int *num_tokens,
 		while (**p != ' ' && **p != '\0')
 			(*p)++;
 		len = *p - start;
-		(*tokens)[(*num_tokens)].type = WHILCART;
-		(*tokens)[(*num_tokens)++].value = strndup(start, len);
+		(*tokens)[(*num_tokens)].type = WILDCARD;
+		(*tokens)[(*num_tokens)++].value = ft_strndup(start, len);
 	}
 	else if (**p != '\0' && !is_space(**p) && **p != '<' && **p != '>')
 		word(p, tokens, num_tokens);
